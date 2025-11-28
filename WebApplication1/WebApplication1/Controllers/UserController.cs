@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Business.Abstract;
 using WebApplication1.Entities;
 
 namespace WebApplication1.Controllers
 {
+    [Authorize] // sadece login olan kişi listeleme,güncelleme işlemlerini yapabilir
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -34,6 +36,7 @@ namespace WebApplication1.Controllers
             return NotFound("User not found"); // kullanıcı yoksa uyarı ver
         }
 
+        [Authorize(Roles ="Admin")] // Sadece admin silebilir
         [HttpDelete("{id}")] // DELETE /api/user/1
         public IActionResult DeleteUser(int id)
         {

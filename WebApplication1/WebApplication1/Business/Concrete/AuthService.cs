@@ -34,8 +34,8 @@ namespace WebApplication1.Business.Concrete
 
         private string createPasswordHash(string password)
         {
-            using var hmac = new HMACSHA256();
-            var hashBytes = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+            using var sha = SHA256.Create();
+            var hashBytes = sha.ComputeHash(Encoding.UTF8.GetBytes(password));
             return Convert.ToBase64String(hashBytes);
         }
 
