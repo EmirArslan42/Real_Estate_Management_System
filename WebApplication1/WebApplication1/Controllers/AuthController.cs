@@ -10,12 +10,13 @@ namespace WebApplication1.Controllers
     public class AuthController : ControllerBase
     {
         public readonly IAuthService _authService;
-        public AuthController(IAuthService authService) {
+        private readonly ILogService _logService;
+        public AuthController(IAuthService authService,ILogService logService) {
 
         _authService=authService;
-
+        _logService=logService;
         }
-
+         
         [HttpPost("register")]
         public IActionResult Register([FromBody] User userDto)
         {
@@ -34,6 +35,15 @@ namespace WebApplication1.Controllers
             // register işlemi
             var newUser = _authService.Register(userDto,password);
 
+            // log ekleme işlemini yapacağız
+            _logService.AddLog(new Log
+            {
+                UserId = newUser.Id,
+                OperationType="Register",
+                Description=$"Yeni kullanıcı kayıt oldu : {newUser.Email}",
+                IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString(),
+            });
+
             return Ok(new 
             {
                 Message="Kullanıcı Kayıt İşlemi Başarılı",
@@ -51,6 +61,14 @@ namespace WebApplication1.Controllers
             {
                 return Unauthorized("Email veya şifre yanlış");
             }
+
+            _logService.AddLog(new Log
+            {
+                UserId=user.Id,
+                OperationType="Login",
+                Description=$"Kullanici giris yapti : {user.Email}",
+                IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString(),
+            });
 
             var token=_authService.GenerateToken(user);
 

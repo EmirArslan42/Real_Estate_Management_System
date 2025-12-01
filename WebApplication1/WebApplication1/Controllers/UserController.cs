@@ -15,7 +15,7 @@ namespace WebApplication1.Controllers
 
         // UserService dependency injection yapmış olduk
         public UserController(IUserService userService) { 
-            _userService = userService;
+            _userService = userService; 
         }
 
         [HttpGet] //GET  api/user

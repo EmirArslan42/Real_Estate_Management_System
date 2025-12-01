@@ -78,6 +78,8 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITasinmazService, TasinmazService>();
+builder.Services.AddScoped<ILogService,LogService>();
 
 var app = builder.Build();
 

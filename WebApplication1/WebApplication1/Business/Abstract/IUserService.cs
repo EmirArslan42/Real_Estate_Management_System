@@ -8,6 +8,6 @@ namespace WebApplication1.Business.Abstract
         void DeleteUser(int id);
         void UpdateUser(User user);
         List<User> GetAllUsers();
-        User GetUserById(int id);
+        User GetUserById(int id); 
     }
 }

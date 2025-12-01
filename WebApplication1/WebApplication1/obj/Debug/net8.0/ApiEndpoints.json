@@ -32,6 +32,105 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "WebApplication1.Controllers.LogController",
+    "Method": "GetAllLogs",
+    "RelativePath": "api/Log",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebApplication1.Controllers.LogController",
+    "Method": "GetMyLogs",
+    "RelativePath": "api/Log/me",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebApplication1.Controllers.TasinmazController",
+    "Method": "GetAll",
+    "RelativePath": "api/Tasinmaz",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebApplication1.Controllers.TasinmazController",
+    "Method": "Add",
+    "RelativePath": "api/Tasinmaz",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tasinmaz",
+        "Type": "WebApplication1.Entities.Tasinmaz",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebApplication1.Controllers.TasinmazController",
+    "Method": "GetById",
+    "RelativePath": "api/Tasinmaz/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebApplication1.Controllers.TasinmazController",
+    "Method": "Delete",
+    "RelativePath": "api/Tasinmaz/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebApplication1.Controllers.TasinmazController",
+    "Method": "Update",
+    "RelativePath": "api/Tasinmaz/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "tasinmaz",
+        "Type": "WebApplication1.Entities.Tasinmaz",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "WebApplication1.Controllers.UserController",
     "Method": "GetUsers",
     "RelativePath": "api/User",

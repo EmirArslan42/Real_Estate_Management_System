@@ -17,7 +17,7 @@ namespace WebApplication1.Business.Concrete
         public AuthService(ApplicationDbContext context,IConfiguration configuration)
         {
             _context = context;
-            _configuration = configuration; // appsettings.json'daki jwt:key'i kullanmamızı sağlayacak
+            _configuration = configuration; // appsettings.json'daki jwt:key'i kullanmamızı sağlayacak 
         }
         public User Register(User user, string password)
         {

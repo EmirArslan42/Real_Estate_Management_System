@@ -13,9 +13,9 @@ namespace WebApplication1.Business.Concrete
         {
             _context = context;
         }
-
+         
         public void AddUser(User user)
-        {
+        { 
             _context.Users.Add(user);
             _context.SaveChanges();
         }
