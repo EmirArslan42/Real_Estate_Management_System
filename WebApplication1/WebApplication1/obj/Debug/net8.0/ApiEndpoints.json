@@ -8,8 +8,8 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "loginDto",
-        "Type": "WebApplication1.Controllers.LoginRequest",
+        "Name": "dto",
+        "Type": "WebApplication1.Dtos.UserLoginDto",
         "IsRequired": true
       }
     ],
@@ -24,8 +24,8 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "userDto",
-        "Type": "WebApplication1.Entities.User",
+        "Name": "dto",
+        "Type": "WebApplication1.Dtos.UserRegisterDto",
         "IsRequired": true
       }
     ],
@@ -70,8 +70,8 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "tasinmaz",
-        "Type": "WebApplication1.Entities.Tasinmaz",
+        "Name": "dto",
+        "Type": "WebApplication1.Dtos.TasinmazDto",
         "IsRequired": true
       }
     ],
@@ -123,8 +123,8 @@
         "IsRequired": true
       },
       {
-        "Name": "tasinmaz",
-        "Type": "WebApplication1.Entities.Tasinmaz",
+        "Name": "dto",
+        "Type": "WebApplication1.Dtos.TasinmazDto",
         "IsRequired": true
       }
     ],
@@ -149,8 +149,8 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "user",
-        "Type": "WebApplication1.Entities.User",
+        "Name": "dto",
+        "Type": "WebApplication1.Dtos.UserWriteDto",
         "IsRequired": true
       }
     ],
@@ -202,8 +202,8 @@
         "IsRequired": true
       },
       {
-        "Name": "user",
-        "Type": "WebApplication1.Entities.User",
+        "Name": "dto",
+        "Type": "WebApplication1.Dtos.UserWriteDto",
         "IsRequired": true
       }
     ],

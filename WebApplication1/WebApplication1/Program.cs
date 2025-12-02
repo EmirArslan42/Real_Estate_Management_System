@@ -80,6 +80,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITasinmazService, TasinmazService>();
 builder.Services.AddScoped<ILogService,LogService>();
+builder.Services.AddScoped<ILocationService,LocationService>();
 
 var app = builder.Build();
 

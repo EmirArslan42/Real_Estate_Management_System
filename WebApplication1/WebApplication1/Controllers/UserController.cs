@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Business.Abstract;
+using WebApplication1.Dtos;
 using WebApplication1.Entities;
 
 namespace WebApplication1.Controllers
@@ -11,24 +12,31 @@ namespace WebApplication1.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        public readonly IUserService _userService;
+        private readonly IUserService _userService;
+        private readonly ILogService _logService;
 
         // UserService dependency injection yapmış olduk
-        public UserController(IUserService userService) { 
-            _userService = userService; 
+        public UserController(IUserService userService,ILogService logService) { 
+            _userService = userService;  
+            _logService = logService;
+        }
+
+        private int GetUserId()
+        {
+            return int.Parse(User.FindFirst("id").Value);
         }
 
         [HttpGet] //GET  api/user
-        public IActionResult GetUsers()
+        public async Task<IActionResult> GetUsers()
         {
-            var users=_userService.GetAllUsers();
+            var users=await _userService.GetAllUsersAsync();
             return Ok(users);
         }
 
         [HttpGet("{id}")] //GET  /api/user/1
-        public IActionResult GetUserById(int id)
+        public async Task<IActionResult> GetUserById(int id)
         {
-            var user = _userService.GetUserById(id);
+            var user =await _userService.GetUserByIdAsync(id);
             if (user != null)
             {
                 return Ok(user);
@@ -38,32 +46,63 @@ namespace WebApplication1.Controllers
 
         [Authorize(Roles ="Admin")] // Sadece admin silebilir
         [HttpDelete("{id}")] // DELETE /api/user/1
-        public IActionResult DeleteUser(int id)
+        public async Task<IActionResult> DeleteUser(int id)
         {
-            var deletingUser = _userService.GetUserById(id);
+            var deletingUser =await _userService.GetUserByIdAsync(id);
             if(deletingUser != null)
             {
-                _userService.DeleteUser(id);
+                await _userService.DeleteUserAsync(id);
+                _logService.AddLog(new Log
+                {
+                    UserId = GetUserId(),
+                    OperationType="DeleteUser",
+                    Description=$"{id} ID'li kullanici silindi",
+                    IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString(),
+                });
                 return Ok("Kullanıcı silindi");
             }
             return NotFound("Kullanıcı bulunamadı");
         }
-
+        [Authorize(Roles ="Admin")]
         [HttpPost] // POST /api/user
-        public IActionResult AddUser([FromBody] User user)
+        public async Task<IActionResult> AddUser([FromBody] UserWriteDto dto)
         {
-            _userService.AddUser(user);
-            return Ok("Kullanıcı eklendi");
+            if (string.IsNullOrEmpty(dto.Password))
+            {
+                return BadRequest("Kullanici olusturmak icin sifre zorunludur");
+            }
+            var result=await _userService.AddUserAsync(dto);
+            if (!result)
+            {
+                return BadRequest("Kullanici eklenirken hata olustu");
+            }
+            _logService.AddLog(new Log
+            {
+                UserId=GetUserId(),
+                OperationType="AddUser",
+                Description=$"Yeni kullanici eklendi: {dto.Email}",
+                IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString(),
+            });
+            return Ok("Kullanici eklendi");
         }
 
+        [Authorize(Roles ="Admin")]
         [HttpPut("{id}")] // PUT /api/user/1
-        public IActionResult UpdateUser(int id,[FromBody] User user)
+        public async Task<IActionResult> UpdateUser(int id,[FromBody] UserWriteDto dto)
         {
-            var updatingUser=_userService.GetUserById(id);
+            var updatingUser=await _userService.GetUserByIdAsync(id);
             if(updatingUser!= null)
             {
-                user.Id = id;
-                _userService.UpdateUser(user);
+                await _userService.UpdateUserAsync(id,dto);
+
+                _logService.AddLog(new Log
+                {   
+                    UserId=GetUserId(),
+                    OperationType="UpdateUser",
+                    Description=$"{id} ID'li kullanici guncellendi",
+                    IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString(),
+                });
+
                 return Ok("Kullanıcı güncellendi");
             }
             return NotFound("Kullanıcı bulunamadı");
