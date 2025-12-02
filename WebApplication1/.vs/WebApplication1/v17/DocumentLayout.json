@@ -1,105 +1,12 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|c:\\users\\emir\\desktop\\odakgis yaz\u0131l\u0131m \u015Firket\\odevlerim\\tasinmazprojesi\\webapplication1\\webapplication1\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|c:\\users\\emir\\desktop\\odakgis yaz\u0131l\u0131m \u015Firket\\odevlerim\\tasinmazprojesi\\webapplication1\\webapplication1\\business\\concrete\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\business\\concrete\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|c:\\users\\emir\\desktop\\odakgis yaz\u0131l\u0131m \u015Firket\\odevlerim\\tasinmazprojesi\\webapplication1\\webapplication1\\dtos\\userregisterdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\dtos\\userregisterdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|c:\\users\\emir\\desktop\\odakgis yaz\u0131l\u0131m \u015Firket\\odevlerim\\tasinmazprojesi\\webapplication1\\webapplication1\\business\\abstract\\iauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\business\\abstract\\iauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|c:\\users\\emir\\desktop\\odakgis yaz\u0131l\u0131m \u015Firket\\odevlerim\\tasinmazprojesi\\webapplication1\\webapplication1\\dtos\\userlogindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\dtos\\userlogindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": [
-        {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 4,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "UserLoginDto.cs",
-              "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Dtos\\UserLoginDto.cs",
-              "RelativeDocumentMoniker": "WebApplication1\\Dtos\\UserLoginDto.cs",
-              "ToolTip": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Dtos\\UserLoginDto.cs",
-              "RelativeToolTip": "WebApplication1\\Dtos\\UserLoginDto.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T15:37:34.302Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "UserRegisterDto.cs",
-              "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Dtos\\UserRegisterDto.cs",
-              "RelativeDocumentMoniker": "WebApplication1\\Dtos\\UserRegisterDto.cs",
-              "ToolTip": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Dtos\\UserRegisterDto.cs",
-              "RelativeToolTip": "WebApplication1\\Dtos\\UserRegisterDto.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T15:37:20.899Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "IAuthService.cs",
-              "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Business\\Abstract\\IAuthService.cs",
-              "RelativeDocumentMoniker": "WebApplication1\\Business\\Abstract\\IAuthService.cs",
-              "ToolTip": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Business\\Abstract\\IAuthService.cs",
-              "RelativeToolTip": "WebApplication1\\Business\\Abstract\\IAuthService.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-02T09:05:58.059Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "AuthService.cs",
-              "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Business\\Concrete\\AuthService.cs",
-              "RelativeDocumentMoniker": "WebApplication1\\Business\\Concrete\\AuthService.cs",
-              "ToolTip": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Business\\Concrete\\AuthService.cs",
-              "RelativeToolTip": "WebApplication1\\Business\\Concrete\\AuthService.cs",
-              "ViewState": "AQIAABYAAAAAAAAAAAAgwEIAAAANAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-02T09:12:30.313Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "AuthController.cs",
-              "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Controllers\\AuthController.cs",
-              "RelativeDocumentMoniker": "WebApplication1\\Controllers\\AuthController.cs",
-              "ToolTip": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Controllers\\AuthController.cs",
-              "RelativeToolTip": "WebApplication1\\Controllers\\AuthController.cs",
-              "ViewState": "AQIAAEIAAAAAAAAAAAAAAFAAAAANAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-02T09:26:55.944Z",
-              "EditorCaption": ""
-            }
-          ]
-        }
-      ]
+      "DocumentGroups": []
     }
   ]
 }

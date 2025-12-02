@@ -8,3 +8,4 @@ namespace WebApplication1.Business.Abstract
         List<Log> GetAllLogs(); 
     }
 }
+ 

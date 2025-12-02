@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Business.Abstract;
+using WebApplication1.Dtos;
 
 namespace WebApplication1.Controllers
 {
@@ -10,7 +11,7 @@ namespace WebApplication1.Controllers
     [ApiController]
     public class LogController : ControllerBase
     {
-        private readonly ILogService _logService;
+        private readonly ILogService _logService; 
         public LogController(ILogService logService) { 
             _logService = logService;
         }
@@ -27,7 +28,18 @@ namespace WebApplication1.Controllers
         public IActionResult GetAllLogs()
         {
             var logs=_logService.GetAllLogs();
-            return Ok(logs);
+
+            var dtoList = logs.Select(l => new LogDto
+            {
+                Id = l.Id,
+                UserId = l.UserId,
+                OperationType = l.OperationType,
+                Description = l.Description,
+                IpAddress = l.IpAddress,
+                Timestamp = l.Timestamp,
+
+            }).ToList();
+            return Ok(dtoList);
         }
 
         // user sadece kendi loglarını görsün
@@ -36,7 +48,17 @@ namespace WebApplication1.Controllers
         {
             var userId=GetUserId();
             var logs=_logService.GetAllLogs().Where(l=>l.UserId==userId).ToList();
-            return Ok(logs);
+
+            var dtoList = logs.Select(l=>new LogDto
+            {
+                Id = l.Id,
+                UserId = l.UserId,
+                OperationType = l.OperationType,
+                Description = l.Description,
+                IpAddress = l.IpAddress,
+                Timestamp = l.Timestamp
+            });
+            return Ok(dtoList);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace WebApplication1.Business.Concrete
         public LogService(ApplicationDbContext context) {
             _context = context;
         }
-
+         
         public void AddLog(Log log)
         {
             _context.Logs.Add(log);
