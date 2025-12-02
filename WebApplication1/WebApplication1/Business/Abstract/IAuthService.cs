@@ -1,13 +1,14 @@
-﻿using WebApplication1.Entities;
+﻿using WebApplication1.Dtos;
+using WebApplication1.Entities;
 
 namespace WebApplication1.Business.Abstract
 {
     public interface IAuthService
     {
-        User Login(string email,string password); // hash doğrulaması yap
-        User Register(User user,string password); // şifreyi hashsle kullanıcıyı kayde
+        Task<User> LoginAsync(UserLoginDto dto); // hash doğrulaması yap
+        Task<User> RegisterAsync(UserRegisterDto dto); // şifreyi hashsle kullanıcıyı kayde
 
-        bool UserExists(string email); // email var mı kontrol et
+        Task<bool> UserExistsAsync(string email); // email var mı kontrol et 
         string GenerateToken(User user); // kullanıcı için jwt token oluştur
     }
 }

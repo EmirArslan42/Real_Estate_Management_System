@@ -1,15 +1,17 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using WebApplication1.Business.Abstract;
 using WebApplication1.DataAccess;
+using WebApplication1.Dtos;
 using WebApplication1.Entities;
 
 namespace WebApplication1.Business.Concrete
 {
-    public class AuthService:IAuthService
+    public class AuthService:IAuthService 
     {
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration; // appsettings.json dosyasına erişmemizi sağlar
@@ -19,20 +21,32 @@ namespace WebApplication1.Business.Concrete
             _context = context;
             _configuration = configuration; // appsettings.json'daki jwt:key'i kullanmamızı sağlayacak 
         }
-        public User Register(User user, string password)
+        public async Task<User> RegisterAsync(UserRegisterDto dto)
         {
+            // email var mı yok mu kontrol ?
+            if(await UserExistsAsync(dto.Email))
+            {
+                return null;
+            }
             // şifreyi hashleyip kaydettik
-            string passwordHash=createPasswordHash(password);
-            user.PasswordHash = passwordHash;
+            string passwordHash=CreatePasswordHash(dto.Password);
+
+            var user = new User
+            {
+                Name = dto.Name,
+                Email = dto.Email,
+                PasswordHash = passwordHash,
+                Role="User",
+            };
 
             // kullanıcıyı kaydettik
-            _context.Users.Add(user);
-            _context.SaveChanges();
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
 
             return user;
         }
 
-        private string createPasswordHash(string password)
+        private string CreatePasswordHash(string password)
         {
             using var sha = SHA256.Create();
             var hashBytes = sha.ComputeHash(Encoding.UTF8.GetBytes(password));
@@ -42,18 +56,18 @@ namespace WebApplication1.Business.Concrete
         // şifre doğrulama işlemi yap
         private bool VerifyPasswordHash(string password, string passwordHash)
         {
-            var newHash = createPasswordHash(password);
+            var newHash = CreatePasswordHash(password);
             return newHash == passwordHash;
         }
 
         // token oluşturma işlemini yaptık
         public string GenerateToken(User user)
         {
-            List<Claim> claims = new List<Claim>() // id,email gibi kullanıcı bilgilerini tutuyor
+            var claims = new List<Claim> // id,email gibi kullanıcı bilgilerini tutuyor
             {
                 new Claim("id",user.Id.ToString()),
-                new Claim("email",user.Email.ToString()),
-                new Claim(ClaimTypes.Role,user.Role),
+                new Claim("email",user.Email),
+                new Claim(ClaimTypes.Role,user.Role), 
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])); // appsetting.jsondaki secret key i aldık
@@ -68,13 +82,14 @@ namespace WebApplication1.Business.Concrete
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public User Login(string email, string password)
+        public async Task<User> LoginAsync(UserLoginDto dto)
         {
-            var user = _context.Users.FirstOrDefault(u=>u.Email==email);
+            var user = await _context.Users.FirstOrDefaultAsync(u=>u.Email==dto.Email);
             if (user == null){
                 return null;
             }
-            if (!VerifyPasswordHash(password,user.PasswordHash)) // şifre doğru mu kontrol et
+
+            if (!VerifyPasswordHash(dto.Password,user.PasswordHash)) // şifre doğru mu kontrol et
             {
                 return null;
             }
@@ -82,9 +97,9 @@ namespace WebApplication1.Business.Concrete
         }
 
         // email var mı yok mu kontrol
-        public bool UserExists(string email)
+        public async Task<bool> UserExistsAsync(string email)
         {
-            return _context.Users.Any(u=>u.Email==email);
-        }
+            return await _context.Users.AnyAsync(u=>u.Email==email);
+        } 
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Business.Abstract;
+using WebApplication1.Dtos;
 using WebApplication1.Entities;
 
 namespace WebApplication1.Controllers
@@ -8,7 +9,7 @@ namespace WebApplication1.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
-    {
+    { 
         public readonly IAuthService _authService;
         private readonly ILogService _logService;
         public AuthController(IAuthService authService,ILogService logService) {
@@ -18,22 +19,20 @@ namespace WebApplication1.Controllers
         }
          
         [HttpPost("register")]
-        public IActionResult Register([FromBody] User userDto)
+        public async Task<IActionResult> Register([FromBody] UserRegisterDto dto)
         {
-            if (_authService.UserExists(userDto.Email))
+            if (await _authService.UserExistsAsync(dto.Email))
             {
                 return BadRequest("Bu email zaten kayıtlı");
             }
 
-            string password = userDto.PasswordHash;
-
-            if(string.IsNullOrEmpty(userDto.Role) )
-            {
-                userDto.Role = "User";
-            }
-
             // register işlemi
-            var newUser = _authService.Register(userDto,password);
+            var newUser =await _authService.RegisterAsync(dto);
+
+            if (newUser == null)
+            {
+                return BadRequest("Kayit islemi sirasinda hata olustu");
+            }
 
             // log ekleme işlemini yapacağız
             _logService.AddLog(new Log
@@ -47,20 +46,28 @@ namespace WebApplication1.Controllers
             return Ok(new 
             {
                 Message="Kullanıcı Kayıt İşlemi Başarılı",
-                User=newUser,
+                User = new
+                {
+                    newUser.Id,
+                    newUser.Name,
+                    newUser.Email,
+                    newUser.Role,
+                },
 
             });
         }
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginRequest loginDto)
+        public async Task<IActionResult> Login([FromBody] UserLoginDto dto)
         {
-            var user = _authService.Login(loginDto.Email, loginDto.Password);
+            var user =await _authService.LoginAsync(dto);
 
             if(user== null)
             {
                 return Unauthorized("Email veya şifre yanlış");
             }
+
+            var token = _authService.GenerateToken(user);
 
             _logService.AddLog(new Log
             {
@@ -69,8 +76,6 @@ namespace WebApplication1.Controllers
                 Description=$"Kullanici giris yapti : {user.Email}",
                 IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString(),
             });
-
-            var token=_authService.GenerateToken(user);
 
             return Ok(new
             {
@@ -85,11 +90,5 @@ namespace WebApplication1.Controllers
                 }
             });
         }
-    }
-
-    public class LoginRequest // Login bodysinde diğer değişkenlere erişmemesi için
-    {
-        public string Email { get; set; }
-        public string Password { get; set; }
     }
 }
