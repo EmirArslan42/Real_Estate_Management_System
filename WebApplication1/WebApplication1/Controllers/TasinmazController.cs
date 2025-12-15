@@ -17,10 +17,10 @@ namespace WebApplication1.Controllers
         public TasinmazController(ITasinmazService service,ILogService logService) {
             
             _service = service;
-            _logService = logService;
+            _logService = logService;  
         }
 
-        // tokendan userId çekme işlemi
+        // tokendan userId çekme
         private int GetUserId()
         {
             return int.Parse(User.FindFirst("id").Value);
