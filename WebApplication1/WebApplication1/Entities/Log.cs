@@ -19,6 +19,6 @@ namespace WebApplication1.Entities
 
         [MaxLength(350)]
         public string Description {  get; set; }
-        public DateTime Timestamp { get; set; }=DateTime.Now; // log zamanını baz alır
+        public DateTime Timestamp { get; set; }=DateTime.UtcNow; // log zamanını baz alır
     }
 }

@@ -1,0 +1,23 @@
+<div class="container mt-5">
+    <h2>Giriş Yap</h2>
+    <div *ngIf="errorMessage" class="alert alert-danger mt-2">
+        {{errorMessage}}
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="login()">
+
+        <div class="mb-3">
+            <label>Email</label>
+            <input class="form-control" type="email" formControlName="email">
+            <small class="text-danger" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">Geçerli bir email giriniz.</small>
+        </div>
+
+        <div class="mb-3">
+            <label>şifre</label>
+            <input class="form-control" type="password" formControlName="password">
+            <small class="text-danger" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">Şifre zorunludur.</small>
+        </div>
+
+        <button class="btn btn-primary w-100" type="submit" [disabled]="loginForm.invalid">Giriş Yap</button>
+    </form>
+</div>

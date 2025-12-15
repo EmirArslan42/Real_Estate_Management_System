@@ -1,0 +1,58 @@
+<div class="container mt-4">
+    <h2>Yeni Taşınmaz Ekle</h2>
+    <form (ngSubmit)="saveForm()" [formGroup]="tasinmazForm">
+        <!-- İl -->
+         <div class="mb-3">
+            <label for="">İl</label>
+            <select formControlName="ilId" class="form-control" (change)="onIlChange()">
+                <option value="">Seçiniz</option>
+                <option *ngFor="let il of iller"  [value]="il.id" >{{il.ad}}</option>
+            </select>
+         </div>
+
+         <!-- İlçe -->
+         <div class="mb-3">
+            <label for="">İlçe</label>
+            <select formControlName="ilceId" class="form-control" (change)="onIlceChange()">
+                <option value="">Seçiniz</option>
+                <option *ngFor="let ilce of ilceler" [value]="ilce.id">
+                    {{ilce.ad}}
+                </option>
+            </select>
+         </div>
+
+         <!-- Mahalle -->
+          <div class="mb-3">
+            <label for="">Mahalle</label>
+            <select formControlName="mahalleId" class="form-control">
+                <option value="">Seçiniz</option>
+                <option *ngFor="let mahalle of mahalleler" [value]="mahalle.id">
+                    {{mahalle.ad}}
+                </option>
+            </select>
+         </div>
+
+         <div class="mb-3">
+            <label for="">Ada</label>
+            <input type="text" class="form-control" formControlName="lotNumber">
+         </div>
+
+         <div class="mb-3">
+            <label for="">Parsel</label>
+            <input type="text" class="form-control" formControlName="parcelNumber">
+         </div>
+
+         <!-- <div class="mb-3">
+            <label for="">Nitelik</label>
+            <input type="text" class="form-control" formControlName="nitelik">
+         </div> -->
+
+         <div class="mb-3">
+            <label for="">Adres</label>
+            <textarea class="form-control" formControlName="address"></textarea>
+         </div>
+
+         <button class="btn btn-primary" type="submit">Kaydet</button>
+
+    </form>
+</div>
