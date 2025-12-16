@@ -1,0 +1,50 @@
+<div class="container mt-4">
+    <hr>
+    <h3>📋 Sistem Logları</h3>
+    <form [formGroup]="filterForm" class="row mb-3">
+        <div class="col-md-4">
+            <label class="form-label">İşlem Türü</label>
+            <select name="" id="" formControlName="operationType" class="form-select">
+                <option value="">Tümü</option>
+                <option value="Login">Login</option>
+                <option value="Register">Register</option>
+                <option value="Add">Ekleme</option>
+                <option value="Update">Güncelleme</option>
+                <option value="Delete">Silme</option>
+            </select>
+        </div>
+    </form>
+
+    <div *ngIf="isLoading" class="alert alert-info">
+        Loglar yükleniyor...
+    </div>
+
+    <table *ngIf="!isLoading && filteredLogs.length>0" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Kullanıcı</th>
+                <th>İşlem</th>
+                <th>Açıklama</th>
+                <th>IP</th>
+                <th>Tarih</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr *ngFor="let log of filteredLogs">
+                <td>{{log.userId}}</td>
+                <td>{{log.operationType}}</td>
+                <td>{{log.description}}</td>
+                <td>{{log.ipAddress}}</td>
+                <td>{{ log.timestamp | date:'dd.MM.yyyy HH:mm' }}</td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <div *ngIf="!isLoading && filteredLogs.length==0" class="alert alert-warning">
+        Gösterilecek log bulunamadı
+    </div>
+
+</div>

@@ -37,7 +37,7 @@ namespace WebApplication1.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Iller");
+                    b.ToTable("Iller", (string)null);
                 });
 
             modelBuilder.Entity("WebApplication1.Entities.Ilce", b =>
@@ -60,7 +60,7 @@ namespace WebApplication1.Migrations
 
                     b.HasIndex("IlId");
 
-                    b.ToTable("Ilceler");
+                    b.ToTable("Ilceler", (string)null);
                 });
 
             modelBuilder.Entity("WebApplication1.Entities.Log", b =>
@@ -94,7 +94,7 @@ namespace WebApplication1.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Logs");
+                    b.ToTable("Logs", (string)null);
                 });
 
             modelBuilder.Entity("WebApplication1.Entities.Mahalle", b =>
@@ -117,7 +117,7 @@ namespace WebApplication1.Migrations
 
                     b.HasIndex("IlceId");
 
-                    b.ToTable("Mahalleler");
+                    b.ToTable("Mahalleler", (string)null);
                 });
 
             modelBuilder.Entity("WebApplication1.Entities.Tasinmaz", b =>
@@ -159,7 +159,7 @@ namespace WebApplication1.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Tasinmazlar");
+                    b.ToTable("Tasinmazlar", (string)null);
                 });
 
             modelBuilder.Entity("WebApplication1.Entities.User", b =>
@@ -190,7 +190,7 @@ namespace WebApplication1.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("WebApplication1.Entities.Ilce", b =>

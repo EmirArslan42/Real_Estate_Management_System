@@ -66,6 +66,7 @@ namespace WebApplication1.Business.Concrete
             var claims = new List<Claim> // id,email gibi kullanıcı bilgilerini tutuyor
             {
                 new Claim("id",user.Id.ToString()),
+                new Claim("name", user.Name ?? ""),
                 new Claim("email",user.Email),
                 new Claim(ClaimTypes.Role,user.Role), 
             };

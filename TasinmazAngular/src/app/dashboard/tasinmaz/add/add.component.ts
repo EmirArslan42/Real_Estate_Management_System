@@ -10,8 +10,10 @@ import { TasinmazService } from 'src/app/shared/tasinmaz.service';
   styleUrls: ['./add.component.css'],
 })
 export class AddComponent implements OnInit {
-  tasinmazForm: FormGroup;
 
+  tasinmazForm: FormGroup;
+  successMessage:string='';
+  errorMessage:string='';
   iller: any[] = [];
   ilceler: any[] = [];
   mahalleler: any[] = [];
@@ -65,14 +67,30 @@ export class AddComponent implements OnInit {
   }
 
   saveForm(){
-    this.tasinmazService.addTasinmaz(this.tasinmazForm.value).subscribe({
+  this.successMessage='';
+  this.errorMessage='';
+
+    const payload = {
+    mahalleId: this.tasinmazForm.value.mahalleId,
+    lotNumber: this.tasinmazForm.value.lotNumber,
+    parcelNumber: this.tasinmazForm.value.parcelNumber,
+    address: this.tasinmazForm.value.address,
+    coordinate: this.tasinmazForm.value.coordinate
+  };
+
+    this.tasinmazService.addTasinmaz(payload).subscribe({
       next:()=>{
-        alert("Taşınmaz ekleme işlemi başarılı");
+        this.successMessage = 'Taşınmaz başarıyla eklendi.';
+        setTimeout(() => {
         this.router.navigate(['/dashboard/tasinmaz/list']);
+      }, 2000);
       },
       error:(err)=>{
-        console.log(err);
-        alert("Form Kaydedilirken hata oluştu")
+        //console.log(err);
+         this.errorMessage = 'Form kaydedilirken bir hata oluştu.';
+         setTimeout(() => {
+          this.errorMessage = '';
+        }, 3500);
       }
     })
   }

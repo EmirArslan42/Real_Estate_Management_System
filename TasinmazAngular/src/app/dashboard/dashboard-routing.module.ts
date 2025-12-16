@@ -3,7 +3,7 @@
 // import { DashboardLayoutComponent } from './dashboard-layout/dashboard-layout.component';
 
 // const routes: Routes = [
-  
+
 // ];
 
 // @NgModule({
@@ -12,11 +12,14 @@
 // })
 // export class DashboardRoutingModule { }
 
-
-
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardLayoutComponent } from './dashboard-layout/dashboard-layout.component';
+import { ProfileComponent } from './profile/profile.component';
+import { AdminComponent } from './admin/admin.component';
+import { LogListComponent } from './admin/logs/log-list/log-list.component';
+import { UserListComponent } from './admin/users/user-list/user-list.component';
+import { ShortSummaryComponent } from './admin/summary/short-summary/short-summary.component';
 
 const routes: Routes = [
   {
@@ -28,24 +31,25 @@ const routes: Routes = [
       {
         path: 'tasinmaz',
         loadChildren: () =>
-          import('./tasinmaz/tasinmaz.module').then(m => m.TasinmazModule),
+          import('./tasinmaz/tasinmaz.module').then((m) => m.TasinmazModule),
       },
+
+      { path: 'profile', component: ProfileComponent },
       {
-        path: 'users',
-        loadChildren: () =>
-          import('./users/users.module').then(m => m.UsersModule),
+        path: 'admin',
+        component: AdminComponent,
+        children: [
+           { path: 'summary', component:ShortSummaryComponent },
+          { path: 'logs', component: LogListComponent },
+          { path: 'users', component: UserListComponent },
+        ],
       },
-      {
-        path: 'logs',
-        loadChildren: () =>
-          import('./logs/logs.module').then(m => m.LogsModule),
-      }
-    ]
-  }
+    ],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class DashboardRoutingModule {}

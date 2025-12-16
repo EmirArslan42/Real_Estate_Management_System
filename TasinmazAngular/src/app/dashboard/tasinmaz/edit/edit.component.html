@@ -1,1 +1,58 @@
-<p>edit works!</p>
+<div class="container mt-4">
+    <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ successMessage }}
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ errorMessage }}
+    </div>
+    <div><a routerLink="/dashboard/tasinmaz/list" class="btn btn-secondary btn-sm">← GERİ</a></div>
+    <h2 class="text-center">Taşınmaz Düzenle</h2>
+    <form (ngSubmit)="updateForm()" [formGroup]="tasinmazForm">
+
+        <div class="mb-3">
+            <label for="ilId">İl</label>
+            <select name="ilId" id="ilId" formControlName="ilId" class="form-control" (change)="onIlChange()">
+                <option value="">Seçiniz</option>
+                <option *ngFor="let il of iller" [value]="il.id">{{il.ad}}</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="ilceId">İlçe</label>
+            <select name="ilceId" id="ilceId" formControlName="ilceId" class="form-control" (change)="onIlceChange()">
+                <option value="">Seçiniz</option>
+                <option *ngFor="let ilce of ilceler" [value]="ilce.id">{{ilce.ad}}</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="mahalleId">Mahalle</label>
+            <select name="mahalleId" id="mahalleId" formControlName="mahalleId" class="form-control">
+                <option value="">Seçiniz</option>
+                <option *ngFor="let mahalle of mahalleler" [value]="mahalle.id">{{mahalle.ad}}</option>
+            </select>
+        </div>
+
+
+        <div class="mb-3">
+            <label for="lotNumber">Ada</label>
+            <input name="lotNumber" id="lotNumber" type="text" class="form-control" formControlName="lotNumber">
+        </div>
+        <div class="mb-3">
+            <label for="parcelNumber">Parsel</label>
+            <input name="parcelNumber" id="parcelNumber" type="text" class="form-control" formControlName="parcelNumber">
+        </div>
+        <div class="mb-3">
+            <label for="address">Adres</label>
+            <textarea autocomplete="street-address" name="address" id="address" class="form-control" formControlName="address"></textarea>
+        </div>
+        
+        <div class="mb-3">
+            <label for="coordinate">Koordinat</label>
+            <input name="coordinate" id="coordinate" type="text" class="form-control" formControlName="coordinate">
+        </div>
+
+        <button class="btn btn-primary" type="submit">Güncelle</button>
+    </form>
+</div>

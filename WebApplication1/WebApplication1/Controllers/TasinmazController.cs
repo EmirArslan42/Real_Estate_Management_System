@@ -43,6 +43,9 @@ namespace WebApplication1.Controllers
             return Ok(tasinmazListe);
         }
 
+        
+
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -84,7 +87,8 @@ namespace WebApplication1.Controllers
                 IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString(),
             });
 
-            return Ok("Tasinmaz basariyla silindi");
+            //return Ok("Tasinmaz basariyla silindi");
+            return NoContent(); // veya return Ok();
         }
 
         [HttpPost]
@@ -104,7 +108,8 @@ namespace WebApplication1.Controllers
                 Description=$"Kullanici yeni tasinmaz ekledi. ParcelNumber: {dto.ParcelNumber}",
                 IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString(),
             });
-            return Ok("Tasinmaz basariyla eklendi");
+            //return Ok("Tasinmaz basariyla eklendi");
+            return NoContent();
         }
 
         [HttpPut("{id}")]
@@ -123,7 +128,8 @@ namespace WebApplication1.Controllers
                 Description=$"Kullanici ID: {id} tasinmazi guncelledi",
                 IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString(),
             });
-            return Ok("Tasinmaz guncellendi");
+            //return Ok("Tasinmaz guncellendi");
+            return NoContent();
         }
     }
 }

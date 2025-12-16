@@ -13,7 +13,11 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/login`, credentials);
   }
 
-  logOut():void {
+  register(data:any){
+    return this.http.post<any>(`${this.apiUrl}/register`, data);
+  }
+
+  logout():void {
     localStorage.removeItem('token');
   }
 
@@ -24,4 +28,8 @@ export class AuthService {
   getToken() {
     return localStorage.getItem('token');
   }
+
+  getCurrentUser() {
+  return this.http.get<any>('https://localhost:7040/api/Auth/me');
+}
 }

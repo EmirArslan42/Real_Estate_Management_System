@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using WebApplication1.Business.Abstract;
 using WebApplication1.Dtos;
 using WebApplication1.Entities;
@@ -90,5 +92,19 @@ namespace WebApplication1.Controllers
                 }
             });
         }
+
+        [Authorize]
+        [HttpGet("me")]
+        public IActionResult Me()
+        {
+            return Ok(new
+            {
+                UserId = User.FindFirst("id")?.Value,
+                Email = User.FindFirst(ClaimTypes.Email)?.Value,
+                Name = User.FindFirst("name")?.Value,
+                Role = User.FindFirst(ClaimTypes.Role)?.Value
+            });
+        }
+
     }
 }

@@ -1,0 +1,8 @@
+<div><a routerLink="/dashboard/tasinmaz/list" class="btn btn-secondary btn-sm">← GERİ</a></div>
+<h3 class="mt-3">Profil Bilgileri</h3>
+
+<ul class="list-group mt-3" *ngIf="user">
+  <li class="list-group-item">Ad Soyad: {{ user.name }}</li>
+  <li class="list-group-item">Email: {{ user.email }}</li>
+  <li class="list-group-item">Rol: {{ user.role }}</li>
+</ul>

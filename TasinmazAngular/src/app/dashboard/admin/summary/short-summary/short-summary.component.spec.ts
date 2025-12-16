@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddComponent } from './add.component';
+import { ShortSummaryComponent } from './short-summary.component';
 
-describe('AddComponent', () => {
-  let component: AddComponent;
-  let fixture: ComponentFixture<AddComponent>;
+describe('ShortSummaryComponent', () => {
+  let component: ShortSummaryComponent;
+  let fixture: ComponentFixture<ShortSummaryComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AddComponent ]
+      declarations: [ ShortSummaryComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AddComponent);
+    fixture = TestBed.createComponent(ShortSummaryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

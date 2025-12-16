@@ -1,19 +1,28 @@
 <div class="container mt-4">
-    <h2>Yeni Taşınmaz Ekle</h2>
+    
+    <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ successMessage }}
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ errorMessage }}
+    </div>
+    <div><a routerLink="/dashboard/tasinmaz/list" class="btn btn-secondary btn-sm">← GERİ</a></div>
+    <h2 class="text-center">Yeni Taşınmaz Ekle</h2>
     <form (ngSubmit)="saveForm()" [formGroup]="tasinmazForm">
         <!-- İl -->
          <div class="mb-3">
-            <label for="">İl</label>
-            <select formControlName="ilId" class="form-control" (change)="onIlChange()">
+            <label for="ilId">İl</label>
+            <select autocomplete="off" name="ilId" id="ilId" formControlName="ilId" class="form-control" (change)="onIlChange()">
                 <option value="">Seçiniz</option>
                 <option *ngFor="let il of iller"  [value]="il.id" >{{il.ad}}</option>
             </select>
          </div>
-
+ 
          <!-- İlçe -->
          <div class="mb-3">
-            <label for="">İlçe</label>
-            <select formControlName="ilceId" class="form-control" (change)="onIlceChange()">
+            <label for="ilceId">İlçe</label>
+            <select autocomplete="off" name="ilceId" id="ilceId" formControlName="ilceId" class="form-control" (change)="onIlceChange()">
                 <option value="">Seçiniz</option>
                 <option *ngFor="let ilce of ilceler" [value]="ilce.id">
                     {{ilce.ad}}
@@ -23,8 +32,8 @@
 
          <!-- Mahalle -->
           <div class="mb-3">
-            <label for="">Mahalle</label>
-            <select formControlName="mahalleId" class="form-control">
+            <label for="mahalleId">Mahalle</label>
+            <select autocomplete="off" name="mahalleId" id="mahalleId" formControlName="mahalleId" class="form-control">
                 <option value="">Seçiniz</option>
                 <option *ngFor="let mahalle of mahalleler" [value]="mahalle.id">
                     {{mahalle.ad}}
@@ -33,26 +42,26 @@
          </div>
 
          <div class="mb-3">
-            <label for="">Ada</label>
-            <input type="text" class="form-control" formControlName="lotNumber">
+            <label for="lotNumber">Ada</label>
+            <input autocomplete="off" name="lotNumber" id="lotNumber"  type="text" class="form-control" formControlName="lotNumber">
          </div>
 
          <div class="mb-3">
-            <label for="">Parsel</label>
-            <input type="text" class="form-control" formControlName="parcelNumber">
+            <label for="parcelNumber">Parsel</label>
+            <input autocomplete="off" name="parcelNumber" id="parcelNumber" type="text" class="form-control" formControlName="parcelNumber">
          </div>
-
-         <!-- <div class="mb-3">
-            <label for="">Nitelik</label>
-            <input type="text" class="form-control" formControlName="nitelik">
-         </div> -->
 
          <div class="mb-3">
-            <label for="">Adres</label>
-            <textarea class="form-control" formControlName="address"></textarea>
+            <label for="coordinate">Koordinat</label>
+            <input autocomplete="off" name="coordinate" id="coordinate" type="text" class="form-control" formControlName="coordinate">
          </div>
 
-         <button class="btn btn-primary" type="submit">Kaydet</button>
+         <div class="mb-3">
+            <label for="address">Adres</label>
+            <textarea autocomplete="street-address" name="address" id="address" class="form-control" formControlName="address"></textarea>
+         </div>
+
+         <button class="btn btn-primary btn-md " type="submit">Kaydet</button>
 
     </form>
 </div>

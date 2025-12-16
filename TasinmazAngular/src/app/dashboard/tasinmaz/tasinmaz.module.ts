@@ -19,7 +19,8 @@ import { HttpClientModule } from '@angular/common/http';
     CommonModule,
     TasinmazRoutingModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    
   ]
 })
 export class TasinmazModule { }
