@@ -17,5 +17,8 @@ namespace WebApplication1.Entities
 
         [Required]
         public string PasswordHash { get; set; }
+
+        public bool IsActive { get; set; } = true;
+
     }
 }

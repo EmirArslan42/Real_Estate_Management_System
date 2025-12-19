@@ -1,5 +1,5 @@
 <div class="container mt-4">
-    <h2 class="text-center">Kayıt Ol</h2>
+  <h2 class="text-center">Kayıt Ol</h2>
 
   <div *ngIf="successMessage" class="alert alert-success mt-2">
     {{ successMessage }}
@@ -12,26 +12,42 @@
   <form action="" [formGroup]="registerForm" (ngSubmit)="register()">
 
     <div class="mb-3">
-        <label for="name">Ad Soyad</label>
-        <input type="text" id="name" formControlName="name" class="form-control" placeholder="Adınızı ve soyadınızı girin">
-        <small *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched" class="text-danger">Ad Soyad zorunludur</small>
+      <label for="name">Ad Soyad</label>
+      <input type="text" id="name" formControlName="name" class="form-control"
+        placeholder="Adınızı ve soyadınızı girin">
+      <small *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched" class="text-danger">Ad Soyad
+        zorunludur</small>
     </div>
 
     <div class="mb-3">
-        <label for="email">Email</label>
-        <input type="email" id="email" formControlName="email" class="form-control" placeholder="E-posta adresinizi girin">
-        <small *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="text-danger">Geçerli bir email giriniz</small>
+      <label for="email">Email</label>
+      <input type="email" id="email" formControlName="email" class="form-control"
+        placeholder="E-posta adresinizi girin">
+      <small *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
+        class="text-danger">Geçerli bir email giriniz</small>
     </div>
     <div class="mb-3">
-        <label for="password" class="form-label">Şifre</label>
-        <input type="password" id="password" formControlName="password" class="form-control" placeholder="Şifrenizi girin">
-        <small *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="text-danger">Şifre zorunludur</small>
+      <label for="password" class="form-label">Şifre</label>
+      <input type="password" id="password" formControlName="password" class="form-control"
+        placeholder="Şifrenizi girin">
+      <small class="text-danger" *ngIf="registerForm.get('password')?.errors?.['required']">
+        Şifre zorunludur
+      </small>
+
+      <small class="text-danger" *ngIf="registerForm.get('password')?.errors?.['minlength']">
+        Şifre en az 8 karakter olmalıdır
+      </small>
+
+      <small class="text-danger" *ngIf="registerForm.get('password')?.errors?.['pattern']">
+        Şifre en az 1 büyük ve 1 küçük harf içermelidir
+      </small>
+
     </div>
 
     <button class="btn btn-success w-100" type="submit" [disabled]="registerForm.invalid">Kayıt Ol</button>
 
     <div class="text-center mt-3">
-        <a routerLink="/login">Zaten hesabın var mı? Giriş yap</a>
+      <a routerLink="/login">Zaten hesabın var mı? Giriş yap</a>
     </div>
   </form>
 </div>

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using NetTopologySuite.Geometries;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WebApplication1.DataAccess;
 
@@ -20,6 +21,7 @@ namespace WebApplication1.Migrations
                 .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "postgis");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("WebApplication1.Entities.Il", b =>
@@ -37,7 +39,7 @@ namespace WebApplication1.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Iller", (string)null);
+                    b.ToTable("Iller");
                 });
 
             modelBuilder.Entity("WebApplication1.Entities.Ilce", b =>
@@ -60,7 +62,7 @@ namespace WebApplication1.Migrations
 
                     b.HasIndex("IlId");
 
-                    b.ToTable("Ilceler", (string)null);
+                    b.ToTable("Ilceler");
                 });
 
             modelBuilder.Entity("WebApplication1.Entities.Log", b =>
@@ -94,7 +96,7 @@ namespace WebApplication1.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Logs", (string)null);
+                    b.ToTable("Logs");
                 });
 
             modelBuilder.Entity("WebApplication1.Entities.Mahalle", b =>
@@ -117,7 +119,7 @@ namespace WebApplication1.Migrations
 
                     b.HasIndex("IlceId");
 
-                    b.ToTable("Mahalleler", (string)null);
+                    b.ToTable("Mahalleler");
                 });
 
             modelBuilder.Entity("WebApplication1.Entities.Tasinmaz", b =>
@@ -133,9 +135,9 @@ namespace WebApplication1.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<string>("Coordinate")
+                    b.Property<Polygon>("Coordinate")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("geometry (Polygon, 4326)");
 
                     b.Property<string>("LotNumber")
                         .IsRequired()
@@ -159,7 +161,7 @@ namespace WebApplication1.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Tasinmazlar", (string)null);
+                    b.ToTable("Tasinmazlar");
                 });
 
             modelBuilder.Entity("WebApplication1.Entities.User", b =>
@@ -174,6 +176,9 @@ namespace WebApplication1.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -190,7 +195,7 @@ namespace WebApplication1.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("WebApplication1.Entities.Ilce", b =>

@@ -20,6 +20,7 @@ import { AdminComponent } from './admin/admin.component';
 import { LogListComponent } from './admin/logs/log-list/log-list.component';
 import { UserListComponent } from './admin/users/user-list/user-list.component';
 import { ShortSummaryComponent } from './admin/summary/short-summary/short-summary.component';
+import { AuthGuard } from '../auth/auth.guard';
 
 const routes: Routes = [
   {

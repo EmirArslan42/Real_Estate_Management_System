@@ -19,45 +19,40 @@ namespace WebApplication1.Controllers
         _authService=authService;
         _logService=logService;
         }
-         
+
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterDto dto)
         {
-            if (await _authService.UserExistsAsync(dto.Email))
+            try
             {
-                return BadRequest("Bu email zaten kayıtlı");
-            }
+                var newUser = await _authService.RegisterAsync(dto);
 
-            // register işlemi
-            var newUser =await _authService.RegisterAsync(dto);
-
-            if (newUser == null)
-            {
-                return BadRequest("Kayit islemi sirasinda hata olustu");
-            }
-
-            // log ekleme işlemini yapacağız
-            _logService.AddLog(new Log
-            {
-                UserId = newUser.Id,
-                OperationType="Register",
-                Description=$"Yeni kullanıcı kayıt oldu : {newUser.Email}",
-                IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString(),
-            });
-
-            return Ok(new 
-            {
-                Message="Kullanıcı Kayıt İşlemi Başarılı",
-                User = new
+                _logService.AddLog(new Log
                 {
-                    newUser.Id,
-                    newUser.Name,
-                    newUser.Email,
-                    newUser.Role,
-                },
+                    UserId = newUser.Id,
+                    OperationType = "Register",
+                    Description = $"Yeni kullanıcı kayıt oldu : {newUser.Email}",
+                    IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
+                });
 
-            });
+                return Ok(new
+                {
+                    Message = "Kullanıcı Kayıt İşlemi Başarılı",
+                    User = new
+                    {
+                        newUser.Id,
+                        newUser.Name,
+                        newUser.Email,
+                        newUser.Role,
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginDto dto)
@@ -67,6 +62,11 @@ namespace WebApplication1.Controllers
             if(user== null)
             {
                 return Unauthorized("Email veya şifre yanlış");
+            }
+
+            if (!user.IsActive)
+            {
+                return Unauthorized("Kullanıcı pasif durumdadır.");
             }
 
             var token = _authService.GenerateToken(user);

@@ -7,7 +7,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuthModule } from './auth/auth.module';
-import { AuthInterceptor } from './shared/auth.interceptor';
+import { AuthInterceptor } from './auth/auth.interceptor';
 
 @NgModule({
   declarations: [

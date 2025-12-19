@@ -7,8 +7,8 @@
         {{ errorMessage }}
     </div>
 
-    <h2 class="text-center">Taşınmaz Listesi</h2>
-    <button class="btn btn-primary mb-3" routerLink="/dashboard/tasinmaz/add">Yeni Taşınmaz Ekle</button>
+    <h2 *ngIf="!isAdmin" class="text-center">Taşınmaz Listesi</h2>
+    <button *ngIf="!isAdmin" class="btn btn-primary mb-3" routerLink="/dashboard/tasinmaz/add">Yeni Taşınmaz Ekle</button>
     <div *ngIf="isLoading">Yükleniyor...</div>
 
     <table class="table table-bordered" *ngIf="!isLoading && tasinmazlar.length >0">
@@ -31,15 +31,15 @@
                 <td>{{tasinmaz.coordinate}}</td>
                 <td>{{tasinmaz.address}}</td>
                 <td class="d-flex justify-content-center gap-3 ">
-                    <button class="btn btn-warning btn-md " (click)="editTasinmaz(tasinmaz.id)">Düzenle</button>
-                    <button class="btn btn-danger btn-md px-" (click)="deleteTasinmaz(tasinmaz.id)">Sil</button>
+                    <button *ngIf="!isAdmin" class="btn btn-warning btn-md " (click)="editTasinmaz(tasinmaz.id)">Düzenle</button>
+                    <button *ngIf="!isAdmin" class="btn btn-danger btn-md px-" (click)="deleteTasinmaz(tasinmaz.id)">Sil</button>
                 </td>
                 
             </tr>
         </tbody>
     </table>
 
-    <div *ngIf="!isLoading && tasinmazlar.length==0">Hiç taşınmaz bulunamadı !</div>
+    <div *ngIf="!isLoading && tasinmazlar.length==0 && !isAdmin" >Hiç taşınmaz bulunamadı !</div>
 </div>
 
 

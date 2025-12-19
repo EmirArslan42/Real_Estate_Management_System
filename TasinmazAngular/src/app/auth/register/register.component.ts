@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/shared/auth.service';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -22,7 +22,7 @@ export class RegisterComponent implements OnInit {
     this.registerForm=fb.group({
       name: fb.control('', [Validators.required]),
       email: fb.control('', [Validators.required, Validators.email]),
-      password: fb.control('', [Validators.required, Validators.minLength(6)]),
+      password: fb.control('', [Validators.required,Validators.minLength(8),Validators.pattern('^(?=.*[a-z])(?=.*[A-Z]).{8,}$')]),
     })
   }
 

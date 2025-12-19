@@ -59,7 +59,11 @@ namespace WebApplication1.Controllers
                     Description=$"{id} ID'li kullanici silindi",
                     IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString(),
                 });
-                return Ok("Kullanıcı silindi");
+                return Ok(new
+                {
+                    success = true,
+                    message = "Kullanıcı silindi"
+                });
             }
             return NotFound("Kullanıcı bulunamadı");
         }
@@ -83,7 +87,11 @@ namespace WebApplication1.Controllers
                 Description=$"Yeni kullanici eklendi: {dto.Email}",
                 IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString(),
             });
-            return Ok("Kullanici eklendi");
+            return Ok(new
+            {
+                success = true,
+                message = "Kullanıcı eklendi"
+            });
         }
 
         [Authorize(Roles ="Admin")]
@@ -103,10 +111,41 @@ namespace WebApplication1.Controllers
                     IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString(),
                 });
 
-                return Ok("Kullanıcı güncellendi");
+                return Ok(new
+                {
+                    success = true,
+                    message = "Kullanıcı güncellendi"
+                });
+
             }
             return NotFound("Kullanıcı bulunamadı");
         }
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpPatch("{id}/status")]
+        public async Task<IActionResult> ChangeUserStatus(int id)
+        {
+            var result = await _userService.ChangeUserStatusAsync(id);
+            if (!result)
+                return NotFound("Kullanıcı bulunamadı");
+
+            _logService.AddLog(new Log
+            {
+                UserId = GetUserId(),
+                OperationType = "ChangeUserStatus",
+                Description = $"{id} ID'li kullanıcının aktiflik durumu değiştirildi",
+                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
+            });
+
+            return Ok(new
+            {
+                success = true,
+                message = "Kullanıcı durumu güncellendi"
+            });
+        }
+
+
 
     }
 }

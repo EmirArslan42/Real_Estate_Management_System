@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AdminService } from 'src/app/shared/admin.service';
+import { AdminService } from 'src/app/dashboard/admin/admin.service';
 
 @Component({
   selector: 'app-short-summary',

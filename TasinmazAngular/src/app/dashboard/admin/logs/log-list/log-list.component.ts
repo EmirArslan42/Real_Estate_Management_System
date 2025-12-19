@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { AdminService } from 'src/app/shared/admin.service';
+import { AdminService } from 'src/app/dashboard/admin/admin.service';
 
 @Component({
   selector: 'app-log-list',

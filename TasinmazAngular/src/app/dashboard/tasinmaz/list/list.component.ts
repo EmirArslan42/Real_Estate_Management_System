@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/auth/auth.service';
 import { LocationService } from 'src/app/shared/location.service';
-import { TasinmazService } from 'src/app/shared/tasinmaz.service';
+import { TasinmazService } from 'src/app/dashboard/tasinmaz/tasinmaz.service';
 
 @Component({
   selector: 'app-list',
@@ -13,6 +14,7 @@ export class ListComponent implements OnInit {
   isLoading: boolean = true;
   errorMessage: string = '';
   successMessage: string = '';
+  isAdmin:boolean=false;
 
   // ilMap = new Map<number, string>();
   // ilceMap = new Map<number, { ad: string; ilId: number }>();
@@ -21,11 +23,13 @@ export class ListComponent implements OnInit {
   constructor(
     private tasinmazService: TasinmazService,
     private locationService: LocationService,
+    private authService: AuthService,
     private router: Router
   ) {}
 
   ngOnInit() {
     //this.loadLocations();
+    this.isAdmin=this.authService.isAdmin();
     this.loadTasinmaz();
   }
 

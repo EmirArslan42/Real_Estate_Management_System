@@ -3,6 +3,9 @@ using WebApplication1.Business.Abstract;
 using WebApplication1.DataAccess;
 using WebApplication1.Dtos;
 using WebApplication1.Entities;
+using NetTopologySuite.IO;
+using NetTopologySuite.Geometries;
+
 
 namespace WebApplication1.Business.Concrete
 {
@@ -27,14 +30,17 @@ namespace WebApplication1.Business.Concrete
         {
             try
             {
+                var reader = new GeoJsonReader();
                 var tasinmaz = new Tasinmaz
                 {
                     MahalleId = dto.MahalleId,
-                    ParcelNumber= dto.ParcelNumber,
-                    LotNumber= dto.LotNumber,
+                    ParcelNumber = dto.ParcelNumber,
+                    LotNumber = dto.LotNumber,
                     Address = dto.Address,
-                    Coordinate = dto.Coordinate,
                     UserId = userId,
+
+                    Coordinate = reader.Read<Polygon>(dto.Coordinate)
+                    
 
                 };
 
@@ -56,14 +62,17 @@ namespace WebApplication1.Business.Concrete
                 return false;
             }
 
-            tasinmaz.MahalleId= dto.MahalleId;
-            tasinmaz.ParcelNumber=dto.ParcelNumber;
-            tasinmaz.LotNumber= dto.LotNumber;
-            tasinmaz.Address= dto.Address;
-            tasinmaz.Coordinate = dto.Coordinate;
-
             try
             {
+                var reader = new GeoJsonReader();
+
+                tasinmaz.MahalleId = dto.MahalleId;
+                tasinmaz.ParcelNumber = dto.ParcelNumber;
+                tasinmaz.LotNumber = dto.LotNumber;
+                tasinmaz.Address = dto.Address;
+                tasinmaz.Coordinate = reader.Read<Polygon>(dto.Coordinate);
+
+                
                  _context.Tasinmazlar.Update(tasinmaz);
                 await _context.SaveChangesAsync();
 

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LocationService } from 'src/app/shared/location.service';
-import { TasinmazService } from 'src/app/shared/tasinmaz.service';
+import { TasinmazService } from 'src/app/dashboard/tasinmaz/tasinmaz.service';
 
 @Component({
   selector: 'app-add',

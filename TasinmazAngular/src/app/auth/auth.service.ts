@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -19,6 +19,7 @@ export class AuthService {
 
   logout():void {
     localStorage.removeItem('token');
+    localStorage.removeItem('isAdmin');
   }
 
   saveToken(token: string) {
@@ -32,4 +33,12 @@ export class AuthService {
   getCurrentUser() {
   return this.http.get<any>('https://localhost:7040/api/Auth/me');
 }
+
+  isLoggedIn(){
+    return this.getToken() != null;
+  }
+
+  isAdmin(){
+    return localStorage.getItem('isAdmin')=='true';
+  }
 }

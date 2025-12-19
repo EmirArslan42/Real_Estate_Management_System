@@ -68,6 +68,7 @@ namespace WebApplication1.Controllers
             return Ok(tasinmaz);
         }
 
+        [Authorize(Roles ="User")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -91,6 +92,7 @@ namespace WebApplication1.Controllers
             return NoContent(); // veya return Ok();
         }
 
+        [Authorize(Roles = "User")]
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] TasinmazDto dto)
         {
@@ -112,6 +114,7 @@ namespace WebApplication1.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "User")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id,[FromBody] TasinmazDto dto)
         {

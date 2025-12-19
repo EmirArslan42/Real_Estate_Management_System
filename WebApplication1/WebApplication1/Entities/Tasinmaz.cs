@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using NetTopologySuite.Geometries;
+
 
 namespace WebApplication1.Entities
 {
@@ -28,7 +30,9 @@ namespace WebApplication1.Entities
         [ForeignKey("UserId")]
         public User User { get; set; }
 
+
         [Required]
-        public string Coordinate {  get; set; }
+        [Column(TypeName = "geometry (Polygon, 4326)")]
+        public Polygon Coordinate { get; set; }
     }
 }

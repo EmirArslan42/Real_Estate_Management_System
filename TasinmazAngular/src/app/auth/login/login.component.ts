@@ -6,7 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/shared/auth.service';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -36,11 +36,25 @@ export class LoginComponent implements OnInit {
     this.authService.login(this.loginForm.value).subscribe({
       next: (res) => {
         this.authService.saveToken(res.token);
+        localStorage.setItem('isAdmin', res.user.role == 'Admin' ? 'true' : 'false');
+        //console.log(res.user.role);
+        //console.log(localStorage.getItem("isAdmin"));
+
+        if(!this.authService.isAdmin()){
         this.router.navigate(['/dashboard/tasinmaz/list']);
+        
+      }else{
+        this.router.navigate(['/dashboard/admin/summary']);
+      }
       },
-      error: (err) => {
-        this.errorMessage = 'E-posta veya şifre hatalı !';
-      },
+        error: (err) => {
+        if (err.status === 401) {
+          this.errorMessage = err.error;
+        } else {
+          this.errorMessage = 'Bir hata oluştu';
+        }
+     }
+
     });
   }
 }

@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using WebApplication1.Business.Abstract;
 using WebApplication1.DataAccess;
 using WebApplication1.Dtos;
@@ -26,8 +27,14 @@ namespace WebApplication1.Business.Concrete
             // email var mı yok mu kontrol ?
             if(await UserExistsAsync(dto.Email))
             {
-                return null;
+                throw new Exception("Bu email zaten kayıtlı.");
             }
+
+            if(!IsPasswordValid(dto.Password))
+            {
+                throw new Exception("Şifre en az 8 karakter olmalı, 1 büyük ve 1 küçük harf içermelidir.");
+            }
+
             // şifreyi hashleyip kaydettik
             string passwordHash=CreatePasswordHash(dto.Password);
 
@@ -44,6 +51,13 @@ namespace WebApplication1.Business.Concrete
             await _context.SaveChangesAsync();
 
             return user;
+        }
+
+        private bool IsPasswordValid(string password)
+        {
+            // En az 1 büyük, 1 küçük harf
+            var regex = new Regex(@"^(?=.*[a-z])(?=.*[A-Z]).{8,}$");
+            return regex.IsMatch(password);
         }
 
         private string CreatePasswordHash(string password)

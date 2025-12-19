@@ -10,13 +10,13 @@
           <hr class="bg-secondary">
         </li>
 
-        <li class="nav-item">
+        <li *ngIf="!isAdmin" class="nav-item">
           <a class="nav-link text-white" routerLink="/dashboard/tasinmaz/list" routerLinkActive="active">
             🏠 Taşınmazlar
           </a>
         </li>
 
-        <li class="nav-item">
+        <li  class="nav-item">
           <a class="nav-link text-white" routerLink="/dashboard/profile" routerLinkActive="active">
             👤 Profil
           </a>

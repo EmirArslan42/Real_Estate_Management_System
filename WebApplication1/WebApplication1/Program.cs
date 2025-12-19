@@ -9,7 +9,12 @@ using WebApplication1.DataAccess;
 
 // PostgreSQL Baðlantýsý
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<ApplicationDbContext>(optitons => optitons.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<ApplicationDbContext>(optitons => 
+    optitons.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        x=>x.UseNetTopologySuite()
+        )
+    );
 
 // CORS - Angular ile iletiþim kurmak için
 builder.Services.AddCors(options =>

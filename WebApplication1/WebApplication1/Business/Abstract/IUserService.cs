@@ -10,6 +10,8 @@ namespace WebApplication1.Business.Abstract
         Task<bool> AddUserAsync(UserWriteDto dto);
         Task<bool> UpdateUserAsync(int id,UserWriteDto dto);
         Task<bool> DeleteUserAsync(int id);
+
+        Task<bool> ChangeUserStatusAsync(int id);
     }
 }
   

@@ -50,6 +50,8 @@ namespace WebApplication1.Business.Concrete
             {
                 return false;
             }
+            var logs = _context.Logs.Where(l => l.UserId == id);
+            _context.Logs.RemoveRange(logs);
             try
             {
                 _context.Users.Remove(user);
@@ -95,6 +97,7 @@ namespace WebApplication1.Business.Concrete
                 Name = u.Name,
                 Email = u.Email,
                 Role=u.Role,
+                IsActive=u.IsActive,
             }).ToListAsync();
         }
 
@@ -111,7 +114,24 @@ namespace WebApplication1.Business.Concrete
                 Name = user.Name,
                 Email = user.Email,
                 Role = user.Role,
+                IsActive= user.IsActive,
             };
         }
+
+        public async Task<bool> ChangeUserStatusAsync(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+                return false;
+
+            user.IsActive = !user.IsActive;
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+
+
+
     }
 }
