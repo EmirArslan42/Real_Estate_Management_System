@@ -14,9 +14,11 @@ export class AddComponent implements OnInit {
   tasinmazForm: FormGroup;
   successMessage:string='';
   errorMessage:string='';
+  drawnGeometry: string = '';
   iller: any[] = [];
   ilceler: any[] = [];
   mahalleler: any[] = [];
+  
   constructor(
     private fb: FormBuilder,
     private tasinmazService: TasinmazService,
@@ -31,7 +33,7 @@ export class AddComponent implements OnInit {
       parcelNumber: ['', Validators.required], // parsel
       //nitelik: ['', Validators.required],
       address: ['', Validators.required],
-      coordinate: [''],
+      coordinate: ['',Validators.required],
     });
   }
 
@@ -56,6 +58,12 @@ export class AddComponent implements OnInit {
     })
   }
 
+  onGeometryDrawn(geojson:string){
+    this.drawnGeometry=geojson;
+    this.tasinmazForm.patchValue({coordinate:geojson});
+    console.log("Forma yazılıd: ",geojson);
+  }
+
   onIlceChange(){
     const ilceId=this.tasinmazForm.get('ilceId')?.value;
     this.mahalleler=[];
@@ -67,15 +75,21 @@ export class AddComponent implements OnInit {
   }
 
   saveForm(){
-  this.successMessage='';
-  this.errorMessage='';
+    console.log("Koordinat:",this.tasinmazForm.value);
+
+    if (!this.drawnGeometry) {
+      this.errorMessage = 'Lütfen harita üzerinde taşınmaz alanını çizin.';
+      return;
+    }
+    this.successMessage='';
+    this.errorMessage='';
 
     const payload = {
     mahalleId: this.tasinmazForm.value.mahalleId,
     lotNumber: this.tasinmazForm.value.lotNumber,
     parcelNumber: this.tasinmazForm.value.parcelNumber,
     address: this.tasinmazForm.value.address,
-    coordinate: this.tasinmazForm.value.coordinate
+    geometry: this.drawnGeometry
   };
 
     this.tasinmazService.addTasinmaz(payload).subscribe({

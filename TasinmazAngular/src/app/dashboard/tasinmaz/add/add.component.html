@@ -51,10 +51,20 @@
             <input autocomplete="off" name="parcelNumber" id="parcelNumber" type="text" class="form-control" formControlName="parcelNumber">
          </div>
 
-         <div class="mb-3">
+         <div class="mb-3" hidden>
             <label for="coordinate">Koordinat</label>
-            <input autocomplete="off" name="coordinate" id="coordinate" type="text" class="form-control" formControlName="coordinate">
+            <input hidden autocomplete="off" name="coordinate" id="coordinate" type="text" class="form-control" formControlName="coordinate">
          </div>
+
+         <hr>
+         <h5 class="mt-3">Harita Üzerinde Taşınmaz Alanı Çizin</h5>
+         <app-tasinmaz-map 
+         (geometryDrawn)="onGeometryDrawn($event)">
+         </app-tasinmaz-map>
+         
+         <small class="text-danger" *ngIf="tasinmazForm.get('coordinate')?.invalid && tasinmazForm.get('coordinate')?.touched">
+             Lütfen harita üzerinde alan çizin
+        </small>
 
          <div class="mb-3">
             <label for="address">Adres</label>

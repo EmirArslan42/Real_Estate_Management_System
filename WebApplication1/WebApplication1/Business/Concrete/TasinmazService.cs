@@ -5,6 +5,7 @@ using WebApplication1.Dtos;
 using WebApplication1.Entities;
 using NetTopologySuite.IO;
 using NetTopologySuite.Geometries;
+using NetTopologySuite.Features;
 
 
 namespace WebApplication1.Business.Concrete
@@ -31,6 +32,15 @@ namespace WebApplication1.Business.Concrete
             try
             {
                 var reader = new GeoJsonReader();
+
+                var feature = reader.Read<Feature>(dto.Geometry);
+                var polygon = feature.Geometry as Polygon;
+
+                if (polygon == null)
+                {
+                    return false;
+                }
+
                 var tasinmaz = new Tasinmaz
                 {
                     MahalleId = dto.MahalleId,
@@ -39,7 +49,7 @@ namespace WebApplication1.Business.Concrete
                     Address = dto.Address,
                     UserId = userId,
 
-                    Coordinate = reader.Read<Polygon>(dto.Coordinate)
+                    Coordinate = polygon,
                     
 
                 };
@@ -70,7 +80,7 @@ namespace WebApplication1.Business.Concrete
                 tasinmaz.ParcelNumber = dto.ParcelNumber;
                 tasinmaz.LotNumber = dto.LotNumber;
                 tasinmaz.Address = dto.Address;
-                tasinmaz.Coordinate = reader.Read<Polygon>(dto.Coordinate);
+                tasinmaz.Coordinate = reader.Read<Polygon>(dto.Geometry);
 
                 
                  _context.Tasinmazlar.Update(tasinmaz);

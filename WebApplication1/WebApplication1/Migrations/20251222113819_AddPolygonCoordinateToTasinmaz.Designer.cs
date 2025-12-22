@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetTopologySuite.Geometries;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -12,9 +13,11 @@ using WebApplication1.DataAccess;
 namespace WebApplication1.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251222113819_AddPolygonCoordinateToTasinmaz")]
+    partial class AddPolygonCoordinateToTasinmaz
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,7 +42,7 @@ namespace WebApplication1.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Iller", (string)null);
+                    b.ToTable("Iller");
                 });
 
             modelBuilder.Entity("WebApplication1.Entities.Ilce", b =>
@@ -62,7 +65,7 @@ namespace WebApplication1.Migrations
 
                     b.HasIndex("IlId");
 
-                    b.ToTable("Ilceler", (string)null);
+                    b.ToTable("Ilceler");
                 });
 
             modelBuilder.Entity("WebApplication1.Entities.Log", b =>
@@ -96,7 +99,7 @@ namespace WebApplication1.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Logs", (string)null);
+                    b.ToTable("Logs");
                 });
 
             modelBuilder.Entity("WebApplication1.Entities.Mahalle", b =>
@@ -119,7 +122,7 @@ namespace WebApplication1.Migrations
 
                     b.HasIndex("IlceId");
 
-                    b.ToTable("Mahalleler", (string)null);
+                    b.ToTable("Mahalleler");
                 });
 
             modelBuilder.Entity("WebApplication1.Entities.Tasinmaz", b =>
@@ -161,7 +164,7 @@ namespace WebApplication1.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Tasinmazlar", (string)null);
+                    b.ToTable("Tasinmazlar");
                 });
 
             modelBuilder.Entity("WebApplication1.Entities.User", b =>
@@ -195,7 +198,7 @@ namespace WebApplication1.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("WebApplication1.Entities.Ilce", b =>

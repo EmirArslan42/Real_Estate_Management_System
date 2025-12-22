@@ -1,0 +1,25 @@
+.tasinmaz-popup {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 320px;
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+  z-index: 9999;
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  
+  border-bottom: 1px solid #ddd;
+}
+
+.popup-body {
+  padding: 12px;
+  font-size: 14px;
+}

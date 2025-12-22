@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NetTopologySuite.IO;
 using WebApplication1.Business.Abstract;
 using WebApplication1.Dtos;
 using WebApplication1.Entities;
@@ -32,6 +33,18 @@ namespace WebApplication1.Controllers
             var userId = GetUserId();
             var tasinmazListe =await _service.GetAllAsync(userId);
 
+            var writer = new GeoJsonWriter();
+
+            var result = tasinmazListe.Select(t => new 
+            {
+                Id=t.Id,
+                MahalleId = t.MahalleId,
+                ParcelNumber =t.ParcelNumber,
+                LotNumber = t.LotNumber,
+                Address = t.Address,
+                Geometry=writer.Write(t.Coordinate)
+            }).ToList();
+
             _logService.AddLog(new Log
             {
                 UserId = userId,
@@ -40,11 +53,8 @@ namespace WebApplication1.Controllers
                 IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
             });
 
-            return Ok(tasinmazListe);
-        }
-
-        
-
+            return Ok(result);
+        }  
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
@@ -57,6 +67,17 @@ namespace WebApplication1.Controllers
                 return NotFound("Tasinmaz bulunamadı");
             }
 
+            var writer=new GeoJsonWriter();
+
+            var dto = new TasinmazDto
+            {
+                MahalleId = tasinmaz.MahalleId,
+                LotNumber = tasinmaz.LotNumber,
+                Address = tasinmaz.Address,
+                ParcelNumber = tasinmaz.ParcelNumber,
+                Geometry = writer.Write(tasinmaz.Coordinate)
+            };
+
             _logService.AddLog(new Log
             {
                 UserId = userId,
@@ -65,7 +86,7 @@ namespace WebApplication1.Controllers
                 IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString(),
             });
 
-            return Ok(tasinmaz);
+            return Ok(dto);
         }
 
         [Authorize(Roles ="User")]

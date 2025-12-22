@@ -7,13 +7,15 @@ import { AddComponent } from './add/add.component';
 import { EditComponent } from './edit/edit.component';
 import {ReactiveFormsModule} from '@angular/forms'
 import { HttpClientModule } from '@angular/common/http';
+import { TasinmazMapComponent } from './tasinmaz-map/tasinmaz-map.component';
 
 
 @NgModule({
   declarations: [
     ListComponent,
     AddComponent,
-    EditComponent
+    EditComponent,
+    TasinmazMapComponent
   ],
   imports: [
     CommonModule,

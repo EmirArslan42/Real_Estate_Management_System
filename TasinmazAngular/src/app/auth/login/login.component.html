@@ -1,4 +1,5 @@
-<div class="container mt-5">
+<div class="d-flex justify-content-center align-items-center vh-100 w-50 mx-auto">    
+    <div class="container mt-5 ">
     <h2 class="text-center">Giriş Yap</h2>
     <div *ngIf="errorMessage" class="alert alert-danger mt-2">
         {{errorMessage}}
@@ -15,7 +16,7 @@
         </div>
 
         <div class="mb-3">
-            <label>şifre</label>
+            <label>Şifre</label>
             <input class="form-control" type="password" formControlName="password">
             <small class="text-danger"
                 *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">Şifre
@@ -28,4 +29,5 @@
         </div>
 
     </form>
+</div>
 </div>

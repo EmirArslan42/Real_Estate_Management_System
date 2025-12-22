@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocationService } from 'src/app/shared/location.service';
@@ -14,6 +14,7 @@ export class EditComponent implements OnInit {
   id!: number;
   successMessage:string='';
   errorMessage:string='';
+  drawnGeometry: string = '';
   iller: any[] = [];
   ilceler: any[] = [];
   mahalleler: any[] = [];
@@ -48,6 +49,17 @@ export class EditComponent implements OnInit {
     });
   }
 
+    onGeometryDrawn(geojson: string) {
+  // Eğer Backend sadece {"type":"Polygon"...} bekliyorsa:
+  const parsed = JSON.parse(geojson);
+  this.drawnGeometry = JSON.stringify(parsed.geometry);
+  
+  // Formu güncelle (Validators.required hatası almamak için önemli)
+  this.tasinmazForm.patchValue({
+    coordinate: geojson
+  });
+}
+
   // getTasinmaz() {
   //   this.tasinmazService.getTasinmazById(this.id).subscribe((tasinmaz) => {
   //     this.tasinmazForm.patchValue(tasinmaz);
@@ -66,7 +78,14 @@ export class EditComponent implements OnInit {
 
   getTasinmaz() {
     this.tasinmazService.getTasinmazById(this.id).subscribe((tasinmaz) => {
-      this.tasinmazForm.patchValue(tasinmaz);
+      this.drawnGeometry=tasinmaz.geometry;
+      this.tasinmazForm.patchValue({
+        mahalleId: tasinmaz.mahalleId,
+        lotNumber: tasinmaz.lotNumber,
+        parcelNumber: tasinmaz.parcelNumber,
+        address: tasinmaz.address,
+        coordinate: tasinmaz.geometry
+      });
 
       this.locationService.getIller().subscribe((iller) => {
         this.iller = iller;
@@ -123,8 +142,18 @@ export class EditComponent implements OnInit {
     this.successMessage='';
     this.errorMessage='';
 
+    const payload = {
+    mahalleId: this.tasinmazForm.value.mahalleId,
+    lotNumber: this.tasinmazForm.value.lotNumber,
+    parcelNumber: this.tasinmazForm.value.parcelNumber,
+    address: this.tasinmazForm.value.address,
+    Geometry: this.drawnGeometry // KRİTİK
+  };
+  console.log('UPDATE ID:', this.id);
+console.log('PAYLOAD:', payload);
+
     this.tasinmazService
-      .updateTasinmaz(this.id, this.tasinmazForm.value)
+      .updateTasinmaz(this.id, payload)
       .subscribe({
         next: () => {
           this.successMessage = 'Taşınmaz başarıyla güncellendi.';
