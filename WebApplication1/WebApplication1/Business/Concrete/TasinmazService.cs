@@ -17,9 +17,28 @@ namespace WebApplication1.Business.Concrete
             _context = context;
         }
 
-        public async Task<List<Tasinmaz>> GetAllAsync(int userId)
+        public async Task<List<TasinmazListDto>> GetAllAsync(int userId)
         {
-            return await _context.Tasinmazlar.Where(t=>t.UserId==userId).ToListAsync();
+            var writer = new GeoJsonWriter();
+
+            return await _context.Tasinmazlar
+                .Include(t=>t.Mahalle)
+                 .ThenInclude(m=>m.Ilce)
+                  .ThenInclude(i=>i.Il)
+                .Where(t=>t.UserId==userId)
+                .Select(t=>new TasinmazListDto
+                {
+                    Id = t.Id,
+                    LotNumber = t.LotNumber,
+                    ParcelNumber = t.ParcelNumber,            
+                    Address = t.Address,
+                    Geometry = writer.Write(t.Coordinate),
+                    MahalleAdi=t.Mahalle.Ad,
+                    IlceAdi=t.Mahalle.Ilce.Ad,
+                    IlAdi=t.Mahalle.Ilce.Il.Ad,
+                  
+                })
+                .ToListAsync();
         }
 
         public async Task<Tasinmaz> GetByIdAsync(int id,int userId) 

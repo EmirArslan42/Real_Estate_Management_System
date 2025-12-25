@@ -9,6 +9,6 @@ namespace WebApplication1.Business.Abstract
         Task<bool> UpdateAsync(int id,TasinmazDto dto, int userId);
         Task<bool> DeleteAsync(int id, int userId);
         Task<Tasinmaz> GetByIdAsync(int id,int userId); // Bir adet taşınmaz 
-        Task<List<Tasinmaz>> GetAllAsync(int userId); // bir kullanıcının tüm taşınmazları
+        Task<List<TasinmazListDto>> GetAllAsync(int userId); // bir kullanıcının tüm taşınmazları
     }
 }

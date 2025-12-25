@@ -76,7 +76,7 @@ export class ListComponent implements OnInit {
         console.log("Gelen ilk kayıt:", tasinmaz[0]);
         this.tasinmazlar = tasinmaz;
         this.isLoading = false;
-        //console.log("Tasinmazlar yüklendi !",this.tasinmazlar);
+        console.log("Tasinmazlar yüklendi !",this.tasinmazlar);
 
         this.vectorSource.clear();
         this.tasinmazlar.forEach(tasinmaz=>{

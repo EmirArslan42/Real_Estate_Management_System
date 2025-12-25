@@ -33,18 +33,6 @@ namespace WebApplication1.Controllers
             var userId = GetUserId();
             var tasinmazListe =await _service.GetAllAsync(userId);
 
-            var writer = new GeoJsonWriter();
-
-            var result = tasinmazListe.Select(t => new 
-            {
-                Id=t.Id,
-                MahalleId = t.MahalleId,
-                ParcelNumber =t.ParcelNumber,
-                LotNumber = t.LotNumber,
-                Address = t.Address,
-                Geometry=writer.Write(t.Coordinate)
-            }).ToList();
-
             _logService.AddLog(new Log
             {
                 UserId = userId,
@@ -53,7 +41,7 @@ namespace WebApplication1.Controllers
                 IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
             });
 
-            return Ok(result);
+            return Ok(tasinmazListe);
         }  
 
         [HttpGet("{id}")]

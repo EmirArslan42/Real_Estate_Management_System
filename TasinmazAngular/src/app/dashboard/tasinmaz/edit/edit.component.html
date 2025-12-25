@@ -48,6 +48,10 @@
             <label for="coordinate">Koordinat</label>
             <input name="coordinate" id="coordinate" type="text" class="form-control" formControlName="coordinate">
         </div> -->
+        <div class="mb-3">
+            <label for="address">Adres</label>
+            <textarea autocomplete="street-address" name="address" id="address" class="form-control" formControlName="address"></textarea>
+        </div>
 
         <hr>
         <h5 class="mt-3">Harita Üzerinde Taşınmaz Alanı</h5>
@@ -61,12 +65,7 @@
             *ngIf="tasinmazForm.get('coordinate')?.invalid && tasinmazForm.get('coordinate')?.touched">
             Lütfen harita üzerinde alan çizin
             </small>
-
-        <div class="mb-3">
-            <label for="address">Adres</label>
-            <textarea autocomplete="street-address" name="address" id="address" class="form-control" formControlName="address"></textarea>
-        </div>
-
-        <button class="btn btn-primary" type="submit">Güncelle</button>
+            <br>
+        <button class="btn btn-primary btn-md px-5" type="submit">Güncelle</button>
     </form>
 </div>
