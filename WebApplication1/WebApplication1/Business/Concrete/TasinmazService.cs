@@ -41,24 +41,57 @@ namespace WebApplication1.Business.Concrete
                 .ToListAsync();
         }
 
+        public async Task<List<TasinmazListDto>> GetAllForAdminAsync()
+        {
+            var writer = new GeoJsonWriter();
+
+            return await _context.Tasinmazlar
+                .Include(t => t.Mahalle)
+                 .ThenInclude(m => m.Ilce)
+                  .ThenInclude(i => i.Il)
+                .Include(t => t.User)
+                .Select(t => new TasinmazListDto
+                {
+                    Id = t.Id,
+                    LotNumber = t.LotNumber,
+                    ParcelNumber = t.ParcelNumber,
+                    Address = t.Address,
+                    Geometry = writer.Write(t.Coordinate),
+                    MahalleAdi = t.Mahalle.Ad,
+                    IlceAdi = t.Mahalle.Ilce.Ad,
+                    IlAdi = t.Mahalle.Ilce.Il.Ad,
+
+                    UserId=t.UserId,
+                    UserEmail=t.User.Email,
+
+                })
+                .ToListAsync();
+        }
+
         public async Task<Tasinmaz> GetByIdAsync(int id,int userId) 
         {
             return await _context.Tasinmazlar.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
         }
 
-        public async Task<bool> AddAsync(TasinmazDto dto,int userId)
+        public async Task<bool> AddAsync(TasinmazDto dto,int userId,string? imagePath)
         {
             try
             {
-                var reader = new GeoJsonReader();
-
-                var feature = reader.Read<Feature>(dto.Geometry);
-                var polygon = feature.Geometry as Polygon;
-
-                if (polygon == null)
+                Polygon? polygon = null;
+                if (!string.IsNullOrEmpty(dto.Geometry))
                 {
-                    return false;
+                    var reader = new GeoJsonReader();
+
+                    var feature = reader.Read<Feature>(dto.Geometry);
+                    polygon = feature.Geometry as Polygon;
+
+                    if (polygon == null)
+                    {
+                        return false;
+                    }
                 }
+
+                
 
                 var tasinmaz = new Tasinmaz
                 {
@@ -69,7 +102,7 @@ namespace WebApplication1.Business.Concrete
                     UserId = userId,
 
                     Coordinate = polygon,
-                    
+                    ImagePath=imagePath
 
                 };
 

@@ -40,12 +40,15 @@ export class LoginComponent implements OnInit {
         //console.log(res.user.role);
         //console.log(localStorage.getItem("isAdmin"));
 
-        if(!this.authService.isAdmin()){
-        this.router.navigate(['/dashboard/tasinmaz/list']);
+      //   if(!this.authService.isAdmin()){
+      //   this.router.navigate(['/dashboard/tasinmaz/list']);
         
-      }else{
-        this.router.navigate(['/dashboard/admin/summary']);
-      }
+      // }else{
+      //   this.router.navigate(['/dashboard/admin/summary']);
+      // }
+
+      this.router.navigate(['/dashboard/tasinmaz/list']);
+      
       },
         error: (err) => {
         if (err.status === 401) {

@@ -34,5 +34,7 @@ namespace WebApplication1.Entities
         [Required]
         [Column(TypeName = "geometry (Polygon, 4326)")]
         public Polygon Coordinate { get; set; }
+        
+        public string? ImagePath { get; set; }
     }
 }

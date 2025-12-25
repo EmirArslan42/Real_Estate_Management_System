@@ -13,6 +13,10 @@ export class TasinmazService {
     return this.http.get<any[]>(this.apiUrl);
   }
 
+  getAllTasinmazForAdmin(){
+    return this.http.get<any[]>(`${this.apiUrl}/allForAdmin`);
+  }
+
   getTasinmazById(id:number){
     return this.http.get<any>(`${this.apiUrl}/${id}`);
   }

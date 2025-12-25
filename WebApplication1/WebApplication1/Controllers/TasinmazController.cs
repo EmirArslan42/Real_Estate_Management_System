@@ -42,7 +42,24 @@ namespace WebApplication1.Controllers
             });
 
             return Ok(tasinmazListe);
-        }  
+        }
+
+        [Authorize(Roles ="Admin")]
+        [HttpGet("allForAdmin")]
+        public async Task<IActionResult> GetAllForAdmin()
+        {
+            var tasinmazlar =await _service.GetAllForAdminAsync();
+
+            _logService.AddLog(new Log
+            {
+                UserId = GetUserId(),
+                OperationType = "AdminGetAllTasinmaz",
+                Description = "Admin tum kullanicilarin tasinmazlarini goruntuledi",
+                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
+            });
+
+            return Ok(tasinmazlar);
+        }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
@@ -103,10 +120,23 @@ namespace WebApplication1.Controllers
 
         [Authorize(Roles = "User")]
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] TasinmazDto dto)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> Add([FromForm] TasinmazDto dto)
         {
+            string? imagePath = null;
+            if (dto.Image!=null)
+            {
+                var fileName = Guid.NewGuid() + Path.GetExtension(dto.Image.FileName);
+                var path = Path.Combine("wwwroot/images", fileName);
+
+                using var stream = new FileStream(path, FileMode.Create);
+                await dto.Image.CopyToAsync(stream);
+
+                imagePath = "/images/" + fileName;
+            }
+
             var userId = GetUserId();
-            var result = await _service.AddAsync(dto,userId);
+            var result = await _service.AddAsync(dto,userId,imagePath);
 
             if (!result)
             {

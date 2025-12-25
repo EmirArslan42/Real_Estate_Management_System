@@ -5,6 +5,13 @@ import { LocationService } from 'src/app/shared/location.service';
 import { TasinmazService } from 'src/app/dashboard/tasinmaz/tasinmaz.service';
 import VectorSource from 'ol/source/Vector';
 import GeoJSON from 'ol/format/GeoJSON';
+import { add } from 'ol/coordinate';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import html2canvas from  'html2canvas' ;
 
 @Component({
   selector: 'app-list',
@@ -19,6 +26,8 @@ export class ListComponent implements OnInit {
   isAdmin:boolean=false;
   vectorSource=new VectorSource();
   selectedTasinmaz: any = null;
+  filterForm!:FormGroup;
+  filteredTasinmazlar:any[]=[];
 
   // ilMap = new Map<number, string>();
   // ilceMap = new Map<number, { ad: string; ilId: number }>();
@@ -28,15 +37,44 @@ export class ListComponent implements OnInit {
     private tasinmazService: TasinmazService,
     private locationService: LocationService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private fb:FormBuilder
   ) {}
 
   ngOnInit() {
     //this.loadLocations();
-    this.isAdmin=this.authService.isAdmin();
+    this.filterForm=this.fb.group({
+      il:[''],
+      ilce:[''],
+      mahalle:[''],
+      address:[''],
+      user:[''],
+    });
+    this.isAdmin=this.authService.isAdmin(); 
     this.loadTasinmaz();
+
+    this.filterForm.valueChanges.subscribe(()=>{
+      this.applyFilter();
+    })
   }
 
+  applyFilter(){
+    const {il,ilce,mahalle,address,user}=this.filterForm.value;
+    this.filteredTasinmazlar=this.tasinmazlar.filter(tasinmaz=>{ 
+      
+      const ilMatch= !il || tasinmaz.ilAdi?.toLowerCase().includes(il.toLowerCase()); 
+      const ilceMatch= !ilce || tasinmaz.ilceAdi?.toLowerCase().includes(ilce.toLowerCase());
+      const mahalleMatch= !mahalle || tasinmaz.mahalleAdi?.toLowerCase().includes(mahalle.toLowerCase());
+      const addressMatch= !address || tasinmaz.address?.toLowerCase().includes(address.toLowerCase());
+      const userMatch= !user || tasinmaz.userEmail?.toLowerCase().includes(user.toLowerCase());
+      return ilMatch && ilceMatch && mahalleMatch && addressMatch && userMatch;
+    });
+  }
+
+  clearFilterForm(){
+    this.filterForm.reset();
+  }
+ 
   showPopup(tasinmaz: any) {
   this.selectedTasinmaz = tasinmaz;
   }
@@ -71,13 +109,18 @@ export class ListComponent implements OnInit {
 }
 
   loadTasinmaz() {
-    this.tasinmazService.getAllTasinmaz().subscribe({
+    
+    const request=this.isAdmin ? this.tasinmazService.getAllTasinmazForAdmin()
+    :  this.tasinmazService.getAllTasinmaz();
+
+    request.subscribe({
       next: (tasinmaz) => {
         console.log("Gelen ilk kayıt:", tasinmaz[0]);
         this.tasinmazlar = tasinmaz;
+        this.filteredTasinmazlar=tasinmaz;
         this.isLoading = false;
         console.log("Tasinmazlar yüklendi !",this.tasinmazlar);
-
+        
         this.vectorSource.clear();
         this.tasinmazlar.forEach(tasinmaz=>{
           if (tasinmaz.coordinate) {
@@ -106,6 +149,105 @@ export class ListComponent implements OnInit {
       },
     });
   }
+
+  exportExcel() {
+  const data = this.filteredTasinmazlar.map(t => ({
+    ID:t.id,
+    Ada: t.lotNumber,
+    Parsel: t.parcelNumber,
+    İl: t.ilAdi,
+    İlçe: t.ilceAdi,
+    Mahalle: t.mahalleAdi,
+    Adres: t.address,
+    ...(this.isAdmin && { Kullanıcı: t.userEmail })
+  }));
+
+  const worksheet = XLSX.utils.json_to_sheet(data);
+  const workbook: XLSX.WorkBook = {
+    Sheets: { 'Taşınmazlar': worksheet },
+    SheetNames: ['Taşınmazlar']
+  };
+
+  const excelBuffer = XLSX.write(workbook, {
+    bookType: 'xlsx',
+    type: 'array'
+  });
+
+  const blob = new Blob([excelBuffer], {
+    type: 'application/octet-stream'
+  });
+
+  saveAs(blob, `tasinmazlar_${new Date().toISOString()}.xlsx`);
+}
+
+  exportPdf() { 
+    const data = document.getElementById('contentToConvert'); 
+    if(!data) { return; }
+    html2canvas(data).then( canvas => { 
+      const imgWidth = 208 ; 
+      const pageHeight = 295 ; 
+      const imgHeight = canvas. height * imgWidth / canvas. width ; 
+      const heightLeft = imgHeight; 
+
+      const contentDataURL = canvas. toDataURL ( 'image/png' ); 
+      const pdf = new  jsPDF ( 'p' , 'mm' , 'a4' ); // PDF'nin A4 boyutlu sayfası 
+
+      let position = 0 ; 
+      pdf. addImage (contentDataURL, 'PNG' , 0 , position, imgWidth, imgHeight); 
+      pdf. save ( 'Taşınmaz-liste.pdf' ); // Oluşturulan PDF
+     }); 
+  } 
+
+  onExcelUpload(event:any){
+    const file=event.target.files[0];
+    if(!file) return;
+
+    const reader=new FileReader();
+    reader.onload=(e:any)=>{
+      const data=new Uint8Array(e.target.result);
+      const workbook=XLSX.read(data,{type:'array'});
+      const sheetName=workbook.SheetNames[0];
+
+      const worksheet = workbook.Sheets[sheetName];
+
+      const rows = XLSX.utils.sheet_to_json<any>(worksheet);
+      this.addTasinmazFromExcel(rows);
+    }
+    reader.readAsArrayBuffer(file);
+  }
+
+  addTasinmazFromExcel(rows:any[]){
+    rows.forEach(row=>{
+      const dto={
+        mahalleId: Number(row.MahalleId),
+        lotNumber: row.Ada?.toString(),
+        parcelNumber: row.Parsel?.toString(),
+        address: row.Adres || "",
+        geometry: JSON.stringify({
+        type: "Feature",
+        geometry: {
+          type: "Polygon",
+          coordinates: [
+           [
+             [0, 0], [0, 0.0001], [0.0001, 0.0001], [0.0001, 0], [0, 0]
+           ]
+        ]
+     },
+    properties: {}
+  })
+
+      };
+      console.log('Excel satırı:', row);
+
+      this.tasinmazService.addTasinmaz(dto).subscribe({
+        error:err=>console.error('Excel satırı eklenemedi', err)
+      })
+      
+    })
+    alert("Excelden taşınmaz ekleme işlemi başarılı");
+    this.loadTasinmaz();
+  }
+
 
   // loadLocations() {
   //   this.locationService.getIller().subscribe((iller) => {
