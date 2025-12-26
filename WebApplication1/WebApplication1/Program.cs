@@ -100,6 +100,7 @@ app.UseHttpsRedirection();
 app.UseCors("AllowAllOrigins"); // authorizationdan önce olmalý
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseStaticFiles();
 
 app.MapControllers();
 

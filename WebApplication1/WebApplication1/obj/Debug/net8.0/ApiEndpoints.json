@@ -200,9 +200,34 @@
         "IsRequired": true
       },
       {
-        "Name": "dto",
-        "Type": "WebApplication1.Dtos.TasinmazDto",
-        "IsRequired": true
+        "Name": "MahalleId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "ParcelNumber",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "LotNumber",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Address",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Geometry",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Image",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -215,6 +240,22 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebApplication1.Controllers.TasinmazController",
+    "Method": "AddFromExcel",
+    "RelativePath": "api/Tasinmaz/from-excel",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "WebApplication1.Dtos.TasinmazExcelDto",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {

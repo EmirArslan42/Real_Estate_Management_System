@@ -52,7 +52,10 @@
             <label for="address">Adres</label>
             <textarea autocomplete="street-address" name="address" id="address" class="form-control" formControlName="address"></textarea>
         </div>
-
+        <div class="mb-3">
+            <label for="uploadImage">Resim</label>
+            <input class="form-control" type="file" (change)="onImageSelected($event)" accept="image/*" />
+         </div>
         <hr>
         <h5 class="mt-3">Harita Üzerinde Taşınmaz Alanı</h5>
 

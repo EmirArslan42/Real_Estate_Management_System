@@ -21,6 +21,7 @@ import { LogListComponent } from './admin/logs/log-list/log-list.component';
 import { UserListComponent } from './admin/users/user-list/user-list.component';
 import { ShortSummaryComponent } from './admin/summary/short-summary/short-summary.component';
 import { AuthGuard } from '../auth/auth.guard';
+import { AlanHesabiComponent } from './hesaplama/alan-hesabi/alan-hesabi.component';
 
 const routes: Routes = [
   {
@@ -44,6 +45,10 @@ const routes: Routes = [
           { path: 'logs', component: LogListComponent },
           { path: 'users', component: UserListComponent },
         ],
+      },
+      {
+        path:'hesaplama',
+        loadChildren:()=>import('./hesaplama/hesaplama.module').then((m)=>m.HesaplamaModule)
       },
     ],
   },

@@ -62,7 +62,8 @@
          </div>
 
          <div class="mb-3">
-            <input type="file" (change)="onImageSelected($event)" accept="image/*" />
+            <label for="uploadImage">Resim</label>
+            <input class="form-control" type="file" (change)="onImageSelected($event)" accept="image/*" />
          </div>
 
          <hr>

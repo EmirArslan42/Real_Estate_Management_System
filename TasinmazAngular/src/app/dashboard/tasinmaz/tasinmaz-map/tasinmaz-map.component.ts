@@ -11,6 +11,8 @@ import GeoJSON from 'ol/format/GeoJSON';
 import { fromLonLat } from 'ol/proj';
 import { Geometry } from 'ol/geom';
 import Feature from 'ol/Feature';
+import { Router } from '@angular/router';
+import {getArea} from "ol/sphere"
 
 @Component({
   selector: 'app-tasinmaz-map',
@@ -22,9 +24,17 @@ export class TasinmazMapComponent implements OnInit {
   @Input() allTasinmazlar: any[] = [];
 // 🔹 Edit ekranında eski polygonu göstermek için
   @Input() existingGeometry: string | null = null;
-  @Output() geometryDrawn = new EventEmitter<string>();
+  @Output() geometryDrawn = new EventEmitter<any>();
+  @Output() tasinmazSelected=new EventEmitter<any>();
+  @Input() mode: 'add' | 'edit' | 'manual' | 'auto' = 'add';
+
+
 
   map!: Map;
+  manualDrawIndex = 0;
+  manualLabels = ['A', 'B', 'C'];
+  drawnFeatures: Feature[] = [];
+
   vectorSource = new VectorSource();
   vectorLayer = new VectorLayer({
     source: this.vectorSource,
@@ -32,9 +42,14 @@ export class TasinmazMapComponent implements OnInit {
 
   draw!: Draw;
 
+  constructor(private router:Router){}
+
   ngOnInit(): void {
     this.initMap();
-    this.addDrawInteraction();
+    
+    if(!this.router.url.includes('/dashboard/tasinmaz/list') && (this.mode=="edit" || this.mode=="add" || this.mode=="manual")){
+      this.addDrawInteraction();
+    }
 
     // 🔴 Edit ekranından gelen eski polygonu çiz
   // 🔴 Edit ekranından gelen eski polygonu haritaya çizdiğimiz kısım
@@ -54,7 +69,18 @@ export class TasinmazMapComponent implements OnInit {
     });
   }
 
+  this.map.on('singleclick',(event)=>{
+    this.map.forEachFeatureAtPixel(event.pixel,(feature)=>{
+      const tasinmaz=feature.get("info");
+      if(tasinmaz){
+        this.tasinmazSelected.emit(tasinmaz);
+      }
+    })
+  })
+
   }
+
+  
 
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -132,17 +158,67 @@ export class TasinmazMapComponent implements OnInit {
 
     this.map.addInteraction(this.draw);
 
-    this.draw.on('drawend', (event) => {
-  const feature = event.feature;
+//     this.draw.on('drawend', (event) => {
+//   const feature = event.feature;
   
-  // Veriyi klonlayıp çeviriyoruz ki haritadaki orijinal çizim bozulmasın
-  const clonedFeature = feature.clone();
-  clonedFeature.getGeometry()?.transform('EPSG:3857', 'EPSG:4326');
+//   // Veriyi klonlayıp çeviriyoruz ki haritadaki orijinal çizim bozulmasın
+//   const clonedFeature = feature.clone();
+//   clonedFeature.getGeometry()?.transform('EPSG:3857', 'EPSG:4326');
 
-  // writeGeometry yerine writeFeature kullanarak tam GeoJSON objesi oluşturuyoruz
-  const geojson = new GeoJSON().writeFeature(clonedFeature);
+//   // writeGeometry yerine writeFeature kullanarak tam GeoJSON objesi oluşturuyoruz
+//   const geojson = new GeoJSON().writeFeature(clonedFeature);
 
-  this.geometryDrawn.emit(geojson);
+//   this.geometryDrawn.emit(geojson);
+// });
+
+
+//    this.draw.on('drawend', (event) => {
+//   const feature = event.feature;
+//   const geometry:any = feature.getGeometry();
+
+//   const cloned:any = feature.clone();
+// cloned.getGeometry()?.transform('EPSG:3857', 'EPSG:4326');
+  
+//   // ALAN HESAPLAMA BURADA YAPILMALI
+//   // EPSG:4326 (WGS84) projeksiyonuna göre m2 hesaplar
+//   const area = getArea(cloned.getGeometry());
+
+//   const geojson = new GeoJSON().writeFeature(cloned);
+
+//   this.geometryDrawn.emit({
+//     geojson: geojson,
+//     area: area, // <--- Bu değerin gittiğinden emin ol
+//     feature: feature
+//   });
+
+
+//   })
+
+
+// drawend olayının içinde:
+this.draw.on('drawend', (event) => {
+    const feature = event.feature;
+    const geometry:any = feature.getGeometry();
+
+    // SRS dökümanlarında genellikle WGS84 (EPSG:4326) üzerinden 
+    // küresel hesaplama yapılması istenir.
+    const areaInSqMeters = getArea(geometry, { projection: 'EPSG:4326' });
+
+    // Eğer çok büyük alanlar çiziyorsan (Türkiye geneli gibi) 
+    // sonucu km2'ye çevirmek daha okunaklı olur:
+    const areaInSqKm = areaInSqMeters / 1_000_000;
+
+    console.log("Gerçek Alan (m2):", areaInSqMeters);
+    console.log("Gerçek Alan (km2):", areaInSqKm);
+
+    this.geometryDrawn.emit({
+        geojson: new GeoJSON().writeFeature(feature),
+        area: areaInSqMeters, // Burayı m2 olarak gönderelim
+        feature: feature
+    });
 });
-  }
-}
+
+
+
+
+  }}

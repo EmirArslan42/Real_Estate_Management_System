@@ -28,6 +28,7 @@ export class ListComponent implements OnInit {
   selectedTasinmaz: any = null;
   filterForm!:FormGroup;
   filteredTasinmazlar:any[]=[];
+  
 
   // ilMap = new Map<number, string>();
   // ilceMap = new Map<number, { ad: string; ilId: number }>();
@@ -216,6 +217,11 @@ export class ListComponent implements OnInit {
     reader.readAsArrayBuffer(file);
   }
 
+
+onTasinmazSelected(tasinmaz: any) {
+  this.selectedTasinmaz = tasinmaz;
+}
+
   addTasinmazFromExcel(rows:any[]){
     rows.forEach(row=>{
       const dto={
@@ -238,10 +244,19 @@ export class ListComponent implements OnInit {
 
       };
       console.log('Excel satırı:', row);
+      
 
-      this.tasinmazService.addTasinmaz(dto).subscribe({
-        error:err=>console.error('Excel satırı eklenemedi', err)
-      })
+      this.tasinmazService.addTasinmazFromExcel({
+  mahalleId: Number(row['MahalleId']), 
+  lotNumber: row['Ada']?.toString(),
+  parcelNumber: row['Parsel']?.toString(),
+  address: row['Adres']?.toString()
+})
+    .subscribe({
+      next: () => console.log('Excel satırı eklendi'),
+      error: () => console.error('Excel satırı eklenemedi')
+    });
+
       
     })
     alert("Excelden taşınmaz ekleme işlemi başarılı");

@@ -18,6 +18,8 @@ export class EditComponent implements OnInit {
   iller: any[] = [];
   ilceler: any[] = [];
   mahalleler: any[] = [];
+  selectedImage!: File;
+
   constructor(
     private fb: FormBuilder,
     private tasinmazService: TasinmazService,
@@ -48,6 +50,11 @@ export class EditComponent implements OnInit {
       this.iller = iller;
     });
   }
+
+  onImageSelected(event: any) {
+    this.selectedImage = event.target.files[0];
+  }
+
 
     onGeometryDrawn(geojson: string) {
   // Eğer Backend sadece {"type":"Polygon"...} bekliyorsa:
@@ -138,37 +145,68 @@ export class EditComponent implements OnInit {
     });
   }
 
-  updateForm() {
-    this.successMessage='';
-    this.errorMessage='';
+//   updateForm() {
+//     this.successMessage='';
+//     this.errorMessage='';
 
-    const payload = {
-    mahalleId: this.tasinmazForm.value.mahalleId,
-    lotNumber: this.tasinmazForm.value.lotNumber,
-    parcelNumber: this.tasinmazForm.value.parcelNumber,
-    address: this.tasinmazForm.value.address,
-    Geometry: this.drawnGeometry // KRİTİK
-  };
-  console.log('UPDATE ID:', this.id);
-console.log('PAYLOAD:', payload);
+//     const payload = {
+//     mahalleId: this.tasinmazForm.value.mahalleId,
+//     lotNumber: this.tasinmazForm.value.lotNumber,
+//     parcelNumber: this.tasinmazForm.value.parcelNumber,
+//     address: this.tasinmazForm.value.address,
+//     Geometry: this.drawnGeometry // KRİTİK
+//   };
+//   console.log('UPDATE ID:', this.id);
+// console.log('PAYLOAD:', payload);
 
-    this.tasinmazService
-      .updateTasinmaz(this.id, payload)
-      .subscribe({
-        next: () => {
-          this.successMessage = 'Taşınmaz başarıyla güncellendi.';
-          setTimeout(() => {
-            this.router.navigate(['/dashboard/tasinmaz/list']);
-          }, 2000);
+
+
+//     this.tasinmazService
+//       .updateTasinmaz(this.id, payload)
+//       .subscribe({
+//         next: () => {
+//           this.successMessage = 'Taşınmaz başarıyla güncellendi.';
+//           setTimeout(() => {
+//             this.router.navigate(['/dashboard/tasinmaz/list']);
+//           }, 2000);
           
-        },
-        error: (err) => {
-          //console.error(err);
-          this.errorMessage = 'Taşınmaz güncelleme işlemi sırasında bir hata oluştu.';
-          setTimeout(() => {
-            this.errorMessage = '';
-          }, 3500);
-        },
-      });
+//         },
+//         error: (err) => {
+//           //console.error(err);
+//           this.errorMessage = 'Taşınmaz güncelleme işlemi sırasında bir hata oluştu.';
+//           setTimeout(() => {
+//             this.errorMessage = '';
+//           }, 3500);
+//         },
+//       });
+//   }
+
+updateForm() {
+  const formData = new FormData();
+
+  formData.append('MahalleId', this.tasinmazForm.value.mahalleId);
+  formData.append('LotNumber', this.tasinmazForm.value.lotNumber);
+  formData.append('ParcelNumber', this.tasinmazForm.value.parcelNumber);
+  formData.append('Address', this.tasinmazForm.value.address);
+  formData.append('Geometry', this.drawnGeometry);
+
+  if (this.selectedImage) {
+    formData.append('Image', this.selectedImage);
   }
+
+  this.tasinmazService.updateTasinmaz(this.id, formData).subscribe({
+    next: () => {
+      this.successMessage = 'Taşınmaz başarıyla güncellendi.';
+      setTimeout(() => {
+        this.router.navigate(['/dashboard/tasinmaz/list']);
+      }, 2000);
+    },
+    error: () => {
+      this.errorMessage = 'Güncelleme sırasında hata oluştu.';
+    }
+  });
+}
+
+
+
 }

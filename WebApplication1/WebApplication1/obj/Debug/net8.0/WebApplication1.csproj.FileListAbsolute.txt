@@ -119,3 +119,4 @@ C:\Users\Emir\Desktop\OdakGIS Yazılım Şirket\Odevlerim\TasinmazProjesi\WebApp
 C:\Users\Emir\Desktop\OdakGIS Yazılım Şirket\Odevlerim\TasinmazProjesi\WebApplication1\WebApplication1\bin\Debug\net8.0\Newtonsoft.Json.dll
 C:\Users\Emir\Desktop\OdakGIS Yazılım Şirket\Odevlerim\TasinmazProjesi\WebApplication1\WebApplication1\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.NetTopologySuite.dll
 C:\Users\Emir\Desktop\OdakGIS Yazılım Şirket\Odevlerim\TasinmazProjesi\WebApplication1\WebApplication1\bin\Debug\net8.0\Npgsql.NetTopologySuite.dll
+C:\Users\Emir\Desktop\OdakGIS Yazılım Şirket\Odevlerim\TasinmazProjesi\WebApplication1\WebApplication1\bin\Debug\net8.0\WebApplication1.staticwebassets.runtime.json

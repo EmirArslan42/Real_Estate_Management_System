@@ -6,6 +6,7 @@ using WebApplication1.Entities;
 using NetTopologySuite.IO;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.Features;
+using NetTopologySuite;
 
 
 namespace WebApplication1.Business.Concrete
@@ -36,6 +37,7 @@ namespace WebApplication1.Business.Concrete
                     MahalleAdi=t.Mahalle.Ad,
                     IlceAdi=t.Mahalle.Ilce.Ad,
                     IlAdi=t.Mahalle.Ilce.Il.Ad,
+                    ImagePath=t.ImagePath
                   
                 })
                 .ToListAsync();
@@ -63,6 +65,7 @@ namespace WebApplication1.Business.Concrete
 
                     UserId=t.UserId,
                     UserEmail=t.User.Email,
+                    ImagePath=t.ImagePath,
 
                 })
                 .ToListAsync();
@@ -116,7 +119,37 @@ namespace WebApplication1.Business.Concrete
             }
         }
 
-        public async Task<bool> UpdateAsync(int id,TasinmazDto dto,int userId)
+        public async Task<bool> AddFromExcelAsync(TasinmazExcelDto dto, int userId)
+        {
+            var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
+
+            // Boş veya varsayılan bir Polygon oluşturuyoruz (Kare şeklinde)
+            // Koordinatlar: [0,0], [0,1], [1,1], [1,0], [0,0]
+            var coords = new[] {
+        new NetTopologySuite.Geometries.Coordinate(0, 0),
+        new NetTopologySuite.Geometries.Coordinate(0, 0.0001),
+        new NetTopologySuite.Geometries.Coordinate(0.0001, 0.0001),
+        new NetTopologySuite.Geometries.Coordinate(0.0001, 0),
+        new NetTopologySuite.Geometries.Coordinate(0, 0)
+    };
+            var defaultPolygon = geometryFactory.CreatePolygon(coords);
+
+            var tasinmaz = new Tasinmaz
+            {
+                MahalleId = dto.MahalleId,
+                LotNumber = dto.LotNumber,
+                ParcelNumber = dto.ParcelNumber,
+                Address = dto.Address,
+                UserId = userId,
+                Coordinate = defaultPolygon // Entity tipiniz Polygon ise bu çalışacaktır
+            };
+
+            await _context.Tasinmazlar.AddAsync(tasinmaz);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateAsync(int id,TasinmazDto dto,int userId, string? imagePath)
         {
             var tasinmaz =await _context.Tasinmazlar.FirstOrDefaultAsync(t=>t.Id==id && t.UserId==userId);
             if (tasinmaz==null)
@@ -134,8 +167,14 @@ namespace WebApplication1.Business.Concrete
                 tasinmaz.Address = dto.Address;
                 tasinmaz.Coordinate = reader.Read<Polygon>(dto.Geometry);
 
-                
-                 _context.Tasinmazlar.Update(tasinmaz);
+                if (!string.IsNullOrEmpty(imagePath))
+                {
+                    tasinmaz.ImagePath = imagePath;
+                }
+
+
+
+                _context.Tasinmazlar.Update(tasinmaz);
                 await _context.SaveChangesAsync();
 
                 return true;

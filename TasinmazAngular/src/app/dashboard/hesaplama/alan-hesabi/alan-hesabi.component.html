@@ -1,0 +1,24 @@
+<div class="container mt-4">
+    <h2 class="text-center">Alan Hesaplama</h2>
+    <div class="btn-group mb-3">
+        <button class="btn btn-primary" (click)="mode='manual'">Manuel</button>
+        <button class="btn btn-secondary" (click)="mode='auto'">Auto</button>
+    </div>
+
+    <div *ngIf="mode=='manual'">
+        <h5>Manuel Alan Hesaplama</h5>
+        <p>A, B, C alanlarını harita üzerinden çiziniz.</p>
+    </div>
+
+    <div *ngIf="mode=='auto'">
+        <h5>Otomatik Alan Hesaplama</h5>
+        <p>Sistemdeki taşınmazlar üzerinden hesaplama yapılır.</p>
+    </div>
+
+    <button class="btn btn-primary" (click)="getTotalArea()">alanı göster</button>
+    <button class="btn btn-primary" (click)="resetAreas()">alanı sıfırla</button>
+
+    <p><b>Toplam Hesaplanan Alan:</b> {{ formatArea(getTotalArea()/1000000) }}</p>
+    
+    <app-tasinmaz-map [mode]="mode" (geometryDrawn)="onGeometryDrawn($event)"></app-tasinmaz-map>
+</div>

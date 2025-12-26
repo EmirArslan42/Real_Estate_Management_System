@@ -3,24 +3,36 @@
   "WorkspaceRootPath": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|c:\\users\\emir\\desktop\\odakgis yaz\u0131l\u0131m \u015Firket\\odevlerim\\tasinmazprojesi\\webapplication1\\webapplication1\\business\\abstract\\itasinmazservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\business\\abstract\\itasinmazservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|c:\\users\\emir\\desktop\\odakgis yaz\u0131l\u0131m \u015Firket\\odevlerim\\tasinmazprojesi\\webapplication1\\webapplication1\\controllers\\tasinmazcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\controllers\\tasinmazcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|c:\\users\\emir\\desktop\\odakgis yaz\u0131l\u0131m \u015Firket\\odevlerim\\tasinmazprojesi\\webapplication1\\webapplication1\\business\\concrete\\tasinmazservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\business\\concrete\\tasinmazservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|c:\\users\\emir\\desktop\\odakgis yaz\u0131l\u0131m \u015Firket\\odevlerim\\tasinmazprojesi\\webapplication1\\webapplication1\\controllers\\tasinmazcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\controllers\\tasinmazcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|c:\\users\\emir\\desktop\\odakgis yaz\u0131l\u0131m \u015Firket\\odevlerim\\tasinmazprojesi\\webapplication1\\webapplication1\\business\\abstract\\itasinmazservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\business\\abstract\\itasinmazservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|c:\\users\\emir\\desktop\\odakgis yaz\u0131l\u0131m \u015Firket\\odevlerim\\tasinmazprojesi\\webapplication1\\webapplication1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|c:\\users\\emir\\desktop\\odakgis yaz\u0131l\u0131m \u015Firket\\odevlerim\\tasinmazprojesi\\webapplication1\\webapplication1\\dtos\\tasinmazlistdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\dtos\\tasinmazlistdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|c:\\users\\emir\\desktop\\odakgis yaz\u0131l\u0131m \u015Firket\\odevlerim\\tasinmazprojesi\\webapplication1\\webapplication1\\dtos\\tasinmazexceldto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\dtos\\tasinmazexceldto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|c:\\users\\emir\\desktop\\odakgis yaz\u0131l\u0131m \u015Firket\\odevlerim\\tasinmazprojesi\\webapplication1\\webapplication1\\business\\abstract\\iuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\business\\abstract\\iuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|c:\\users\\emir\\desktop\\odakgis yaz\u0131l\u0131m \u015Firket\\odevlerim\\tasinmazprojesi\\webapplication1\\webapplication1\\dtos\\tasinmazdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\dtos\\tasinmazdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Migrations\\20251225192216_AddUploadImageEntity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:WebApplication1\\Migrations\\20251225192216_AddUploadImageEntity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|c:\\users\\emir\\desktop\\odakgis yaz\u0131l\u0131m \u015Firket\\odevlerim\\tasinmazprojesi\\webapplication1\\webapplication1\\entities\\tasinmaz.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -31,16 +43,8 @@
       "RelativeMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\dtos\\tasinmazcreatewithimagedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|c:\\users\\emir\\desktop\\odakgis yaz\u0131l\u0131m \u015Firket\\odevlerim\\tasinmazprojesi\\webapplication1\\webapplication1\\dtos\\tasinmazlistdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\dtos\\tasinmazlistdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Migrations\\20251222131958_ControlDto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:WebApplication1\\Migrations\\20251222131958_ControlDto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|c:\\users\\emir\\desktop\\odakgis yaz\u0131l\u0131m \u015Firket\\odevlerim\\tasinmazprojesi\\webapplication1\\webapplication1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Migrations\\20251222113402_AddPolygonCoordinateToTasinmaz.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -79,10 +83,6 @@
       "RelativeMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\entities\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|c:\\users\\emir\\desktop\\odakgis yaz\u0131l\u0131m \u015Firket\\odevlerim\\tasinmazprojesi\\webapplication1\\webapplication1\\business\\abstract\\iuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\business\\abstract\\iuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|c:\\users\\emir\\desktop\\odakgis yaz\u0131l\u0131m \u015Firket\\odevlerim\\tasinmazprojesi\\webapplication1\\webapplication1\\business\\concrete\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\business\\concrete\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -105,6 +105,10 @@
     {
       "AbsoluteMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|c:\\users\\emir\\desktop\\odakgis yaz\u0131l\u0131m \u015Firket\\odevlerim\\tasinmazprojesi\\webapplication1\\webapplication1\\migrations\\20251222113819_addpolygoncoordinatetotasinmaz.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\migrations\\20251222113819_addpolygoncoordinatetotasinmaz.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|c:\\users\\emir\\desktop\\odakgis yaz\u0131l\u0131m \u015Firket\\odevlerim\\tasinmazprojesi\\webapplication1\\webapplication1\\migrations\\20251225192216_adduploadimageentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{98B04392-5C0B-423F-8FD3-F7D4F52F509F}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\migrations\\20251225192216_adduploadimageentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -114,37 +118,24 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "20251225192216_AddUploadImageEntity.cs",
-              "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Migrations\\20251225192216_AddUploadImageEntity.cs",
-              "RelativeDocumentMoniker": "WebApplication1\\Migrations\\20251225192216_AddUploadImageEntity.cs",
-              "ToolTip": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Migrations\\20251225192216_AddUploadImageEntity.cs",
-              "RelativeToolTip": "WebApplication1\\Migrations\\20251225192216_AddUploadImageEntity.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABcAAAAiAAAA",
+              "DocumentIndex": 5,
+              "Title": "TasinmazExcelDto.cs",
+              "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Dtos\\TasinmazExcelDto.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Dtos\\TasinmazExcelDto.cs",
+              "ToolTip": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Dtos\\TasinmazExcelDto.cs",
+              "RelativeToolTip": "WebApplication1\\Dtos\\TasinmazExcelDto.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-25T19:22:16.654Z",
+              "WhenOpened": "2025-12-26T12:28:20.612Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "TasinmazDto.cs",
-              "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Dtos\\TasinmazDto.cs",
-              "RelativeDocumentMoniker": "WebApplication1\\Dtos\\TasinmazDto.cs",
-              "ToolTip": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Dtos\\TasinmazDto.cs",
-              "RelativeToolTip": "WebApplication1\\Dtos\\TasinmazDto.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAABAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-25T18:56:03.51Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 9,
               "Title": "TasinmazCreateWithImageDto.cs",
               "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Dtos\\TasinmazCreateWithImageDto.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Dtos\\TasinmazCreateWithImageDto.cs",
@@ -152,38 +143,37 @@
               "RelativeToolTip": "WebApplication1\\Dtos\\TasinmazCreateWithImageDto.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAFAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-25T18:59:07.864Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-25T18:59:07.864Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "ITasinmazService.cs",
               "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Business\\Abstract\\ITasinmazService.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Business\\Abstract\\ITasinmazService.cs",
               "ToolTip": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Business\\Abstract\\ITasinmazService.cs",
               "RelativeToolTip": "WebApplication1\\Business\\Abstract\\ITasinmazService.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAqwAkAAAAzAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAqwAoAAABUAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-25T10:34:38.447Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 4,
               "Title": "TasinmazListDto.cs",
               "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Dtos\\TasinmazListDto.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Dtos\\TasinmazListDto.cs",
               "ToolTip": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Dtos\\TasinmazListDto.cs",
               "RelativeToolTip": "WebApplication1\\Dtos\\TasinmazListDto.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAAAAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABAAAAAWAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-25T10:22:27.538Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 8,
               "Title": "Tasinmaz.cs",
               "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Entities\\Tasinmaz.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Entities\\Tasinmaz.cs",
@@ -191,8 +181,7 @@
               "RelativeToolTip": "WebApplication1\\Entities\\Tasinmaz.cs",
               "ViewState": "AQIAAA8AAAAAAAAAAAAQwCUAAAAuAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-18T14:13:47.925Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-18T14:13:47.925Z"
             },
             {
               "$type": "Document",
@@ -202,14 +191,14 @@
               "RelativeDocumentMoniker": "WebApplication1\\Business\\Concrete\\TasinmazService.cs",
               "ToolTip": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Business\\Concrete\\TasinmazService.cs",
               "RelativeToolTip": "WebApplication1\\Business\\Concrete\\TasinmazService.cs",
-              "ViewState": "AQIAAEcAAAAAAAAAAAAAwGgAAAAnAAAA",
+              "ViewState": "AQIAAJEAAAAAAAAAAAAswKYAAAAvAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-19T09:53:22.253Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 15,
               "Title": "UserRegisterDto.cs",
               "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Dtos\\UserRegisterDto.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Dtos\\UserRegisterDto.cs",
@@ -221,20 +210,70 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "TasinmazController.cs",
               "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Controllers\\TasinmazController.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Controllers\\TasinmazController.cs",
               "ToolTip": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Controllers\\TasinmazController.cs",
               "RelativeToolTip": "WebApplication1\\Controllers\\TasinmazController.cs",
-              "ViewState": "AQIAAHUAAAAAAAAAAAAYwIkAAAAlAAAA",
+              "ViewState": "AQIAAAkAAAAAAAAAAAAMwA0AAAA0AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-15T11:59:18.422Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 6,
+              "Title": "IUserService.cs",
+              "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Business\\Abstract\\IUserService.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Business\\Abstract\\IUserService.cs",
+              "ToolTip": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Business\\Abstract\\IUserService.cs",
+              "RelativeToolTip": "WebApplication1\\Business\\Abstract\\IUserService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAAxAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-19T12:18:24.335Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Program.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Program.cs",
+              "ToolTip": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Program.cs",
+              "RelativeToolTip": "WebApplication1\\Program.cs",
+              "ViewState": "AQIAAEoAAAAAAAAAAAAvwE0AAAAbAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-19T11:20:56.442Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "TasinmazDto.cs",
+              "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Dtos\\TasinmazDto.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Dtos\\TasinmazDto.cs",
+              "ToolTip": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Dtos\\TasinmazDto.cs",
+              "RelativeToolTip": "WebApplication1\\Dtos\\TasinmazDto.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-25T18:56:03.51Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "20251225192216_AddUploadImageEntity.cs",
+              "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Migrations\\20251225192216_AddUploadImageEntity.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Migrations\\20251225192216_AddUploadImageEntity.cs",
+              "ToolTip": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Migrations\\20251225192216_AddUploadImageEntity.cs",
+              "RelativeToolTip": "WebApplication1\\Migrations\\20251225192216_AddUploadImageEntity.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABcAAAAiAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-25T19:22:16.654Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
               "Title": "UserController.cs",
               "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Controllers\\UserController.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Controllers\\UserController.cs",
@@ -246,7 +285,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "20251222113402_AddPolygonCoordinateToTasinmaz.cs",
               "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Migrations\\20251222113402_AddPolygonCoordinateToTasinmaz.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Migrations\\20251222113402_AddPolygonCoordinateToTasinmaz.cs",
@@ -270,7 +309,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 10,
               "Title": "20251222131958_ControlDto.cs",
               "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Migrations\\20251222131958_ControlDto.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Migrations\\20251222131958_ControlDto.cs",
@@ -294,7 +333,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 19,
               "Title": "User.cs",
               "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Entities\\User.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Entities\\User.cs",
@@ -318,31 +357,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "IUserService.cs",
-              "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Business\\Abstract\\IUserService.cs",
-              "RelativeDocumentMoniker": "WebApplication1\\Business\\Abstract\\IUserService.cs",
-              "ToolTip": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Business\\Abstract\\IUserService.cs",
-              "RelativeToolTip": "WebApplication1\\Business\\Abstract\\IUserService.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAAxAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-19T12:18:24.335Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Program.cs",
-              "RelativeDocumentMoniker": "WebApplication1\\Program.cs",
-              "ToolTip": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Program.cs",
-              "RelativeToolTip": "WebApplication1\\Program.cs",
-              "ViewState": "AQIAABUAAAAAAAAAAAAAABEAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-19T11:20:56.442Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 13,
               "Title": "UserService.cs",
               "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Business\\Concrete\\UserService.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Business\\Concrete\\UserService.cs",
@@ -354,7 +369,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 17,
               "Title": "UserDto.cs",
               "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Dtos\\UserDto.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Dtos\\UserDto.cs",
@@ -366,7 +381,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 14,
               "Title": "UserWriteDto.cs",
               "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Dtos\\UserWriteDto.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Dtos\\UserWriteDto.cs",
@@ -378,7 +393,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 16,
               "Title": "UserLoginDto.cs",
               "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Dtos\\UserLoginDto.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Dtos\\UserLoginDto.cs",
@@ -390,7 +405,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 18,
               "Title": "AuthController.cs",
               "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\OdakGIS Yaz\u0131l\u0131m \u015Eirket\\Odevlerim\\TasinmazProjesi\\WebApplication1\\WebApplication1\\Controllers\\AuthController.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Controllers\\AuthController.cs",

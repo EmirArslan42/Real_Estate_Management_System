@@ -22,7 +22,9 @@ import { TasinmazMapComponent } from './tasinmaz-map/tasinmaz-map.component';
     TasinmazRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
-    
+  ],
+  exports:[
+    TasinmazMapComponent
   ]
 })
 export class TasinmazModule { }

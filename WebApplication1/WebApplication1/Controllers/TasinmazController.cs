@@ -121,44 +121,105 @@ namespace WebApplication1.Controllers
         [Authorize(Roles = "User")]
         [HttpPost]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> Add([FromForm] TasinmazDto dto)
+        public async Task<IActionResult> Add([FromForm] TasinmazDto dto) // [FromForm] olduğundan emin olun
         {
             string? imagePath = null;
-            if (dto.Image!=null)
+            try
             {
-                var fileName = Guid.NewGuid() + Path.GetExtension(dto.Image.FileName);
-                var path = Path.Combine("wwwroot/images", fileName);
+                if (dto.Image != null)
+                {
+                    // Klasör yolunu işletim sistemine uygun şekilde alalım
+                    var pathRoot = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
 
-                using var stream = new FileStream(path, FileMode.Create);
-                await dto.Image.CopyToAsync(stream);
+                    // Klasör yoksa oluştur
+                    if (!Directory.Exists(pathRoot))
+                        Directory.CreateDirectory(pathRoot);
 
-                imagePath = "/images/" + fileName;
+                    var fileName = Guid.NewGuid() + Path.GetExtension(dto.Image.FileName);
+                    var filePath = Path.Combine(pathRoot, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await dto.Image.CopyToAsync(stream);
+                    }
+
+                    imagePath = "/images/" + fileName;
+                }
+
+                var userId = GetUserId();
+
+                // ÖNEMLİ: Formdan Coordinate (Geometry) verisi gelmiyorsa 
+                // yukarıda Excel için yaptığımız "default" atamayı burada da yapmalısınız!
+                if (string.IsNullOrEmpty(dto.Geometry))
+                {
+                    // Excel'deki gibi default polygon ataması yapın veya hata döndürün
+                    return BadRequest("Koordinat bilgisi eksik!");
+                }
+
+                var result = await _service.AddAsync(dto, userId, imagePath);
+                return result ? NoContent() : BadRequest("Ekleme başarısız.");
             }
+            catch (Exception ex)
+            {
+                // Hatayı console'a yazdır ki Visual Studio 'Output' penceresinde görebilesin
+                Console.WriteLine("HATA: " + ex.Message);
+                return StatusCode(500, $"Sunucu hatası: {ex.Message}");
+            }
+        }
+
+
+        [Authorize(Roles = "User")]
+        [HttpPost("from-excel")]
+        [Consumes("application/json")]
+        public async Task<IActionResult> AddFromExcel ([FromBody] TasinmazExcelDto dto)
+        {
 
             var userId = GetUserId();
-            var result = await _service.AddAsync(dto,userId,imagePath);
+            var result=await _service.AddFromExcelAsync(dto,userId);
 
             if (!result)
             {
-                return BadRequest("Tasinmaz eklenemedi");
+                return BadRequest("Excel satırı eklenemedi");
             }
 
-            _logService.AddLog(new Log {
-                UserId=userId,
-                OperationType="AddTasinmaz",
-                Description=$"Kullanici yeni tasinmaz ekledi. ParcelNumber: {dto.ParcelNumber}",
-                IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString(),
+            _logService.AddLog(new Log
+            {
+                UserId = userId,
+                OperationType = "AddTasinmazFromExcel",
+                Description = $"Kullanici yeni tasinmaz ekledi. ParcelNumber: {dto.ParcelNumber}",
+                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
             });
-            //return Ok("Tasinmaz basariyla eklendi");
             return NoContent();
         }
 
         [Authorize(Roles = "User")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id,[FromBody] TasinmazDto dto)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> Update(int id,[FromForm] TasinmazDto dto)
         {
-            var userId=GetUserId() ;
-            var result =await _service.UpdateAsync(id,dto,userId); // tasinmaz var mı yok mu onu kontrol etmek için
+            string? imagePath = null;
+            if (dto.Image != null)
+            {
+                var pathRoot = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+
+                if (!Directory.Exists(pathRoot))
+                    Directory.CreateDirectory(pathRoot);
+
+                var fileName = Guid.NewGuid() + Path.GetExtension(dto.Image.FileName);
+                var filePath = Path.Combine(pathRoot, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await dto.Image.CopyToAsync(stream);
+                }
+
+                
+                imagePath = "/images/" + fileName;
+            }
+
+
+            var userId =GetUserId() ;
+            var result =await _service.UpdateAsync(id,dto,userId,imagePath); // tasinmaz var mı yok mu onu kontrol etmek için
 
             if(!result) {
                 return NotFound("Tasinmaz yok");

@@ -77,6 +77,7 @@
                     <th>İl</th>
                     <th>İlçe</th>
                     <th>Mahalle</th>
+                    <th>Resim</th>
                     <th>Adres</th>
                     <th *ngIf="isAdmin">Kullanıcı</th>
                     <th *ngIf="!isAdmin" class="text-center">İşlemler</th>
@@ -91,11 +92,18 @@
                     <td>{{tasinmaz.ilAdi}}</td>
                     <td>{{tasinmaz.ilceAdi}}</td>
                     <td>{{tasinmaz.mahalleAdi}}</td>
+                    <td class="text-center">
+                        <img
+                        *ngIf="tasinmaz.imagePath"
+                        [src]="'https://localhost:7040'+tasinmaz.imagePath"
+                        width="80"
+                        />
+                    </td>
                     <td>{{tasinmaz.address}}</td>
                     <td *ngIf="isAdmin">{{tasinmaz.userEmail}}</td>
                     <td *ngIf="!isAdmin" class="d-flex justify-content-center gap-3 ">
-                        <button *ngIf="!isAdmin" class="btn btn-info btn-md"
-                            (click)="showPopup(tasinmaz)">Görüntüle</button>
+                        <!-- <button *ngIf="!isAdmin" class="btn btn-info btn-md"
+                            (click)="showPopup(tasinmaz)">Görüntüle</button> -->
                         <button *ngIf="!isAdmin" class="btn btn-warning btn-md "
                             (click)="editTasinmaz(tasinmaz.id)">Düzenle</button>
                         <button *ngIf="!isAdmin" class="btn btn-danger btn-md px-"
@@ -112,7 +120,7 @@
     </div>
     <hr><br>
     <div class="mb-4" style="height: 400px; border: 1px solid #ccc;">
-        <app-tasinmaz-map [allTasinmazlar]="tasinmazlar"></app-tasinmaz-map>
+        <app-tasinmaz-map [allTasinmazlar]="tasinmazlar" (tasinmazSelected)="onTasinmazSelected($event)"></app-tasinmaz-map>
     </div>
 
     <div *ngIf="selectedTasinmaz" class="alert alert-success">
