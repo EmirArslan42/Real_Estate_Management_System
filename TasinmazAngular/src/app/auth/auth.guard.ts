@@ -36,6 +36,13 @@ export class AuthGuard implements CanActivate {
       }
     }
 
+    if(state.url.startsWith('/dashboard/hesaplama/alan-hesabi')){
+      if(this.authService.isAdmin()){
+        this.router.navigate(['/dashboard/tasinmaz/list']);
+        return false;
+      }
+    }
+
     return true;
   }
   
