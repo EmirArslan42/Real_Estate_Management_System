@@ -14,7 +14,7 @@ namespace WebApplication1.DataAccess
         public DbSet<Ilce> Ilceler { get; set; }
         public DbSet<Mahalle> Mahalleler { get; set; }
         public DbSet<Log> Logs { get; set; }
-
+        public DbSet<AlanAnalizSonucu> AlanAnalizSonuclari { get; set; }
 
     } 
 }
