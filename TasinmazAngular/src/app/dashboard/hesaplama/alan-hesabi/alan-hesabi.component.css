@@ -1,0 +1,22 @@
+.map-legend {
+  /* position: absolute; */
+  bottom: 20px;
+  left: 20px;
+  background: white;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.map-legend .box {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+.box.a { background: rgba(40,167,69,0.7); }
+.box.b { background: rgba(255,193,7,0.7); }
+.box.c { background: rgba(108,117,125,0.7); }
+.box.intersection { background: rgba(255,0,0,0.7); }
+.box.union { background: rgba(0,123,255,0.7); }

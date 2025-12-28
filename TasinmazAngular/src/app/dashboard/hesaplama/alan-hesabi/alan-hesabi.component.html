@@ -10,6 +10,21 @@
         <p>A, B, C alanlarını harita üzerinden çiziniz.</p>
     </div>
 
+    <div *ngIf="mode=='manual'">
+        <h6>Manuel Alan İşlemleri</h6>
+        <div class="btn-group mb-2 gap-2">
+            <button class="btn btn-outline-warning" [disabled]="!manualAreas.A.geometry || !manualAreas.B.geometry" (click)="calculateIntersection('A','B')">
+                A ∩ B
+            </button>
+            <button class="btn btn-outline-primary" [disabled]="!manualAreas.A.geometry || !manualAreas.B.geometry" (click)="calculateUnionAB()">
+                A ∪ B
+            </button>
+            <button class="btn btn-outline-success"  [disabled]="!manualAreas.A.geometry || !manualAreas.B.geometry || !manualAreas.C.geometry" (click)="calculateUnionABC()">
+                A ∪ B ∪ C
+            </button>
+        </div>
+    </div>
+
     <div *ngIf="mode=='auto'">
         <h5>Otomatik Alan Hesaplama</h5>
         <p>Sistemdeki taşınmazlar üzerinden hesaplama yapılır.</p>
@@ -18,7 +33,23 @@
     <button class="btn btn-primary" (click)="getTotalArea()">alanı göster</button>
     <button class="btn btn-primary" (click)="resetAreas()">alanı sıfırla</button>
 
-    <p><b>Toplam Hesaplanan Alan:</b> {{ formatArea(getTotalArea()/1000000) }}</p>
-    
-    <app-tasinmaz-map [mode]="mode" (geometryDrawn)="onGeometryDrawn($event)"></app-tasinmaz-map>
+    <p><b>Toplam Hesaplanan Alan:</b> {{ formatArea(alan)}}</p>
+
+    <div *ngIf="currentOperation" class="alert alert-info mt-3">
+        <b>İşlem:</b> {{ currentOperation }} <br />
+        <b>Alan:</b> {{ formatArea(alan) }}
+    </div>
+
+    <div class="map-legend">
+        <div><span class="box a"></span> A Alanı</div>
+        <div><span class="box b"></span> B Alanı</div>
+        <div><span class="box c"></span> C Alanı</div>
+        <div><span class="box intersection"></span> Kesişim (A ∩ B)</div>
+        <div><span class="box union"></span> Birleşim (A ∪ B)</div>
+        <div><span class="box union"></span> Birleşim (A ∪ B ∪ C)</div>
+    </div>
+
+
+    <app-tasinmaz-map [mode]="mode" [disableDraw]="maxDrawReached" [resetCounter]="resetCounter"
+        (geometryDrawn)="onGeometryDrawn($event)" [resultGeometry]="geometryResult"></app-tasinmaz-map>
 </div>
