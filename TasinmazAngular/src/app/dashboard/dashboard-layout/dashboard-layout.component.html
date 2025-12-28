@@ -28,6 +28,12 @@
           </a>
         </li>
 
+        <li class="nav-item" *ngIf="!isAdmin">
+          <a class="nav-link text-white" routerLink="/dashboard/hesaplama/alan-hesabi" routerLinkActive="active">
+            🔍 Alan Analizi
+          </a>
+        </li>
+
         <li class="nav-item mt-4">
           <button class="btn btn-outline-danger btn-sm w-100" (click)="logout()">
             Çıkış Yap
