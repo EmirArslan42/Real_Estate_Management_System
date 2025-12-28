@@ -1,0 +1,9 @@
+# Visual Studio
+.vs/
+bin/
+obj/
+
+# Build outputs
+*.dll
+*.exe
+*.pdb
