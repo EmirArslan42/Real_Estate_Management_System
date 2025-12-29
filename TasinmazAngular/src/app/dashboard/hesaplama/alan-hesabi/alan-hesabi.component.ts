@@ -4,6 +4,7 @@ import { getArea } from 'ol/sphere';
 import GeoJSON from 'ol/format/GeoJSON';
 import Feature from 'ol/Feature';
 import { Geometry } from 'ol/geom';
+import { AlanAnalizService } from '../alan-analiz.service';
 
 @Component({
   selector: 'app-alan-hesabi',
@@ -12,7 +13,7 @@ import { Geometry } from 'ol/geom';
 })
 export class AlanHesabiComponent implements OnInit {
   mode: 'manual' | 'auto' = 'manual';
-  constructor() {}
+  constructor(private alanAnalizService:AlanAnalizService) {}
 
   ngOnInit() {
     console.log(this.mode);
@@ -48,6 +49,29 @@ export class AlanHesabiComponent implements OnInit {
   alan: number = 0;
   intersection: number = 0;
   resetCounter: number = 0;
+  savedResults:any[]=[];
+
+  loadSavedResults(){
+    this.alanAnalizService.getResults().subscribe({
+      next:(res:any)=>{
+        this.savedResults=res;
+      },
+      error:(err)=>{
+        alert("Sonuçlar yüklenemedi");
+      }
+    })
+  }
+
+  showResultOnMap(result:any){
+  this.geometryResult = {
+    geojson: JSON.parse(result.geometry),
+    operation: 'union'
+  };
+
+  this.alan = result.area;
+  this.currentOperation = result.operation;
+}
+
 
   getTotalArea() {
     this.alan =
@@ -72,7 +96,6 @@ export class AlanHesabiComponent implements OnInit {
   }
 
   // alan-hesabi.component.ts
-
   formatArea(areaSqMeters: number): string {
     if (areaSqMeters >= 1_000_000) {
       return (
@@ -93,55 +116,85 @@ export class AlanHesabiComponent implements OnInit {
     );
   }
 
+
+
   calculateIntersection(a: 'A' | 'B' | 'C', b: 'A' | 'B' | 'C') {
-    const geomA = this.manualAreas[a].geometry;
-    const geomB = this.manualAreas[b].geometry;
-    if (!geomA || !geomB) return;
+  // 1. İlgili harf parametrelerine göre geometrileri al
+  const geomA = this.manualAreas[a].geometry;
+  const geomB = this.manualAreas[b].geometry;
 
-    const fa = JSON.parse(geomA);
-    const fb = JSON.parse(geomB);
+  // 2. Geometri varlık kontrolü
+  if (!geomA || !geomB) {
+    alert(`Lütfen ${a} ve ${b} alanlarını tamamlayın.`);
+    return;
+  }
 
-    const intersection = turf.intersect(
-      turf.featureCollection([
-        fa.type === 'FeatureCollection' ? fa.features[0] : fa,
-        fb.type === 'FeatureCollection' ? fb.features[0] : fb,
-      ])
-    );
+  try {
+    // 3. Güvenli Parse (String ise objeye çevir, nesne ise direkt al)
+    const fa = typeof geomA === 'string' ? JSON.parse(geomA) : geomA;
+    const fb = typeof geomB === 'string' ? JSON.parse(geomB) : geomB;
 
+    // 4. Feature Çıkarma (Kritik fa.type ve fb.type kontrolleri)
+    const featureA = fa.type === 'FeatureCollection' ? fa.features[0] : (fa.type === 'Feature' ? fa : turf.feature(fa));
+    const featureB = fb.type === 'FeatureCollection' ? fb.features[0] : (fb.type === 'Feature' ? fb : turf.feature(fb));
+
+    // 5. Kesişim (Intersection) İşlemi
+    const intersection = turf.intersect(turf.featureCollection([featureA, featureB]));
+
+    // 6. REQ-10: Kesişim bulunamadıysa uyarı ver
     if (!intersection) {
       this.alan = 0;
-      alert('Kesişim yok');
+      this.currentOperation = null;
+      this.geometryResult = null; // Haritadaki eski sonucu temizle
+      alert('Kesişim bulunamadı (No intersection found).');
       return;
     }
-    this.currentOperation = 'A ∩ B';
-    // ✅ DOĞRU VE TEK ALAN HESABI
-    this.alan = turf.area(intersection);
 
-    console.log('DOĞRU KESİŞİM (m²):', this.alan / 1000000);
+    // 7. REQ-11: Kesişim varsa m² hesapla ve haritada göster
+    this.currentOperation = `${a} ∩ ${b}`;
+    this.alan = turf.area(intersection); // Alan m² olarak hesaplanır
 
+    console.log(`KESİŞİM ${a} ∩ ${b} (m²):`, this.alan);
+
+    // Sonucu harita bileşenine gönder
     this.drawResult({
       geojson: intersection,
       operation: 'intersection',
-    }); // 4326 olarak gönder
+    });
 
     this.maxDrawReached = true;
+
+  } catch (error) {
+    console.error("Kesişim hesaplama hatası:", error);
+    alert("Geometri verisi işlenirken bir hata oluştu.");
   }
+}
 
   drawResult(result: { geojson: any; operation: string }) {
     this.geometryResult = result;
   }
 
+
   calculateUnionAB() {
-    const geomA = this.manualAreas.A.geometry;
-    const geomB = this.manualAreas.B.geometry;
-    if (!geomA || !geomB) return;
+  const geomA = this.manualAreas.A.geometry;
+  const geomB = this.manualAreas.B.geometry;
 
-    const fa = JSON.parse(geomA);
-    const fb = JSON.parse(geomB);
+  // 1. Geometri varlık kontrolü
+  if (!geomA || !geomB) {
+    alert("Lütfen A ve B alanlarını tamamlayın.");
+    return;
+  }
 
-    const featureA = fa.type === 'FeatureCollection' ? fa.features[0] : fa;
-    const featureB = fb.type === 'FeatureCollection' ? fb.features[0] : fb;
+  try {
+    // 2. Güvenli Parse (String gelirse objeye çevir, nesne ise direkt al)
+    const fa = typeof geomA === 'string' ? JSON.parse(geomA) : geomA;
+    const fb = typeof geomB === 'string' ? JSON.parse(geomB) : geomB;
 
+    // 3. Feature Çıkarma (FeatureCollection veya Feature fark etmeksizin)
+    const featureA = fa.type === 'FeatureCollection' ? fa.features[0] : (fa.type === 'Feature' ? fa : turf.feature(fa));
+    const featureB = fb.type === 'FeatureCollection' ? fb.features[0] : (fb.type === 'Feature' ? fb : turf.feature(fb));
+
+    // 4. Union İşlemi
     const union = turf.union(turf.featureCollection([featureA, featureB]));
 
     if (!union) {
@@ -149,53 +202,133 @@ export class AlanHesabiComponent implements OnInit {
       return;
     }
 
+    // 5. Alan Hesaplama ve UI Güncelleme
     this.currentOperation = 'A ∪ B';
+    this.alan = turf.area(union); // m² cinsinden döner
 
-    this.alan = turf.area(union);
+    // 6. REQ-13: Sonucu 'D' ismiyle Veritabanına Kaydet
+    this.alanAnalizService.saveUnionResult({
+      name: 'D', // SRS Gereksinimi
+      operation: 'A ∪ B',
+      geometry: JSON.stringify(union),
+      area: this.alan
+    }).subscribe({
+      next: () => {
+        console.log("Birleşim D başarıyla kaydedildi.");
+        this.loadSavedResults(); // Tabloyu yenile
+      },
+      error: (err) => console.error("D kaydı başarısız:", err)
+    });
 
-    console.log('UNION A ∪ B (km²):', this.alan / 1000000);
-
+    // 7. Haritada Göster
     this.drawResult({
       geojson: union,
-      operation: 'union',
+      operation: 'union'
     });
+
+  } catch (error) {
+    console.error("Union AB Hatası:", error);
+    alert("Geometri verisi işlenirken hata oluştu.");
   }
+}
 
   calculateUnionABC() {
-    console.log('1 kere çalış');
-    const geomA = this.manualAreas.A.geometry;
-    const geomB = this.manualAreas.B.geometry;
-    const geomC = this.manualAreas.C.geometry;
+  const geomA = this.manualAreas.A.geometry;
+  const geomB = this.manualAreas.B.geometry;
+  const geomC = this.manualAreas.C.geometry;
 
-    if (!geomA || !geomB || !geomC) return;
+  // 1. 3 Geometri de var mı kontrolü (REQ-4)
+  if (!geomA || !geomB || !geomC) {
+    alert("Lütfen A, B ve C alanlarının tamamını hazırlayın.");
+    return;
+  }
 
-    const fa = JSON.parse(geomA);
-    const fb = JSON.parse(geomB);
-    const fc = JSON.parse(geomC);
-    const featureA = fa.type === 'FeatureCollection' ? fa.features[0] : fa;
-    const featureB = fb.type === 'FeatureCollection' ? fb.features[0] : fb;
-    const featureC = fc.type === 'FeatureCollection' ? fc.features[0] : fc;
-    // A ∪ B
-    const unionAB = turf.union(turf.featureCollection([featureA, featureB]));
-    if (!unionAB) {
-      alert('A ∪ B başarısız');
-      return;
-    }
-    // (A ∪ B) ∪ C
-    const unionABC = turf.union(turf.featureCollection([unionAB, featureC]));
+  try {
+    // 2. Güvenli Parse
+    const fa = typeof geomA === 'string' ? JSON.parse(geomA) : geomA;
+    const fb = typeof geomB === 'string' ? JSON.parse(geomB) : geomB;
+    const fc = typeof geomC === 'string' ? JSON.parse(geomC) : geomC;
+
+    // 3. Feature formatına zorlama (Kritik fa.type kontrolü)
+    const fA = fa.type === 'FeatureCollection' ? fa.features[0] : (fa.type === 'Feature' ? fa : turf.feature(fa));
+    const fB = fb.type === 'FeatureCollection' ? fb.features[0] : (fb.type === 'Feature' ? fb : turf.feature(fb));
+    const fC = fc.type === 'FeatureCollection' ? fc.features[0] : (fc.type === 'Feature' ? fc : turf.feature(fc));
+
+    // 4. Üçlü Union (A ∪ B ∪ C)
+    // Önce A ve B'yi birleştir, sonra sonucu C ile birleştir
+    const unionAB = turf.union(turf.featureCollection([fA, fB]));
+    if (!unionAB) return;
+    
+    const unionABC = turf.union(turf.featureCollection([unionAB, fC]));
+
     if (!unionABC) {
-      alert('A ∪ B ∪ C başarısız');
+      alert('Üçlü birleşim oluşturulamadı.');
       return;
     }
 
-    this.alan = turf.area(unionABC);
+    // 5. Alan Hesaplama (REQ-14)
     this.currentOperation = 'A ∪ B ∪ C';
+    this.alan = turf.area(unionABC);
 
-    console.log('UNION A ∪ B ∪ C (km²):', this.alan / 1000000);
+    // 6. REQ-13: Sonucu 'E' ismiyle Veritabanına Kaydet
+    this.alanAnalizService.saveUnionResult({
+      name: 'E', // SRS Gereksinimi
+      operation: 'A ∪ B ∪ C',
+      geometry: JSON.stringify(unionABC),
+      area: this.alan
+    }).subscribe({
+      next: () => {
+        console.log("Birleşim E başarıyla kaydedildi.");
+        this.loadSavedResults();
+      },
+      error: (err) => console.error("E kaydı başarısız:", err)
+    });
 
+    // 7. Haritada Göster
     this.drawResult({
       geojson: unionABC,
-      operation: 'union',
+      operation: 'union'
     });
+
+  } catch (error) {
+    console.error("Union ABC Hatası:", error);
   }
+}
+
+  loadAutoSelect() {
+  this.mode = 'auto';
+  this.alanAnalizService.autoSelect().subscribe({
+    next: (res: any) => {
+      // Backend'den gelen 'geometry' alanlarını direkt string olarak saklıyoruz
+      this.manualAreas.A.geometry = res.a.geometry;
+      this.manualAreas.B.geometry = res.b.geometry;
+      this.manualAreas.C.geometry = res.c.geometry;
+
+      const fa = JSON.parse(res.a.geometry);
+      const fb = JSON.parse(res.b.geometry);
+      const fc = JSON.parse(res.c.geometry);
+
+      // Alanları hesapla
+      this.manualAreas.A.area = turf.area(fa);
+      this.manualAreas.B.area = turf.area(fb);
+      this.manualAreas.C.area = turf.area(fc);
+
+      // Haritada göster (FeatureCollection olarak)
+      this.geometryResult = {
+        geojson: turf.featureCollection([
+          fa.type === 'Feature' ? fa : turf.feature(fa),
+          fb.type === 'Feature' ? fb : turf.feature(fb),
+          fc.type === 'Feature' ? fc : turf.feature(fc)
+        ]),
+        operation: "auto-select"
+      };
+      
+      this.maxDrawReached = true;
+    },
+    error: (err) => {
+      alert("Kaydedilmiş A, B, C bulunamadı.");
+    }
+  });
+}
+
 }
