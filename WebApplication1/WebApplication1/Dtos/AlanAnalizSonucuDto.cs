@@ -2,6 +2,8 @@
 {
     public class AlanAnalizSonucuDto
     {
+        // D mi E mi
+        public string Name { get; set; }
         // "A ∪ B" | "A ∪ B ∪ C"
         public string Operation { get; set; }
 
