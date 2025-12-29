@@ -86,6 +86,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITasinmazService, TasinmazService>();
 builder.Services.AddScoped<ILogService,LogService>();
 builder.Services.AddScoped<ILocationService,LocationService>();
+builder.Services.AddScoped<IAlanAnalizSonucuService, AlanAnalizSonucuService>();
 
 var app = builder.Build();
 
