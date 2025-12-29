@@ -151,44 +151,63 @@ export class TasinmazMapComponent implements OnInit {
       }
     }
 
-    if (
-      changes['resultGeometry'] &&
-      this.resultGeometry &&
-      this.resultGeometry.geojson
-    ) {
-      try {
-        const feature = new GeoJSON().readFeature(this.resultGeometry.geojson, {
+      if (
+    changes['resultGeometry'] &&
+    this.resultGeometry &&
+    this.resultGeometry.geojson
+  ) {
+    try {
+      const format = new GeoJSON();
+      let features: Feature<Geometry>[] = [];
+
+      // 🔴 KRİTİK AYRIM
+      if (this.resultGeometry.geojson.type === 'FeatureCollection') {
+        features = format.readFeatures(this.resultGeometry.geojson, {
           dataProjection: 'EPSG:4326',
           featureProjection: 'EPSG:3857',
-        }) as Feature<Geometry>;
+        }) as Feature<Geometry>[];
+      } else {
+        features = [
+          format.readFeature(this.resultGeometry.geojson, {
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857',
+          }) as Feature<Geometry>,
+        ];
+      }
 
-        if (feature && feature.getGeometry()) {
-          this.vectorSource.clear();
-            if (this.resultGeometry.operation === 'intersection') {
+      if (features.length > 0) {
+        this.vectorSource.clear();
+
+        features.forEach((feature) => {
+          if (this.resultGeometry.operation === 'intersection') {
             feature.setStyle(this.intersectionStyle);
           }
 
           if (this.resultGeometry.operation === 'union') {
             feature.setStyle(this.unionStyle);
           }
+
           this.vectorSource.addFeature(feature);
+        });
 
-          const extent = this.vectorSource.getExtent();
+        const extent = this.vectorSource.getExtent();
 
-          // ✅ KRİTİK: Extent'in sayısal değerlerini doğrula
-          const isValid = extent.every((v) => isFinite(v) && !isNaN(v));
+        const isValid = extent.every(
+          (v) => isFinite(v) && !isNaN(v)
+        );
 
-          if (isValid && extent[0] !== Infinity) {
-            this.map.getView().fit(extent, {
-              padding: [120, 120, 120, 120],
-              duration: 600,
-            });
-          }
+        if (isValid && extent[0] !== Infinity) {
+          this.map.getView().fit(extent, {
+            padding: [120, 120, 120, 120],
+            duration: 600,
+          });
         }
-      } catch (err) {
-        console.error('Harita çizim hatası:', err);
       }
+    } catch (err) {
+      console.error('Harita çizim hatası:', err);
     }
+  }
+
   }
 
   private drawAllTasinmazlar() {
