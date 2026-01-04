@@ -5,18 +5,23 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class AlanAnalizService {
-  private apiUrl="https://localhost:7040/api/AlanAnalizSonucu";
+  private apiUrl="https://localhost:7040/api/alan-analizi";
+
   constructor(private http:HttpClient) { }
 
-  getResults(){
+  save(dto:any){
+    return this.http.post(`${this.apiUrl}/save`,dto);
+  }
+
+  getAutoSelect(){
+    return this.http.get(`${this.apiUrl}/auto-select`);
+  }
+
+  getUnionResults(){
     return this.http.get(`${this.apiUrl}/results`);
   }
 
-  saveUnionResult(dto:any){
-    return this.http.post(`${this.apiUrl}/union`,dto);
-  }
-
-  autoSelect(){
-    return this.http.get(`${this.apiUrl}/auto-select`);
+  deleteAllAnaliz(){
+    return this.http.delete(`${this.apiUrl}`);
   }
 }
