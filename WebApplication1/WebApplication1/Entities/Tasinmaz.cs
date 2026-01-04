@@ -35,6 +35,12 @@ namespace WebApplication1.Entities
         [Column(TypeName = "geometry (Polygon, 4326)")]
         public Polygon Coordinate { get; set; }
         
-        public string? ImagePath { get; set; }
+        //public string? ImagePath { get; set; }
+
+        [Required]
+        public byte[] ImageData { get; set; }
+
+        [Required, MaxLength(50)]
+        public string ImageType { get; set; } // image/jpeg, image/png
     }
 }
