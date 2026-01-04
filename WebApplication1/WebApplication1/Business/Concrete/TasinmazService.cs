@@ -18,6 +18,24 @@ namespace WebApplication1.Business.Concrete
             _context = context;
         }
 
+        public async Task<(byte[] ImageData, string ImageType)?> GetImageAsync(int tasinmazId)
+        {
+            var tasinmaz = await _context.Tasinmazlar
+                .Where(t => t.Id == tasinmazId)
+                .Select(t => new
+                {
+                    t.ImageData,
+                    t.ImageType
+                })
+                .FirstOrDefaultAsync();
+
+            if (tasinmaz == null || tasinmaz.ImageData == null)
+                return null;
+
+            return (tasinmaz.ImageData, tasinmaz.ImageType);
+        }
+
+
         public async Task<List<TasinmazListDto>> GetAllAsync(int userId)
         {
             var writer = new GeoJsonWriter();
@@ -37,7 +55,6 @@ namespace WebApplication1.Business.Concrete
                     MahalleAdi=t.Mahalle.Ad,
                     IlceAdi=t.Mahalle.Ilce.Ad,
                     IlAdi=t.Mahalle.Ilce.Il.Ad,
-                    ImagePath=t.ImagePath
                   
                 })
                 .ToListAsync();
@@ -65,7 +82,6 @@ namespace WebApplication1.Business.Concrete
 
                     UserId=t.UserId,
                     UserEmail=t.User.Email,
-                    ImagePath=t.ImagePath,
 
                 })
                 .ToListAsync();
@@ -76,7 +92,7 @@ namespace WebApplication1.Business.Concrete
             return await _context.Tasinmazlar.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
         }
 
-        public async Task<bool> AddAsync(TasinmazDto dto,int userId,string? imagePath)
+        public async Task<bool> AddAsync(TasinmazDto dto,int userId)
         {
             try
             {
@@ -105,7 +121,9 @@ namespace WebApplication1.Business.Concrete
                     UserId = userId,
 
                     Coordinate = polygon,
-                    ImagePath=imagePath
+
+                    ImageData = dto.ImageData,
+                    ImageType = dto.ImageType,
 
                 };
 
@@ -149,7 +167,7 @@ namespace WebApplication1.Business.Concrete
             return true;
         }
 
-        public async Task<bool> UpdateAsync(int id,TasinmazDto dto,int userId, string? imagePath)
+        public async Task<bool> UpdateAsync(int id,TasinmazDto dto,int userId, byte[]? imageData, string? imageType)
         {
             var tasinmaz =await _context.Tasinmazlar.FirstOrDefaultAsync(t=>t.Id==id && t.UserId==userId);
             if (tasinmaz==null)
@@ -167,9 +185,10 @@ namespace WebApplication1.Business.Concrete
                 tasinmaz.Address = dto.Address;
                 tasinmaz.Coordinate = reader.Read<Polygon>(dto.Geometry);
 
-                if (!string.IsNullOrEmpty(imagePath))
+                if (imageData != null && imageType != null)
                 {
-                    tasinmaz.ImagePath = imagePath;
+                    tasinmaz.ImageData = imageData;
+                    tasinmaz.ImageType = imageType;
                 }
 
 
