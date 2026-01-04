@@ -8,7 +8,10 @@
         public string Address { get; set; }
         public string Geometry { get; set; }
 
-        public IFormFile? Image { get; set; }
+        //public IFormFile? Image { get; set; }
+
+        public byte[]? ImageData { get; set; }
+        public string? ImageType { get; set; }
     }
 }
  
