@@ -31,19 +31,59 @@ export class AlanHesabiComponent implements OnInit {
 
   onGeometryDrawn(event: any) {
     // Eğer daha önce A dolmadıysa A'ya, A doluysa B'ye, B doluysa C'ye yaz
+    let name: 'A' | 'B' | 'C'
+
     if (!this.manualAreas.A.geometry) {
-      this.manualAreas.A = { geometry: event.geojson, area: event.area };
+      name='A'
       console.log('Alan A kaydedildi.');
     } else if (!this.manualAreas.B.geometry) {
-      this.manualAreas.B = { geometry: event.geojson, area: event.area };
+      name='B'
       console.log('Alan B kaydedildi.');
     } else if (!this.manualAreas.C.geometry) {
-      this.manualAreas.C = { geometry: event.geojson, area: event.area };
+      name='C'
       console.log('Alan C kaydedildi.');
       this.maxDrawReached = true;
     } else {
       alert('Zaten 3 alan çizildi. Yeni çizim için temizleyiniz.');
+      return;
     }
+
+      const geometryString =
+    typeof event.geojson === 'string'
+      ? event.geojson
+      : JSON.stringify(event.geojson);
+
+  this.manualAreas[name] = {
+    geometry: geometryString,
+    area: event.area,
+  };
+
+  const dto = {
+    name: name,
+    operation: name,
+    geometry: geometryString,
+    area: event.area,
+  };
+
+  this.alanAnalizService.save(dto).subscribe({
+    next: () => console.log(`${name} kaydedildi / güncellendi`),
+    error: () => alert(`${name} kaydedilirken hata oluştu`),
+  });
+
+
+    // if (!this.manualAreas.A.geometry) {
+    //   this.manualAreas.A = { geometry: event.geojson, area: event.area };
+    //   console.log('Alan A kaydedildi.');
+    // } else if (!this.manualAreas.B.geometry) {
+    //   this.manualAreas.B = { geometry: event.geojson, area: event.area };
+    //   console.log('Alan B kaydedildi.');
+    // } else if (!this.manualAreas.C.geometry) {
+    //   this.manualAreas.C = { geometry: event.geojson, area: event.area };
+    //   console.log('Alan C kaydedildi.');
+    //   this.maxDrawReached = true;
+    // } else {
+    //   alert('Zaten 3 alan çizildi. Yeni çizim için temizleyiniz.');
+    // }
   }
 
   alan: number = 0;
@@ -51,16 +91,34 @@ export class AlanHesabiComponent implements OnInit {
   resetCounter: number = 0;
   savedResults:any[]=[];
 
+
   loadSavedResults(){
-    this.alanAnalizService.getResults().subscribe({
+    this.alanAnalizService.getUnionResults().subscribe({
       next:(res:any)=>{
-        this.savedResults=res;
+        //this.savedResults=res;
+
+        this.alanAnalizService.getAutoSelect().subscribe({
+          next:(abc:any)=>{
+            const abcList=[
+              {id:abc.a.id,name:'A',operation:'A',geometry:abc.a.geometry,area:abc.a.area},
+              {id:abc.b.id,name:'B',operation:'B',geometry:abc.b.geometry,area:abc.b.area},
+              {id:abc.c.id,name:'C',operation:'C',geometry:abc.c.geometry,area:abc.c.area},
+            ];
+            this.savedResults=[...abcList,...res];
+          },
+          error:(err)=>{
+            this.savedResults = res;
+          }
+        })
       },
       error:(err)=>{
         alert("Sonuçlar yüklenemedi");
       }
     })
-  }
+
+    console.log(this.savedResults);
+    
+  };
 
   showResultOnMap(result:any){
   this.geometryResult = {
@@ -83,6 +141,13 @@ export class AlanHesabiComponent implements OnInit {
     return this.alan;
   }
 
+  resetAnaliz(){
+    this.alanAnalizService.deleteAllAnaliz().subscribe({
+      next:()=>{
+        console.log("A, B, C, D, E db'den silindi");
+      }
+    })
+  }
   resetAreas() {
     this.manualAreas = {
       A: { geometry: null, area: 0 },
@@ -208,7 +273,7 @@ export class AlanHesabiComponent implements OnInit {
     this.alan = turf.area(union); // m² cinsinden döner
 
     // 6. REQ-13: Sonucu 'D' ismiyle Veritabanına Kaydet
-    this.alanAnalizService.saveUnionResult({
+    this.alanAnalizService.save({
       name: 'D', // SRS Gereksinimi
       operation: 'A ∪ B',
       geometry: JSON.stringify(union),
@@ -272,7 +337,7 @@ export class AlanHesabiComponent implements OnInit {
     this.alan = turf.area(unionABC);
 
     // 6. REQ-13: Sonucu 'E' ismiyle Veritabanına Kaydet
-    this.alanAnalizService.saveUnionResult({
+    this.alanAnalizService.save({
       name: 'E', // SRS Gereksinimi
       operation: 'A ∪ B ∪ C',
       geometry: JSON.stringify(unionABC),
@@ -308,36 +373,30 @@ loadManualSelect(){
   this.resetAreas();
   this.maxDrawReached = true;
 
-  this.alanAnalizService.autoSelect().subscribe({
+  this.alanAnalizService.getAutoSelect().subscribe({
     next: (res: any) => {
-      // Backend'den gelen 'geometry' alanlarını direkt string olarak saklıyoruz
-      this.manualAreas.A.geometry = res.a.geometry;
-      this.manualAreas.B.geometry = res.b.geometry;
-      this.manualAreas.C.geometry = res.c.geometry;
+      const a = JSON.parse(res.a.geometry);
+      const b = JSON.parse(res.b.geometry);
+      const c = JSON.parse(res.c.geometry);
 
-      const fa = JSON.parse(res.a.geometry);
-      const fb = JSON.parse(res.b.geometry);
-      const fc = JSON.parse(res.c.geometry);
+      this.manualAreas.A = { geometry: res.a.geometry, area: res.a.area };
+      this.manualAreas.B = { geometry: res.b.geometry, area: res.b.area };
+      this.manualAreas.C = { geometry: res.c.geometry, area: res.c.area };
 
-      // Alanları hesapla
-      this.manualAreas.A.area = turf.area(fa);
-      this.manualAreas.B.area = turf.area(fb);
-      this.manualAreas.C.area = turf.area(fc);
-
-      // Haritada göster (FeatureCollection olarak)
       this.geometryResult = {
-        geojson: turf.featureCollection([
-          fa.type === 'Feature' ? fa : turf.feature(fa),
-          fb.type === 'Feature' ? fb : turf.feature(fb),
-          fc.type === 'Feature' ? fc : turf.feature(fc)
-        ]),
-        operation: "auto-select"
+        geojson: {
+          type: 'FeatureCollection',
+          features: [a, b, c],
+        },
+        operation: 'auto-select',
       };
-      
+
+      this.maxDrawReached = true;
     },
-    error: (err) => {
-      alert("Kaydedilmiş A, B, C bulunamadı.");
-    }
+    error: () => {
+      alert('Kayıtlı A, B, C bulunamadı. Lütfen manuel çizim yapın.');
+      this.loadManualSelect();
+    },
   });
 }
 
