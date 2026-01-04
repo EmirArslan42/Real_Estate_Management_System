@@ -5,8 +5,12 @@ namespace WebApplication1.Business.Abstract
 {
     public interface IAlanAnalizSonucuService
     {
-        Task<AutoSelectResultDto> AutoSelectAsync();
-        Task<AlanAnalizSonucuDto> SaveUnionResultAsync(AlanAnalizSonucuDto dto);
-        Task<List<AlanAnalizSonucuDto>> GetResultsAsync();
+        //Task<AutoSelectResultDto> AutoSelectAsync();
+        //Task<AlanAnalizSonucuDto> SaveUnionResultAsync(AlanAnalizSonucuDto dto);
+        Task<(AlanAnalizSonucuDto A, AlanAnalizSonucuDto B, AlanAnalizSonucuDto C)?> GetABCAsync();
+        Task<List<AlanAnalizSonucuDto>> GetUnionResultsAsync();
+        Task SaveOrUpdateAsync(AlanAnalizSonucuDto dto);
+        Task<bool> ClearToAllAnaliz();
+        //Task ClearToAllAnaliz();
     }
 }

@@ -1,9 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NetTopologySuite.IO;
 using WebApplication1.Business.Abstract;
 using WebApplication1.DataAccess;
 using WebApplication1.Dtos;
-using WebApplication1.Entities;
+using WebApplication1.Entities; 
 
 namespace WebApplication1.Business.Concrete
 {
@@ -16,71 +15,142 @@ namespace WebApplication1.Business.Concrete
             _context = context;
         }
 
-
-        public async Task<AutoSelectResultDto> AutoSelectAsync()
+        // AUTO SELECT → A / B / C
+        public async Task<(AlanAnalizSonucuDto A, AlanAnalizSonucuDto B, AlanAnalizSonucuDto C)?> GetABCAsync()
         {
-            var writer = new GeoJsonWriter();
+            var list = await _context.AlanAnalizSonuclari
+                .Where(x => x.Name == "A" || x.Name == "B" || x.Name == "C")
+                .ToListAsync();
 
-            var tasinmazlar = await _context.Tasinmazlar
-                .OrderByDescending(x => x.Id)
-                .Take(3).ToListAsync();
-
-            if (tasinmazlar.Count < 3)
-            {
+            if (list.Count != 3)
                 return null;
-            }
 
-            return new AutoSelectResultDto
+            AlanAnalizSonucuDto Map(AlanAnalizSonucu x) => new AlanAnalizSonucuDto
             {
-                A = new GeometryDto
-                {
-                    Id = tasinmazlar[0].Id,
-                    Geometry = writer.Write(tasinmazlar[0].Coordinate)
-                },
-                B=new GeometryDto
-                {
-                    Id = tasinmazlar[1].Id,
-                    Geometry = writer.Write(tasinmazlar[1].Coordinate),
-                },
-                C=new GeometryDto
-                {
-                    Id = tasinmazlar[2].Id,
-                    Geometry = writer.Write(tasinmazlar[2].Coordinate),
-                }
+                Id = x.Id,
+                Name = x.Name,
+                Operation = x.Operation,
+                Geometry = x.Geometry,
+                Area = x.Area,
             };
-                
+
+            return (
+                Map(list.First(x => x.Name == "A")),
+                Map(list.First(x => x.Name == "B")),
+                Map(list.First(x => x.Name == "C"))
+            );
         }
 
-        public async Task<List<AlanAnalizSonucuDto>> GetResultsAsync()
+        public async Task<List<AlanAnalizSonucuDto>> GetUnionResultsAsync()
         {
-            return await _context.AlanAnalizSonuclari.OrderByDescending(x => x.CreatedAt)
-                .Select(x => new AlanAnalizSonucuDto
+            return await _context.AlanAnalizSonuclari
+                .Where(x=>x.Name=="D" || x.Name=="E")
+                .OrderBy(x=>x.Name)
+                .Select(x=>new AlanAnalizSonucuDto
                 {
-                    Name = x.Name,
+                    Id=x.Id,
+                    Name=x.Name,
                     Operation = x.Operation,
                     Geometry = x.Geometry,
                     Area = x.Area,
-                }).ToListAsync();
+                })
+                .ToListAsync();
         }
 
-        public async Task<AlanAnalizSonucuDto> SaveUnionResultAsync(AlanAnalizSonucuDto dto)
+        public async Task<bool> ClearToAllAnaliz()
         {
-            var entity = new AlanAnalizSonucu
-            {
-                Name = dto.Name,
-                Operation = dto.Operation,
-                Geometry = dto.Geometry,
-                Area = dto.Area,
-            };
+            var all = await _context.AlanAnalizSonuclari
+        .Where(x =>
+            x.Name == "A" ||
+            x.Name == "B" ||
+            x.Name == "C" ||
+            x.Name == "D" ||
+            x.Name == "E")
+        .ToListAsync();
 
-            _context.AlanAnalizSonuclari.Add(entity);
+            if (all.Any())
+            {
+                _context.AlanAnalizSonuclari.RemoveRange(all);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
+        // A / B / C / D / E → SAVE OR UPDATE (Name bazlı)
+        public async Task SaveOrUpdateAsync(AlanAnalizSonucuDto dto) 
+        {
+            var existing = await _context.AlanAnalizSonuclari
+                .FirstOrDefaultAsync(x => x.Name == dto.Name);
+
+            if (existing != null)
+            {
+                // UPDATE işlemi
+                existing.Geometry = dto.Geometry;
+                existing.Area = dto.Area;
+                existing.Operation = dto.Operation;
+                existing.UpdatedAt = DateTime.UtcNow;
+            }
+            else
+            {
+                // INSERT işlemi
+                var entity = new AlanAnalizSonucu
+                {
+                    Id=dto.Id,
+                    Name = dto.Name,
+                    Operation = dto.Operation,
+                    Geometry = dto.Geometry,
+                    Area = dto.Area,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                _context.AlanAnalizSonuclari.Add(entity);
+            }
+
+            
             await _context.SaveChangesAsync();
 
-            return dto;
         }
-
-
-
 
     }
 }
+
+
+
+
+
+
+
+//public async Task<AutoSelectResultDto> AutoSelectAsync()
+//{
+//    var writer = new GeoJsonWriter();
+
+//    var tasinmazlar = await _context.Tasinmazlar
+//        .OrderByDescending(x => x.Id)
+//        .Take(3).ToListAsync();
+
+//    if (tasinmazlar.Count < 3)
+//    {
+//        return null;
+//    }
+
+//    return new AutoSelectResultDto
+//    {
+//        A = new GeometryDto
+//        {
+//            Id = tasinmazlar[0].Id,
+//            Geometry = writer.Write(tasinmazlar[0].Coordinate)
+//        },
+//        B=new GeometryDto
+//        {
+//            Id = tasinmazlar[1].Id,
+//            Geometry = writer.Write(tasinmazlar[1].Coordinate),
+//        },
+//        C=new GeometryDto
+//        {
+//            Id = tasinmazlar[2].Id,
+//            Geometry = writer.Write(tasinmazlar[2].Coordinate),
+//        }
+//    };
+
+//}
