@@ -2,9 +2,11 @@
 {
     public class AlanAnalizSonucuDto
     {
-        // D mi E mi
+        public int Id { get; set; }
+        // A,B,C,D,E
         public string Name { get; set; }
-        // "A ∪ B" | "A ∪ B ∪ C"
+
+        // "A" | "B" | "C" | A ∪ B" | "A ∪ B ∪ C"
         public string Operation { get; set; }
 
         // GeoJSON (string)
