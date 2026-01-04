@@ -94,8 +94,8 @@
                     <td>{{tasinmaz.mahalleAdi}}</td>
                     <td class="text-center">
                         <img
-                        *ngIf="tasinmaz.imagePath"
-                        [src]="'https://localhost:7040'+tasinmaz.imagePath"
+                        *ngIf="tasinmaz.id"
+                        [src]="'https://localhost:7040/api/Tasinmaz/'+tasinmaz.id+'/image?ts=' + imageTimestamp"
                         width="80"
                         />
                     </td>

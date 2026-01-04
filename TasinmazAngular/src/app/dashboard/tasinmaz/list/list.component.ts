@@ -28,6 +28,7 @@ export class ListComponent implements OnInit {
   selectedTasinmaz: any = null;
   filterForm!:FormGroup;
   filteredTasinmazlar:any[]=[];
+  imageTimestamp = Date.now();
   
 
   // ilMap = new Map<number, string>();
@@ -40,9 +41,17 @@ export class ListComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private fb:FormBuilder
-  ) {}
+  ) {
+    this.loadTasinmaz();
+  }
 
   ngOnInit() {
+    console.log('ListComponent INIT');
+    this.loadTasinmaz();
+
+    if(history.state?.reload){
+      this.loadTasinmaz();
+    }
     //this.loadLocations();
     this.filterForm=this.fb.group({
       il:[''],
@@ -52,7 +61,7 @@ export class ListComponent implements OnInit {
       user:[''],
     });
     this.isAdmin=this.authService.isAdmin(); 
-    this.loadTasinmaz();
+    
 
     this.filterForm.valueChanges.subscribe(()=>{
       this.applyFilter();
@@ -110,6 +119,7 @@ export class ListComponent implements OnInit {
 }
 
   loadTasinmaz() {
+    console.log('loadTasinmaz çalıştı');
     
     const request=this.isAdmin ? this.tasinmazService.getAllTasinmazForAdmin()
     :  this.tasinmazService.getAllTasinmaz();
