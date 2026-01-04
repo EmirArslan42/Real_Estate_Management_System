@@ -37,6 +37,7 @@ export class EditComponent implements OnInit {
       address: ['', Validators.required],
       coordinate: ['', Validators.required],
     });
+    
   }
 
   ngOnInit(): void {
@@ -225,7 +226,9 @@ updateForm() {
     next: () => {
       this.successMessage = 'Taşınmaz başarıyla güncellendi.';
       setTimeout(() => {
-        this.router.navigate(['/dashboard/tasinmaz/list']);
+        this.router.navigate(['/dashboard/tasinmaz/list'],{
+          state:{reload:true}
+        });
       }, 2000);
     },
     error: () => {

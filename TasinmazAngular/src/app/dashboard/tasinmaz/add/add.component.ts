@@ -124,7 +124,9 @@ export class AddComponent implements OnInit {
     this.tasinmazService.addTasinmaz(formData).subscribe({
         next: () => {
             this.successMessage = 'Taşınmaz başarıyla eklendi.';
-            setTimeout(() => this.router.navigate(['/dashboard/tasinmaz/list']), 2000);
+            setTimeout(() => this.router.navigate(['/dashboard/tasinmaz/list'],{
+              state:{reload:true}
+            }), 2000);
         },
         error: (err) => {
             console.error("Backend'den gelen hata detayı:", err);
