@@ -56,16 +56,43 @@ export class EditComponent implements OnInit {
   }
 
 
-    onGeometryDrawn(geojson: string) {
-  // Eğer Backend sadece {"type":"Polygon"...} bekliyorsa:
-  const parsed = JSON.parse(geojson);
-  this.drawnGeometry = JSON.stringify(parsed.geometry);
+//     onGeometryDrawn(geojson: string) {
+//   // Eğer Backend sadece {"type":"Polygon"...} bekliyorsa:
+//   const parsed = JSON.parse(geojson);
+//   this.drawnGeometry = JSON.stringify(parsed.geometry);
   
-  // Formu güncelle (Validators.required hatası almamak için önemli)
+//   // Formu güncelle (Validators.required hatası almamak için önemli)
+//   this.tasinmazForm.patchValue({
+//     coordinate: geojson
+//   });
+// }
+
+onGeometryDrawn(event: any) {
+
+  // 🔥 1. GeoJSON string mi object mi ayır
+  const geoString =
+    typeof event === 'string'
+      ? event
+      : event.geojson; // Alan hesabından gelirse
+
+  // 🔥 2. String'e emin olduktan sonra parse et
+  const parsed =
+    typeof geoString === 'string'
+      ? JSON.parse(geoString)
+      : geoString;
+
+  // 🔥 3. Backend sadece geometry bekliyorsa
+  this.drawnGeometry = JSON.stringify(
+    parsed.type === 'Feature' ? parsed.geometry : parsed
+  );
+
+  // 🔥 4. Formu valid tut
   this.tasinmazForm.patchValue({
-    coordinate: geojson
+    coordinate: geoString
   });
 }
+
+
 
   // getTasinmaz() {
   //   this.tasinmazService.getTasinmazById(this.id).subscribe((tasinmaz) => {

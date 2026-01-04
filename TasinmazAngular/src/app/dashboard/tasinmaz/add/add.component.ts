@@ -59,11 +59,22 @@ export class AddComponent implements OnInit {
     })
   }
 
-  onGeometryDrawn(geojson:string){
-    this.drawnGeometry=geojson;
-    this.tasinmazForm.patchValue({coordinate:geojson});
-    console.log("Forma yazılıd: ",geojson);
-  }
+  // onGeometryDrawn(geojson:string){
+  //   this.drawnGeometry=geojson;
+  //   this.tasinmazForm.patchValue({coordinate:geojson});
+  //   console.log("Forma yazılıd: ",geojson);
+  // }
+
+  onGeometryDrawn(event: any) {
+  const geojson =
+    typeof event === 'string'
+      ? event
+      : event.geojson; 
+
+  this.drawnGeometry = geojson;
+  this.tasinmazForm.patchValue({ coordinate: geojson });
+}
+
 
   onImageSelected(event: any) {
     this.selectedImage = event.target.files[0];
@@ -94,9 +105,16 @@ export class AddComponent implements OnInit {
     formData.append("Address", this.tasinmazForm.get('address')?.value || "");
 
     // GEOMETRİ: Nesne ise JSON string'e çeviriyoruz
-    const geoString = typeof this.drawnGeometry === 'object' 
-                      ? JSON.stringify(this.drawnGeometry) 
-                      : this.drawnGeometry;
+    // const geoString = typeof this.drawnGeometry === 'object' 
+    //                   ? JSON.stringify(this.drawnGeometry) 
+    //                   : this.drawnGeometry;
+
+    const geoString =
+  typeof this.drawnGeometry === 'string'
+    ? this.drawnGeometry
+    : JSON.stringify(this.drawnGeometry);
+
+
     formData.append('Geometry', geoString);
 
     if (this.selectedImage) {

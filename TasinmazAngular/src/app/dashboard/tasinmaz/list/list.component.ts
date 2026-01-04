@@ -127,10 +127,20 @@ export class ListComponent implements OnInit {
           if (tasinmaz.coordinate) {
         const geojsonFormat = new GeoJSON();
         // readFeatures yerine daha garanti bir okuma:
-        const features = geojsonFormat.readFeatures(tasinmaz.coordinate, {
-          dataProjection: 'EPSG:4326',
-          featureProjection: 'EPSG:3857'
-        });
+        // const features = geojsonFormat.readFeatures(tasinmaz.coordinate, {
+        //   dataProjection: 'EPSG:4326',
+        //   featureProjection: 'EPSG:3857'
+        // });
+
+        const geoData = tasinmaz.geometry || tasinmaz.coordinate;
+        if (!geoData) return;
+
+        const parsedGeo = typeof geoData === 'string' ? JSON.parse(geoData) : geoData; 
+
+        const features = geojsonFormat.readFeatures(parsedGeo, {
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857'
+      });
             
             features.forEach(f=>{
               f.setProperties({

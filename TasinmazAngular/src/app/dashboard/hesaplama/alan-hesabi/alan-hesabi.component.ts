@@ -16,7 +16,7 @@ export class AlanHesabiComponent implements OnInit {
   constructor(private alanAnalizService:AlanAnalizService) {}
 
   ngOnInit() {
-    console.log(this.mode);
+    console.log("Default gelen mod:",this.mode);
   }
 
   manualAreas: any = {
@@ -74,6 +74,7 @@ export class AlanHesabiComponent implements OnInit {
 
 
   getTotalArea() {
+    this.currentOperation="A+B+C"
     this.alan =
       this.manualAreas.A.area +
       this.manualAreas.B.area +
@@ -295,8 +296,18 @@ export class AlanHesabiComponent implements OnInit {
   }
 }
 
+loadManualSelect(){
+  this.mode='manual';
+  this.resetAreas();
+  console.log("Manual mode'a geçtik")
+}
+
   loadAutoSelect() {
   this.mode = 'auto';
+  console.log("Auto moda geçti: ",this.mode);
+  this.resetAreas();
+  this.maxDrawReached = true;
+
   this.alanAnalizService.autoSelect().subscribe({
     next: (res: any) => {
       // Backend'den gelen 'geometry' alanlarını direkt string olarak saklıyoruz
@@ -323,7 +334,6 @@ export class AlanHesabiComponent implements OnInit {
         operation: "auto-select"
       };
       
-      this.maxDrawReached = true;
     },
     error: (err) => {
       alert("Kaydedilmiş A, B, C bulunamadı.");

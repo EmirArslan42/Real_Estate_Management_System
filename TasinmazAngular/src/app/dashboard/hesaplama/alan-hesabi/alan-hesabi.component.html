@@ -1,9 +1,13 @@
 <div class="container mt-4 mb-4">
     <h2 class="text-center">Alan Hesaplama</h2>
     <div class="btn-group mb-3">
-        <button class="btn btn-primary" (click)="mode='manual'">Manuel</button>
+        <button class="btn btn-primary" (click)="loadManualSelect()">Manuel</button>
         <button class="btn btn-secondary" (click)="loadAutoSelect()" >Auto</button>
     </div>
+
+    <p class="text-danger fw-bold">
+  Aktif Mod: {{ mode }}
+</p>
 
     <div *ngIf="mode=='manual'">
         <h5>Manuel Alan Hesaplama</h5>
@@ -53,7 +57,7 @@
         <button class="btn btn-primary" (click)="resetAreas()">Hesaplamaları Temizle</button>
     </div>
 
-    <p><b>Toplam Hesaplanan Alan:</b> {{ formatArea(alan)}}</p>
+    <!-- <p><b>Toplam Hesaplanan Alan:</b> {{ formatArea(alan)}}</p> -->
 
     <div *ngIf="currentOperation" class="alert alert-info mt-3">
         <b>İşlem:</b> {{ currentOperation }} <br />

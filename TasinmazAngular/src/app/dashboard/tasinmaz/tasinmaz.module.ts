@@ -24,7 +24,8 @@ import { TasinmazMapComponent } from './tasinmaz-map/tasinmaz-map.component';
     HttpClientModule,
   ],
   exports:[
-    TasinmazMapComponent
+    TasinmazMapComponent,
+    
   ]
 })
 export class TasinmazModule { }
