@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.IO;
 using WebApplication1.Business.Abstract;
+using WebApplication1.DataAccess;
 using WebApplication1.Dtos;
 using WebApplication1.Entities;
 
@@ -15,10 +17,12 @@ namespace WebApplication1.Controllers
     {
         private readonly ITasinmazService _service;
         private readonly ILogService _logService;
-        public TasinmazController(ITasinmazService service,ILogService logService) {
+        private readonly ApplicationDbContext _context;
+        public TasinmazController(ITasinmazService service,ILogService logService,ApplicationDbContext context) {
             
             _service = service;
             _logService = logService;  
+            _context=context;
         }
 
         // tokendan userId çekme
@@ -121,29 +125,18 @@ namespace WebApplication1.Controllers
         [Authorize(Roles = "User")]
         [HttpPost]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> Add([FromForm] TasinmazDto dto) // [FromForm] olduğundan emin olun
+        public async Task<IActionResult> Add([FromForm] TasinmazDto dto,IFormFile? Image) // [FromForm] olduğundan emin olun
         {
-            string? imagePath = null;
             try
             {
-                if (dto.Image != null)
+                if (Image != null)
                 {
-                    // Klasör yolunu işletim sistemine uygun şekilde alalım
-                    var pathRoot = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+                    using var ms=new MemoryStream();
+                    await Image.CopyToAsync(ms);
 
-                    // Klasör yoksa oluştur
-                    if (!Directory.Exists(pathRoot))
-                        Directory.CreateDirectory(pathRoot);
+                    dto.ImageData=ms.ToArray();
+                    dto.ImageType = Image.ContentType;
 
-                    var fileName = Guid.NewGuid() + Path.GetExtension(dto.Image.FileName);
-                    var filePath = Path.Combine(pathRoot, fileName);
-
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await dto.Image.CopyToAsync(stream);
-                    }
-
-                    imagePath = "/images/" + fileName;
                 }
 
                 var userId = GetUserId();
@@ -156,7 +149,7 @@ namespace WebApplication1.Controllers
                     return BadRequest("Koordinat bilgisi eksik!");
                 }
 
-                var result = await _service.AddAsync(dto, userId, imagePath);
+                var result = await _service.AddAsync(dto, userId);
                 return result ? NoContent() : BadRequest("Ekleme başarısız.");
             }
             catch (Exception ex)
@@ -192,34 +185,51 @@ namespace WebApplication1.Controllers
             return NoContent();
         }
 
+        //[AllowAnonymous]
+        //[HttpGet("{id}/image")]
+        //public async Task<IActionResult> GetImage(int id)
+        //{
+        //    var tasinmaz = await _context.Tasinmazlar.FirstOrDefaultAsync(t=>t.Id == id);
+
+        //    if (tasinmaz == null || tasinmaz.ImageData == null)
+        //        return NotFound();
+
+        //    return File(tasinmaz.ImageData, tasinmaz.ImageType);
+        //}
+
+        [AllowAnonymous]
+        [HttpGet("{id}/image")]
+        public async Task<IActionResult> GetImage(int id)
+        {
+            var image = await _service.GetImageAsync(id);
+
+            if (image == null)
+                return NotFound();
+
+            return File(image.Value.ImageData, image.Value.ImageType);
+        }
+
+
         [Authorize(Roles = "User")]
         [HttpPut("{id}")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> Update(int id,[FromForm] TasinmazDto dto)
+        public async Task<IActionResult> Update(int id,[FromForm] TasinmazDto dto,IFormFile? Image)
         {
-            string? imagePath = null;
-            if (dto.Image != null)
+            byte[]? imageData = null;
+            string? imageType = null;
+
+            // Yeni resim geldiyse
+            if (Image != null && Image.Length > 0)
             {
-                var pathRoot = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+                using var ms = new MemoryStream();
+                await Image.CopyToAsync(ms);
 
-                if (!Directory.Exists(pathRoot))
-                    Directory.CreateDirectory(pathRoot);
-
-                var fileName = Guid.NewGuid() + Path.GetExtension(dto.Image.FileName);
-                var filePath = Path.Combine(pathRoot, fileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await dto.Image.CopyToAsync(stream);
-                }
-
-                
-                imagePath = "/images/" + fileName;
+                imageData = ms.ToArray();
+                imageType = Image.ContentType;
             }
 
-
             var userId =GetUserId() ;
-            var result =await _service.UpdateAsync(id,dto,userId,imagePath); // tasinmaz var mı yok mu onu kontrol etmek için
+            var result =await _service.UpdateAsync(id,dto,userId, imageData,imageType); // tasinmaz var mı yok mu onu kontrol etmek için
 
             if(!result) {
                 return NotFound("Tasinmaz yok");
