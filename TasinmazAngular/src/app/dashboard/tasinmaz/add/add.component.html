@@ -1,12 +1,15 @@
 <div class="container mt-4">
     
-    <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+    <div *ngIf="successMessage" class="fixed-top d-flex justify-content-end" style="margin-top: 20px;right:12px">
+    <p class="alert alert-success alert-dismissible fade show text-center w-25 fs-6" role="alert">
         {{ successMessage }}
     </div>
 
-    <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+   <div *ngIf="errorMessage" class="fixed-top d-flex justify-content-end" style="margin-top: 20px;right:12px">
+    <p class="alert alert-danger alert-dismissible fade show text-center w-25 fs-6" role="alert">
         {{ errorMessage }}
-    </div>
+    </p>
+</div>
     <div><a routerLink="/dashboard/tasinmaz/list" class="btn btn-secondary btn-sm">← GERİ</a></div>
     <h2 class="text-center">Yeni Taşınmaz Ekle</h2>
     <form (ngSubmit)="saveForm()" [formGroup]="tasinmazForm">

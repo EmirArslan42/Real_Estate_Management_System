@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LocationService } from 'src/app/shared/location.service';
 import { TasinmazService } from 'src/app/dashboard/tasinmaz/tasinmaz.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-add',
@@ -10,10 +11,9 @@ import { TasinmazService } from 'src/app/dashboard/tasinmaz/tasinmaz.service';
   styleUrls: ['./add.component.css'],
 })
 export class AddComponent implements OnInit {
-
   tasinmazForm: FormGroup;
-  successMessage:string='';
-  errorMessage:string='';
+  successMessage: string = '';
+  errorMessage: string = '';
   drawnGeometry: string = '';
   iller: any[] = [];
   ilceler: any[] = [];
@@ -24,7 +24,8 @@ export class AddComponent implements OnInit {
     private fb: FormBuilder,
     private tasinmazService: TasinmazService,
     private locationService: LocationService,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {
     this.tasinmazForm = this.fb.group({
       ilId: ['', Validators.required],
@@ -32,9 +33,8 @@ export class AddComponent implements OnInit {
       mahalleId: ['', Validators.required],
       lotNumber: ['', Validators.required], // ada
       parcelNumber: ['', Validators.required], // parsel
-      //nitelik: ['', Validators.required],
       address: ['', Validators.required],
-      coordinate: ['',Validators.required],
+      coordinate: ['', Validators.required],
     });
   }
 
@@ -43,97 +43,106 @@ export class AddComponent implements OnInit {
   }
 
   loadIller() {
-    this.locationService.getIller().subscribe(iller=>{
-      this.iller=iller;
-    })
+    this.locationService.getIller().subscribe((iller) => {
+      this.iller = iller;
+    });
   }
 
-  onIlChange(){
-    const ilId=this.tasinmazForm.get('ilId')?.value;
-    this.ilceler=[];
-    this.mahalleler=[];
-    this.tasinmazForm.patchValue({ilceId:'',mahalleId:''});  // formun değerini anında günceller
+  onIlChange() {
+    const ilId = this.tasinmazForm.get('ilId')?.value;
+    this.ilceler = [];
+    this.mahalleler = [];
+    this.tasinmazForm.patchValue({ ilceId: '', mahalleId: '' }); // formun değerini anında günceller
 
-    this.locationService.getIlceler(ilId).subscribe(ilceler=>{
-      this.ilceler=ilceler;
-    })
+    this.locationService.getIlceler(ilId).subscribe((ilceler) => {
+      this.ilceler = ilceler;
+    });
   }
-
-  // onGeometryDrawn(geojson:string){
-  //   this.drawnGeometry=geojson;
-  //   this.tasinmazForm.patchValue({coordinate:geojson});
-  //   console.log("Forma yazılıd: ",geojson);
-  // }
 
   onGeometryDrawn(event: any) {
-  const geojson =
-    typeof event === 'string'
-      ? event
-      : event.geojson; 
+    const geojson = typeof event === 'string' ? event : event.geojson;
 
-  this.drawnGeometry = geojson;
-  this.tasinmazForm.patchValue({ coordinate: geojson });
-}
-
+    this.drawnGeometry = geojson;
+    this.tasinmazForm.patchValue({ coordinate: geojson });
+  }
 
   onImageSelected(event: any) {
     this.selectedImage = event.target.files[0];
   }
 
-  onIlceChange(){
-    const ilceId=this.tasinmazForm.get('ilceId')?.value;
-    this.mahalleler=[];
-    this.tasinmazForm.patchValue({mahalleId:''}) 
+  onIlceChange() {
+    const ilceId = this.tasinmazForm.get('ilceId')?.value;
+    this.mahalleler = [];
+    this.tasinmazForm.patchValue({ mahalleId: '' });
 
-    this.locationService.getMahalleler(ilceId).subscribe(mahalleler=>{
-      this.mahalleler=mahalleler;
-    })
+    this.locationService.getMahalleler(ilceId).subscribe((mahalleler) => {
+      this.mahalleler = mahalleler;
+    });
   }
 
+  showErrorAlert(errorMessage:string){
+    this.errorMessage = errorMessage;
+    setTimeout(() => {
+      this.errorMessage = "";
+    }, 2000);
+  }
+  showSuccessAlert(successMessage:string){
+  this.successMessage = successMessage;
+    setTimeout(() => {
+      this.successMessage = "";
+    }, 2000);
+  }
   saveForm() {
     if (!this.drawnGeometry) {
-        this.errorMessage = 'Lütfen harita üzerinde taşınmaz alanını çizin.';
-        return;
+      this.showErrorAlert("Lütfen harita üzerinde taşınmaz alanını çizin.");
+      return;
     }
 
     const formData = new FormData();
-    
-    // Değerleri append ederken null/undefined kontrolü yapıyoruz
-    formData.append("MahalleId", this.tasinmazForm.get('mahalleId')?.value?.toString() || "");
-    formData.append("LotNumber", this.tasinmazForm.get('lotNumber')?.value || "");
-    formData.append("ParcelNumber", this.tasinmazForm.get('parcelNumber')?.value || "");
-    formData.append("Address", this.tasinmazForm.get('address')?.value || "");
 
-    // GEOMETRİ: Nesne ise JSON string'e çeviriyoruz
-    // const geoString = typeof this.drawnGeometry === 'object' 
-    //                   ? JSON.stringify(this.drawnGeometry) 
-    //                   : this.drawnGeometry;
+    // Değerleri append ederken null/undefined kontrolü yapıyoruz
+    formData.append(
+      'MahalleId',
+      this.tasinmazForm.get('mahalleId')?.value?.toString() || ''
+    );
+    formData.append(
+      'LotNumber',
+      this.tasinmazForm.get('lotNumber')?.value || ''
+    );
+    formData.append(
+      'ParcelNumber',
+      this.tasinmazForm.get('parcelNumber')?.value || ''
+    );
+    formData.append('Address', this.tasinmazForm.get('address')?.value || '');
 
     const geoString =
-  typeof this.drawnGeometry === 'string'
-    ? this.drawnGeometry
-    : JSON.stringify(this.drawnGeometry);
-
+      typeof this.drawnGeometry === 'string'
+        ? this.drawnGeometry
+        : JSON.stringify(this.drawnGeometry);
 
     formData.append('Geometry', geoString);
 
     if (this.selectedImage) {
-        formData.append("Image", this.selectedImage, this.selectedImage.name);
+      formData.append('Image', this.selectedImage, this.selectedImage.name);
     }
 
     this.tasinmazService.addTasinmaz(formData).subscribe({
-        next: () => {
-            this.successMessage = 'Taşınmaz başarıyla eklendi.';
-            setTimeout(() => this.router.navigate(['/dashboard/tasinmaz/list'],{
-              state:{reload:true}
-            }), 2000);
-        },
-        error: (err) => {
-            console.error("Backend'den gelen hata detayı:", err);
-            this.errorMessage = 'Form kaydedilirken bir hata oluştu. Detay: ' + (err.error || 'Bilinmiyor');
-        }
+      next: () => {
+        this.showSuccessAlert("Taşınmaz başarıyla eklendi.")
+        setTimeout(
+          () =>
+            this.router.navigate(['/dashboard/tasinmaz/list'], {
+              state: { reload: true },
+            }),
+          2000
+        );
+      },
+      error: (err) => {
+        console.error("Backend'den gelen hata detayı:", err);
+        this.errorMessage =
+          'Form kaydedilirken bir hata oluştu. Detay: ' +
+          (err.error || 'Bilinmiyor');
+      },
     });
-}
-
-
+  }
 }

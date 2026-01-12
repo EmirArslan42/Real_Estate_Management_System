@@ -20,7 +20,6 @@ import { Geometry } from 'ol/geom';
 import Feature from 'ol/Feature';
 import { Router } from '@angular/router';
 import { getArea } from 'ol/sphere';
-import { isEmpty as isExtentEmpty } from 'ol/extent';
 import Style from 'ol/style/Style';
 import Stroke from 'ol/style/Stroke';
 import Fill from 'ol/style/Fill';
@@ -32,8 +31,7 @@ import Fill from 'ol/style/Fill';
 })
 export class TasinmazMapComponent implements OnInit {
   @Input() allTasinmazlar: any[] = [];
-  // 🔹 Edit ekranında eski polygonu göstermek için
-  @Input() existingGeometry: string | null = null;
+  @Input() existingGeometry: string | null = null; // Edit ekranında eski polygonu göstermek için
   @Output() geometryDrawn = new EventEmitter<any>();
   @Output() tasinmazSelected = new EventEmitter<any>();
   @Input() mode: 'add' | 'edit' | 'manual' | 'auto' = 'add';
@@ -65,10 +63,8 @@ export class TasinmazMapComponent implements OnInit {
       this.addDrawInteraction();
     }
 
-    // Edit ekranından gelen eski polygonu çiz
     // Edit ekranından gelen eski polygonu haritaya çizdiğimiz kısım
     if (this.existingGeometry) {
-      // BURAYA YAZILACAK:
       const feature = new GeoJSON().readFeature(this.existingGeometry, {
         dataProjection: 'EPSG:4326', // Veritabanındaki Enlem/Boylam formatı
         featureProjection: this.map.getView().getProjection(), // Haritadaki Metre (3857) formatı
@@ -76,7 +72,7 @@ export class TasinmazMapComponent implements OnInit {
 
       this.vectorSource.addFeature(feature as Feature<Geometry>);
 
-      // Haritayı bu şekle otomatik odakla
+      // Haritayı odaklamak için
       this.map.getView().fit(this.vectorSource.getExtent(), {
         padding: [50, 50, 50, 50],
         maxZoom: 18,
@@ -95,30 +91,30 @@ export class TasinmazMapComponent implements OnInit {
 
   areaStyles: Record<string, Style> = {
     A: new Style({
-      fill: new Fill({ color: 'rgba(40, 167, 69, 0.4)' }), // yeşil
-      stroke: new Stroke({ color: '#28a745', width: 2 })
+      fill: new Fill({ color: 'rgba(40, 167, 69, 0.4)' }),
+      stroke: new Stroke({ color: '#28a745', width: 2 }),
     }),
     B: new Style({
-      fill: new Fill({ color: 'rgba(255, 193, 7, 0.4)' }), // sarı
-      stroke: new Stroke({ color: '#ffc107', width: 2 })
+      fill: new Fill({ color: 'rgba(255, 193, 7, 0.4)' }),
+      stroke: new Stroke({ color: '#ffc107', width: 2 }),
     }),
     C: new Style({
-      fill: new Fill({ color: 'rgba(108, 117, 125, 0.4)' }), // gri
-      stroke: new Stroke({ color: '#6c757d', width: 2 })
-    })
+      fill: new Fill({ color: 'rgba(108, 117, 125, 0.4)' }),
+      stroke: new Stroke({ color: '#6c757d', width: 2 }),
+    }),
   };
 
   intersectionStyle = new Style({
     fill: new Fill({ color: 'rgba(255,0,0,0.5)' }),
-    stroke: new Stroke({ color: '#ff0000', width: 3 })
+    stroke: new Stroke({ color: '#ff0000', width: 3 }),
   });
 
   unionStyle = new Style({
     fill: new Fill({ color: 'rgba(0,123,255,0.4)' }),
-    stroke: new Stroke({ color: '#007bff', width: 3 })
+    stroke: new Stroke({ color: '#007bff', width: 3 }),
   });
 
-  ngOnChanges(changes: SimpleChanges): void {
+  private handleExistingGeometry(changes: SimpleChanges): void {
     if (
       changes['existingGeometry'] &&
       changes['existingGeometry'].currentValue &&
@@ -136,13 +132,22 @@ export class TasinmazMapComponent implements OnInit {
       this.vectorSource.clear();
       this.vectorSource.addFeature(feature as Feature<Geometry>);
     }
+  }
+
+  private handleAllTasinmazlar(changes: SimpleChanges): void {
     // Liste değiştiğinde veya yüklendiğinde çalışır
     if (changes['allTasinmazlar'] && this.allTasinmazlar) {
       this.drawAllTasinmazlar();
     }
+  }
+
+  private handleReset(changes: SimpleChanges): void {
     if (changes['resetCounter'] && !changes['resetCounter'].firstChange) {
       this.vectorSource.clear();
     }
+  }
+
+  private handleDrawToggle(changes: SimpleChanges): void {
     if (changes['disableDraw'] && this.draw) {
       if (this.disableDraw) {
         this.map.removeInteraction(this.draw); // çizim kapalı
@@ -150,69 +155,80 @@ export class TasinmazMapComponent implements OnInit {
         this.map.addInteraction(this.draw); // çizim açık
       }
     }
+  }
 
-      if (
-    changes['resultGeometry'] &&
-    this.resultGeometry &&
-    this.resultGeometry.geojson
-  ) {
-    try {
-      const format = new GeoJSON();
-      let features: Feature<Geometry>[] = [];
+  private readResultFeatures(): Feature<Geometry>[] {
+    const format = new GeoJSON();
 
-      // 🔴 KRİTİK AYRIM
-      if (this.resultGeometry.geojson.type === 'FeatureCollection') {
-        features = format.readFeatures(this.resultGeometry.geojson, {
-          dataProjection: 'EPSG:4326',
-          featureProjection: 'EPSG:3857',
-        }) as Feature<Geometry>[];
-      } else {
-        features = [
-          format.readFeature(this.resultGeometry.geojson, {
-            dataProjection: 'EPSG:4326',
-            featureProjection: 'EPSG:3857',
-          }) as Feature<Geometry>,
-        ];
-      }
+    if (this.resultGeometry.geojson.type === 'FeatureCollection') {
+      return format.readFeatures(this.resultGeometry.geojson, {
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857',
+      });
+    }
 
-      if (features.length > 0) {
-        this.vectorSource.clear();
+    return [
+      format.readFeature(this.resultGeometry.geojson, {
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857',
+      }) as Feature<Geometry>,
+    ];
+  }
 
-        features.forEach((feature) => {
-          if (this.resultGeometry.operation === 'intersection') {
-            feature.setStyle(this.intersectionStyle);
-          }
+  private applyResultStyle(feature: Feature<Geometry>): void {
+    if (this.resultGeometry.operation === 'intersection') {
+      feature.setStyle(this.intersectionStyle);
+    }
 
-          if (this.resultGeometry.operation === 'union') {
-            feature.setStyle(this.unionStyle);
-          }
+    if (this.resultGeometry.operation === 'union') {
+      feature.setStyle(this.unionStyle);
+    }
+    this.vectorSource.addFeature(feature);
+  }
 
-          this.vectorSource.addFeature(feature);
-        });
+  private fitMapToResult(): void {
+    const extent = this.vectorSource.getExtent();
+    const isValid = extent.every((v) => isFinite(v) && !isNaN(v));
 
-        const extent = this.vectorSource.getExtent();
-
-        const isValid = extent.every(
-          (v) => isFinite(v) && !isNaN(v)
-        );
-
-        if (isValid && extent[0] !== Infinity) {
-          this.map.getView().fit(extent, {
-            padding: [120, 120, 120, 120],
-            duration: 600,
-          });
-        }
-      }
-    } catch (err) {
-      console.error('Harita çizim hatası:', err);
+    if (isValid && extent[0] !== Infinity) {
+      this.map.getView().fit(extent, {
+        padding: [120, 120, 120, 120],
+        duration: 600,
+      });
     }
   }
 
+  private handleResultGeometry(changes: SimpleChanges): void {
+    if (
+      changes['resultGeometry'] &&
+      this.resultGeometry &&
+      this.resultGeometry.geojson
+    ) {
+      try {
+        const features = this.readResultFeatures();
+
+        if (!features.length) return;
+
+        this.vectorSource.clear();
+        features.forEach((feature) => this.applyResultStyle(feature));
+        this.fitMapToResult();
+      } catch (err) {
+        console.error('Harita çizim hatası:', err);
+      }
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.handleExistingGeometry(changes);
+    this.handleAllTasinmazlar(changes);
+    this.handleReset(changes);
+    this.handleDrawToggle(changes);
+    this.handleResultGeometry(changes);
   }
 
   private drawAllTasinmazlar() {
     if (!this.map) return;
-    this.vectorSource.clear(); // Önce temizle
+    this.vectorSource.clear(); // Önce hepsini temizle
 
     const geojsonFormat = new GeoJSON();
 
@@ -224,7 +240,6 @@ export class TasinmazMapComponent implements OnInit {
             dataProjection: 'EPSG:4326',
             featureProjection: this.map.getView().getProjection(),
           });
-
           // Her bir şekle bilgi ekleyebiliriz (Tıklandığında göstermek için)
           features.forEach((f) => f.set('info', tasinmaz));
 
@@ -262,18 +277,10 @@ export class TasinmazMapComponent implements OnInit {
 
     this.draw.on('drawend', (event) => {
       const feature = event.feature;
-      const geometry = feature.getGeometry();
-
       const label = this.manualLabels[this.manualDrawIndex];
       this.manualDrawIndex++;
 
       feature.setStyle(this.areaStyles[label]);
-
-      //  ALAN HESABI (m²)
-      const areaInSqMeters = getArea(geometry!);
-
-      console.log('Alan (m²):', areaInSqMeters);
-      console.log('Alan (km²):', areaInSqMeters / 1_000_000);
 
       const cloned = feature.clone();
       cloned.getGeometry()?.transform('EPSG:3857', 'EPSG:4326');

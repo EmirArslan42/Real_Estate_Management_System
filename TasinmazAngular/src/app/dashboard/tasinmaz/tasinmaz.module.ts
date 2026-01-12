@@ -8,7 +8,7 @@ import { EditComponent } from './edit/edit.component';
 import {ReactiveFormsModule} from '@angular/forms'
 import { HttpClientModule } from '@angular/common/http';
 import { TasinmazMapComponent } from './tasinmaz-map/tasinmaz-map.component';
-
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -22,6 +22,7 @@ import { TasinmazMapComponent } from './tasinmaz-map/tasinmaz-map.component';
     TasinmazRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
+    MatSnackBarModule,
   ],
   exports:[
     TasinmazMapComponent,
