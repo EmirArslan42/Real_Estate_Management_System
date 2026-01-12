@@ -1,38 +1,36 @@
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h3>👥 Kullanıcı Yönetimi</h3> <button class="btn btn-primary mb-3" (click)="openAddForm()">
-  ➕ Yeni Kullanıcı Ekle
-</button>
+      ➕ Yeni Kullanıcı Ekle
+    </button>
   </div>
 
   <div *ngIf="isLoading" class="alert alert-info">
     Kullanıcılar yükleniyor...
   </div>
-  
+
 
   <form [formGroup]="filteredForm" class="row mb-3">
-  <div class="col-md-4">
-    <label class="form-label">Rol</label>
-    <select class="form-select" formControlName="role">
-      <option value="">Tümü</option>
-      <option value="Admin">Admin</option>
-      <option value="User">User</option>
-    </select>
-  </div>
+    <div class="col-md-4">
+      <label class="form-label">Rol</label>
+      <select class="form-select" formControlName="role">
+        <option value="">Tümü</option>
+        <option value="Admin">Admin</option>
+        <option value="User">User</option>
+      </select>
+    </div>
 
-  <div class="col-md-4">
-    <label class="form-label">Email</label>
-    <input
-      type="text"
-      class="form-control"
-      formControlName="email"
-      placeholder="Email ile ara"
-    />
-  </div>
-</form>
+    <div class="col-md-4">
+      <label class="form-label">Email</label>
+      <input type="text" class="form-control" formControlName="email" placeholder="Email ile ara" />
+    </div>
+  </form>
 
 
   <table class="table table-bordered" *ngIf="!isLoading">
+    <caption class="visually-hidden">
+      Sistemde kayıtlı kullanıcıların listelendiği ve yönetildiği kullanıcı tablosu
+    </caption>
     <thead>
       <tr>
         <th>Ad</th>
@@ -49,8 +47,7 @@
         <td>{{ user.email }}</td>
 
         <td>
-          <span class="badge"
-            [ngClass]="{
+          <span class="badge" [ngClass]="{
               'bg-primary': user.role === 'Admin',
               'bg-secondary': user.role === 'User'
             }">
@@ -59,8 +56,7 @@
         </td>
 
         <td>
-          <span class="badge"
-            [ngClass]="{
+          <span class="badge" [ngClass]="{
               'bg-success': user.isActive,
               'bg-danger': !user.isActive
             }">
@@ -69,18 +65,15 @@
         </td>
 
         <td>
-          <button class="btn btn-sm btn-warning me-1"
-            (click)="openEdit(user)">
+          <button class="btn btn-sm btn-warning me-1" (click)="openEdit(user)">
             Düzenle
           </button>
 
-          <button class="btn btn-sm btn-secondary me-1"
-            (click)="toggleStatus(user)">
+          <button class="btn btn-sm btn-secondary me-1" (click)="toggleStatus(user)">
             {{ user.isActive ? 'Pasif Yap' : 'Aktif Yap' }}
           </button>
 
-          <button class="btn btn-sm btn-danger"
-            (click)="deleteUser(user)">
+          <button class="btn btn-sm btn-danger" (click)="deleteUser(user)">
             Sil
           </button>
         </td>
@@ -117,112 +110,93 @@
 
         <div class="mb-3">
           <label>Yeni Şifre (opsiyonel)</label>
-          <input type="password"
-            class="form-control"
-            formControlName="password"
-            placeholder="Boş bırakılırsa değişmez">
-            <small class="text-danger"
-          *ngIf="editForm.get('password')?.touched && editForm.get('password')?.errors?.['required']">
-          Şifre alanı zorunludur
-        </small>
-        <small class="text-danger"
-          *ngIf="editForm.get('password')?.errors?.['minlength']">
-          Şifre en az 8 karakter olmalıdır.
-        </small>
-        <small class="text-danger"
-          *ngIf="editForm.get('password')?.errors?.['pattern']">
-          Şifre en az 1 büyük ve 1 küçük harf içermelidir.
-        </small>
+          <input type="password" class="form-control" formControlName="password" placeholder="Boş bırakılırsa değişmez">
+          <small class="text-danger"
+            *ngIf="editForm.get('password')?.touched && editForm.get('password')?.errors?.['required']">
+            Şifre alanı zorunludur
+          </small>
+          <small class="text-danger" *ngIf="editForm.get('password')?.errors?.['minlength']">
+            Şifre en az 8 karakter olmalıdır.
+          </small>
+          <small class="text-danger" *ngIf="editForm.get('password')?.errors?.['pattern']">
+            Şifre en az 1 büyük ve 1 küçük harf içermelidir.
+          </small>
         </div>
 
         <button class="btn btn-success" type="submit">
-          Kaydet 
+          Kaydet
         </button>
 
-        <button class="btn btn-secondary ms-2"
-          type="button"
-          (click)="selectedUser = null">
+        <button class="btn btn-secondary ms-2" type="button" (click)="selectedUser = null">
           İptal
         </button>
-
       </form>
     </div>
   </div>
 
   <div *ngIf="showAddForm" class="card mb-4 mt-4">
-  <h5 class="card-header">Yeni Kullanıcı Ekle</h5>
+    <h5 class="card-header">Yeni Kullanıcı Ekle</h5>
 
-  <div class="card-body">
-    <form [formGroup]="addForm" (ngSubmit)="submitAdd()">
+    <div class="card-body">
+      <form [formGroup]="addForm" (ngSubmit)="submitAdd()">
 
-      <!-- AD -->
-      <div class="mb-3">
-        <label>Ad</label>
-        <input class="form-control" formControlName="name">
-        <small class="text-danger"
-          *ngIf="addForm.get('name')?.touched && addForm.get('name')?.invalid">
-          Ad alanı zorunludur
-        </small>
-      </div>
+        <!-- AD -->
+        <div class="mb-3">
+          <label>Ad</label>
+          <input class="form-control" formControlName="name">
+          <small class="text-danger" *ngIf="addForm.get('name')?.touched && addForm.get('name')?.invalid">
+            Ad alanı zorunludur
+          </small>
+        </div>
 
-      <!-- EMAIL -->
-      <div class="mb-3">
-        <label>Email</label>
-        <input class="form-control" formControlName="email">
-        <small class="text-danger"
-          *ngIf="addForm.get('email')?.touched && addForm.get('email')?.errors?.['email']">
-          Geçerli bir email giriniz
-        </small>
+        <!-- EMAIL -->
+        <div class="mb-3">
+          <label>Email</label>
+          <input class="form-control" formControlName="email">
+          <small class="text-danger" *ngIf="addForm.get('email')?.touched && addForm.get('email')?.errors?.['email']">
+            Geçerli bir email giriniz
+          </small>
 
-         <small class="text-danger"
-          *ngIf="addForm.get('email')?.touched && addForm.get('email')?.errors?.['required']">
-          Email alanı zorunludur
-        </small>
-      </div>
+          <small class="text-danger"
+            *ngIf="addForm.get('email')?.touched && addForm.get('email')?.errors?.['required']">
+            Email alanı zorunludur
+          </small>
+        </div>
 
-      <!-- ROL -->
-      <div class="mb-3">
-        <label>Rol</label>
-        <select class="form-select" formControlName="role">
-          <option value="Admin">Admin</option>
-          <option value="User">User</option>
-        </select>
-        <small class="text-danger"
-          *ngIf="addForm.get('role')?.touched && addForm.get('role')?.invalid">
-          Rol seçimi zorunludur
-        </small>
-      </div>
+        <!-- ROL -->
+        <div class="mb-3">
+          <label>Rol</label>
+          <select class="form-select" formControlName="role">
+            <option value="Admin">Admin</option>
+            <option value="User">User</option>
+          </select>
+          <small class="text-danger" *ngIf="addForm.get('role')?.touched && addForm.get('role')?.invalid">
+            Rol seçimi zorunludur
+          </small>
+        </div>
+        <!-- ŞİFRE -->
+        <div class="mb-3">
+          <label>Şifre</label>
+          <input type="password" class="form-control" formControlName="password">
+          <small class="text-danger"
+            *ngIf="addForm.get('password')?.touched && addForm.get('password')?.errors?.['required']">
+            Şifre alanı zorunludur
+          </small>
+          <small class="text-danger" *ngIf="addForm.get('password')?.errors?.['minlength']">
+            Şifre en az 8 karakter olmalıdır.
+          </small>
+          <small class="text-danger" *ngIf="addForm.get('password')?.errors?.['pattern']">
+            Şifre en az 1 büyük ve 1 küçük harf içermelidir.
+          </small>
+        </div>
 
-      <!-- ŞİFRE -->
-      <div class="mb-3">
-        <label>Şifre</label>
-        <input type="password" class="form-control" formControlName="password">
-        <small class="text-danger"
-          *ngIf="addForm.get('password')?.touched && addForm.get('password')?.errors?.['required']">
-          Şifre alanı zorunludur
-        </small>
-        <small class="text-danger"
-          *ngIf="addForm.get('password')?.errors?.['minlength']">
-          Şifre en az 8 karakter olmalıdır.
-        </small>
-        <small class="text-danger"
-          *ngIf="addForm.get('password')?.errors?.['pattern']">
-          Şifre en az 1 büyük ve 1 küçük harf içermelidir.
-        </small>
-      </div>
-
-      <button class="btn btn-success" type="submit" [disabled]="addForm.invalid">
-        Kaydet
-      </button>
-
-      <button class="btn btn-secondary ms-2" type="button" (click)="showAddForm=false">
-        İptal
-      </button>
-
-    </form>
+        <button class="btn btn-success" type="submit" [disabled]="addForm.invalid">
+          Kaydet
+        </button>
+        <button class="btn btn-secondary ms-2" type="button" (click)="showAddForm=false">
+          İptal
+        </button>
+      </form>
+    </div>
   </div>
-</div>
-
-
-
 </div>

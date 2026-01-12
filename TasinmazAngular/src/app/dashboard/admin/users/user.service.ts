@@ -5,7 +5,6 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class UserService {
-
   constructor(private http: HttpClient) {}
 
   private apiUrl = 'https://localhost:7040/api/User';
@@ -18,17 +17,15 @@ export class UserService {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
 
-  getUsers(){
+  getUsers() {
     return this.http.get<any[]>(this.apiUrl);
   }
 
-  updateUser(id: number, data: any){
+  updateUser(id: number, data: any) {
     return this.http.put(`${this.apiUrl}/${id}`, data);
   }
 
   addUser(user: any) {
-  return this.http.post(`${this.apiUrl}`, user);
-}
-
-
+    return this.http.post(`${this.apiUrl}`, user);
+  }
 }

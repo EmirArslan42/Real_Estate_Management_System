@@ -4,10 +4,9 @@ import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-user-list',
-  templateUrl: './user-list.component.html'
+  templateUrl: './user-list.component.html',
 })
 export class UserListComponent implements OnInit {
-
   users: any[] = [];
   filteredUsers: any[] = [];
   isLoading = false;
@@ -18,41 +17,51 @@ export class UserListComponent implements OnInit {
   showAddForm = false;
   selectedUser: any = null;
 
-  constructor(
-    private userService: UserService,
-    private fb: FormBuilder
-  ) {}
+  constructor(private userService: UserService, private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.loadUsers();
 
     this.filteredForm = this.fb.group({
-    role: [''],
-    email: ['']
+      role: [''],
+      email: [''],
     });
 
     this.editForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       role: ['', Validators.required],
-      password: ['',[Validators.minLength(8), Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z]).{8,}$/)]] // opsiyonel
+      password: [
+        '',
+        [
+          Validators.minLength(8),
+          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z]).{8,}$/),
+        ],
+      ], 
     });
 
     this.addForm = this.fb.group({
-    name: ['', Validators.required],
-    email: ['', [Validators.required, Validators.email]],
-    role: ['User', Validators.required],
-    password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z]).{8,}$/)]],
-  });
+      name: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      role: ['User', Validators.required],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(8),
+          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z]).{8,}$/),
+        ],
+      ],
+    });
 
     this.filteredForm.valueChanges.subscribe(() => {
-    this.applyFilter();
-  });
+      this.applyFilter();
+    });
   }
 
   loadUsers() {
     this.isLoading = true;
-    this.userService.getUsers().subscribe(res => {
+    this.userService.getUsers().subscribe((res) => {
       this.users = res;
       this.filteredUsers = res;
       this.isLoading = false;
@@ -61,18 +70,18 @@ export class UserListComponent implements OnInit {
   }
 
   openAddForm() {
-  this.showAddForm = true;
-  this.addForm.reset({ role: 'User' });
-}
+    this.showAddForm = true;
+    this.addForm.reset({ role: 'User' });
+  }
 
-submitAdd() {
-  if (this.addForm.invalid) return;
+  submitAdd() {
+    if (this.addForm.invalid) return;
 
-  this.userService.addUser(this.addForm.value).subscribe(() => {
-    this.loadUsers();
-    this.showAddForm = false;
-  });
-}
+    this.userService.addUser(this.addForm.value).subscribe(() => {
+      this.loadUsers();
+      this.showAddForm = false;
+    });
+  }
 
   openEdit(user: any) {
     this.selectedUser = user;
@@ -81,7 +90,7 @@ submitAdd() {
       name: user.name,
       email: user.email,
       role: user.role,
-      password: ''
+      password: '',
     });
   }
 
@@ -111,17 +120,15 @@ submitAdd() {
   }
 
   applyFilter() {
-  const { role, email } = this.filteredForm.value;
+    const { role, email } = this.filteredForm.value;
 
-  this.filteredUsers = this.users.filter(u => {
-    const roleMatch = role ? u.role === role : true;
-    const emailMatch = email
-      ? u.email.toLowerCase().includes(email.toLowerCase())
-      : true;
+    this.filteredUsers = this.users.filter((u) => {
+      const roleMatch = role ? u.role === role : true;
+      const emailMatch = email
+        ? u.email.toLowerCase().includes(email.toLowerCase())
+        : true;
 
-    return roleMatch && emailMatch;
-  });
-}
-
-
+      return roleMatch && emailMatch;
+    });
+  }
 }

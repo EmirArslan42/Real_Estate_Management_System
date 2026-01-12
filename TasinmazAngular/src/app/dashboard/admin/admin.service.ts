@@ -2,11 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AdminService {
-
-  constructor(private http:HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getUsers() {
     return this.http.get<any[]>('https://localhost:7040/api/User');
@@ -19,5 +18,4 @@ export class AdminService {
   getLogs() {
     return this.http.get<any[]>('https://localhost:7040/api/Log');
   }
-
 }

@@ -26,7 +26,7 @@ export class LogListComponent implements OnInit {
 
     this.loadLogs();
 
-    // 🔥 Form değiştikçe otomatik filtrele
+    // Form değiştikçe otomatik filtrele
     this.filterForm.valueChanges.subscribe(() => {
       this.applyFilter();
     });

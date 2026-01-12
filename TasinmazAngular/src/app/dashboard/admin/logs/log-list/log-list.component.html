@@ -20,6 +20,9 @@
     </div>
 
     <table *ngIf="!isLoading && filteredLogs.length>0" class="table table-bordered table-hover">
+        <caption class="visually-hidden">
+            Sistem üzerinde yapılan kullanıcı işlemlerinin kayıtlarını gösteren log tablosu
+        </caption>
         <thead>
             <tr>
                 <th>Kullanıcı</th>
@@ -38,9 +41,7 @@
                 <td>{{log.ipAddress}}</td>
                 <td>{{ log.timestamp | date:'dd.MM.yyyy HH:mm' }}</td>
             </tr>
-
         </tbody>
-
     </table>
 
     <div *ngIf="!isLoading && filteredLogs.length==0" class="alert alert-warning">
