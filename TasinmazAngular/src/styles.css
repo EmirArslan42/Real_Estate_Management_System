@@ -1,1 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
+/* OpenLayers harita konteyneri */
+
+.map-container {
+  width: 100%;
+  height: 500px; /* veya 100vh */
+  position: relative;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
