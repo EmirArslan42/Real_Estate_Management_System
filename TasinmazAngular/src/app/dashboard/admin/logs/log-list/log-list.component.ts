@@ -40,7 +40,7 @@ export class LogListComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Loglar yüklenemedi', err);
+        alert("Loglar yüklenemedi")
         this.isLoading = false;
       },
     });
