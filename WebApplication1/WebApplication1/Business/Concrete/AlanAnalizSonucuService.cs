@@ -16,16 +16,16 @@ namespace WebApplication1.Business.Concrete
         }
 
         // AUTO SELECT → A / B / C
-        public async Task<(AlanAnalizSonucuDto A, AlanAnalizSonucuDto B, AlanAnalizSonucuDto C)?> GetABCAsync()
+        public async Task<(AlanAnalizSonucuDto A, AlanAnalizSonucuDto B, AlanAnalizSonucuDto C)?> GetABCAsync(int userId)
         {
             var list = await _context.AlanAnalizSonuclari
-                .Where(x => x.Name == "A" || x.Name == "B" || x.Name == "C")
+                .Where(x=> x.UserId==userId && (x.Name == "A" || x.Name == "B" || x.Name == "C"))
                 .ToListAsync();
 
             if (list.Count != 3)
                 return null;
 
-            AlanAnalizSonucuDto Map(AlanAnalizSonucu x) => new AlanAnalizSonucuDto
+            static AlanAnalizSonucuDto Map(AlanAnalizSonucu x) => new AlanAnalizSonucuDto
             {
                 Id = x.Id,
                 Name = x.Name,
@@ -41,10 +41,12 @@ namespace WebApplication1.Business.Concrete
             );
         }
 
-        public async Task<List<AlanAnalizSonucuDto>> GetUnionResultsAsync()
+        public async Task<List<AlanAnalizSonucuDto>> GetUnionResultsAsync(int userId)
         {
             return await _context.AlanAnalizSonuclari
-                .Where(x=>x.Name=="D" || x.Name=="E")
+                .Where(x=>
+                x.UserId==userId && 
+                (x.Name == "D" || x.Name == "E"))
                 .OrderBy(x=>x.Name)
                 .Select(x=>new AlanAnalizSonucuDto
                 {
@@ -57,18 +59,19 @@ namespace WebApplication1.Business.Concrete
                 .ToListAsync();
         }
 
-        public async Task<bool> ClearToAllAnaliz()
+        public async Task<bool> ClearToAllAnaliz(int userId)
         {
             var all = await _context.AlanAnalizSonuclari
         .Where(x =>
-            x.Name == "A" ||
+        x.UserId==userId &&
+        (x.Name == "A" ||
             x.Name == "B" ||
             x.Name == "C" ||
             x.Name == "D" ||
-            x.Name == "E")
+            x.Name == "E"))
         .ToListAsync();
 
-            if (all.Any())
+            if (all.Count>0)
             {
                 _context.AlanAnalizSonuclari.RemoveRange(all);
                 await _context.SaveChangesAsync();
@@ -77,15 +80,15 @@ namespace WebApplication1.Business.Concrete
             return false;
         }
 
-        // A / B / C / D / E → SAVE OR UPDATE (Name bazlı)
-        public async Task SaveOrUpdateAsync(AlanAnalizSonucuDto dto) 
+        // A / B / C / D / E → save or update (name bazlı)
+        public async Task SaveOrUpdateAsync(AlanAnalizSonucuDto dto,int userId) 
         {
             var existing = await _context.AlanAnalizSonuclari
-                .FirstOrDefaultAsync(x => x.Name == dto.Name);
+                .FirstOrDefaultAsync(x => x.Name == dto.Name && x.UserId==userId);
 
             if (existing != null)
             {
-                // UPDATE işlemi
+                // update işlemi
                 existing.Geometry = dto.Geometry;
                 existing.Area = dto.Area;
                 existing.Operation = dto.Operation;
@@ -93,7 +96,7 @@ namespace WebApplication1.Business.Concrete
             }
             else
             {
-                // INSERT işlemi
+                // insert işlemi
                 var entity = new AlanAnalizSonucu
                 {
                     Id=dto.Id,
@@ -101,12 +104,12 @@ namespace WebApplication1.Business.Concrete
                     Operation = dto.Operation,
                     Geometry = dto.Geometry,
                     Area = dto.Area,
+                    UserId=userId,
                     CreatedAt = DateTime.UtcNow
                 };
 
                 _context.AlanAnalizSonuclari.Add(entity);
             }
-
             
             await _context.SaveChangesAsync();
 
@@ -114,43 +117,3 @@ namespace WebApplication1.Business.Concrete
 
     }
 }
-
-
-
-
-
-
-
-//public async Task<AutoSelectResultDto> AutoSelectAsync()
-//{
-//    var writer = new GeoJsonWriter();
-
-//    var tasinmazlar = await _context.Tasinmazlar
-//        .OrderByDescending(x => x.Id)
-//        .Take(3).ToListAsync();
-
-//    if (tasinmazlar.Count < 3)
-//    {
-//        return null;
-//    }
-
-//    return new AutoSelectResultDto
-//    {
-//        A = new GeometryDto
-//        {
-//            Id = tasinmazlar[0].Id,
-//            Geometry = writer.Write(tasinmazlar[0].Coordinate)
-//        },
-//        B=new GeometryDto
-//        {
-//            Id = tasinmazlar[1].Id,
-//            Geometry = writer.Write(tasinmazlar[1].Coordinate),
-//        },
-//        C=new GeometryDto
-//        {
-//            Id = tasinmazlar[2].Id,
-//            Geometry = writer.Write(tasinmazlar[2].Coordinate),
-//        }
-//    };
-
-//}

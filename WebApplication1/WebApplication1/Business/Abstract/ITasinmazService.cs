@@ -10,9 +10,9 @@ namespace WebApplication1.Business.Abstract
 
         Task<bool> UpdateAsync(int id,TasinmazDto dto, int userId, byte[]? imageData,string? imageType);
         Task<bool> DeleteAsync(int id, int userId);
-        Task<Tasinmaz> GetByIdAsync(int id,int userId); // Bir adet taşınmaz 
+        Task<Tasinmaz?> GetByIdAsync(int id,int userId); // Bir adet taşınmaz 
         Task<List<TasinmazListDto>> GetAllAsync(int userId); // bir kullanıcının tüm taşınmazları
         Task<List<TasinmazListDto>> GetAllForAdminAsync();
-        Task<(byte[] ImageData, string ImageType)?> GetImageAsync(int tasinmazId);
+        Task<(byte[] ImageData, string? ImageType)?> GetImageAsync(int tasinmazId);
     }
 }

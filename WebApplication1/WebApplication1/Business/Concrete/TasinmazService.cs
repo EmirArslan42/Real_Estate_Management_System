@@ -18,7 +18,7 @@ namespace WebApplication1.Business.Concrete
             _context = context;
         }
 
-        public async Task<(byte[] ImageData, string ImageType)?> GetImageAsync(int tasinmazId)
+        public async Task<(byte[] ImageData, string? ImageType)?> GetImageAsync(int tasinmazId)
         {
             var tasinmaz = await _context.Tasinmazlar
                 .Where(t => t.Id == tasinmazId)
@@ -78,7 +78,7 @@ namespace WebApplication1.Business.Concrete
                     Geometry = writer.Write(t.Coordinate),
                     MahalleAdi = t.Mahalle.Ad,
                     IlceAdi = t.Mahalle.Ilce.Ad,
-                    IlAdi = t.Mahalle.Ilce.Il.Ad,
+                    IlAdi = t.Mahalle.Ilce.Il.Ad, 
 
                     UserId=t.UserId,
                     UserEmail=t.User.Email,
@@ -87,7 +87,7 @@ namespace WebApplication1.Business.Concrete
                 .ToListAsync();
         }
 
-        public async Task<Tasinmaz> GetByIdAsync(int id,int userId) 
+        public async Task<Tasinmaz?> GetByIdAsync(int id,int userId) 
         {
             return await _context.Tasinmazlar.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
         }
@@ -96,21 +96,16 @@ namespace WebApplication1.Business.Concrete
         {
             try
             {
-                Polygon? polygon = null;
-                if (!string.IsNullOrEmpty(dto.Geometry))
+                if (string.IsNullOrWhiteSpace(dto.Geometry))
                 {
-                    var reader = new GeoJsonReader();
-
-                    var feature = reader.Read<Feature>(dto.Geometry);
-                    polygon = feature.Geometry as Polygon;
-
-                    if (polygon == null)
-                    {
-                        return false;
-                    }
+                    throw new InvalidOperationException("Taşınmaz için koordinat bilgisi zorunludur.");
                 }
 
-                
+                    var reader = new GeoJsonReader();
+                    var feature = reader.Read<Feature>(dto.Geometry);
+
+                    var polygon = feature.Geometry as Polygon ?? throw new InvalidOperationException("Taşınmaz için koordinat bilgisi zorunludur.");
+                                
 
                 var tasinmaz = new Tasinmaz
                 {
@@ -119,9 +114,7 @@ namespace WebApplication1.Business.Concrete
                     LotNumber = dto.LotNumber,
                     Address = dto.Address,
                     UserId = userId,
-
                     Coordinate = polygon,
-
                     ImageData = dto.ImageData,
                     ImageType = dto.ImageType,
 
@@ -131,7 +124,7 @@ namespace WebApplication1.Business.Concrete
                 await _context.SaveChangesAsync();
                 return true;
 
-            }catch (Exception ex)
+            }catch (Exception)
             {
                 return false;
             }
@@ -141,17 +134,16 @@ namespace WebApplication1.Business.Concrete
         {
             var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
 
-            // Boş veya varsayılan bir Polygon oluşturuyoruz (Kare şeklinde)
-            // Koordinatlar: [0,0], [0,1], [1,1], [1,0], [0,0]
+            // Boş veya varsayılan bir Polygon oluşturuyoruz (Kare şeklinde) - Koordinatlar: [0,0], [0,1], [1,1], [1,0], [0,0]
             var coords = new[] {
-        new NetTopologySuite.Geometries.Coordinate(0, 0),
-        new NetTopologySuite.Geometries.Coordinate(0, 0.0001),
-        new NetTopologySuite.Geometries.Coordinate(0.0001, 0.0001),
-        new NetTopologySuite.Geometries.Coordinate(0.0001, 0),
-        new NetTopologySuite.Geometries.Coordinate(0, 0)
-    };
-            var defaultPolygon = geometryFactory.CreatePolygon(coords);
+            new NetTopologySuite.Geometries.Coordinate(0, 0),
+            new NetTopologySuite.Geometries.Coordinate(0, 0.0001),
+            new NetTopologySuite.Geometries.Coordinate(0.0001, 0.0001),
+            new NetTopologySuite.Geometries.Coordinate(0.0001, 0),
+            new NetTopologySuite.Geometries.Coordinate(0, 0)
+            };
 
+            var defaultPolygon = geometryFactory.CreatePolygon(coords);
             var tasinmaz = new Tasinmaz
             {
                 MahalleId = dto.MahalleId,
@@ -166,7 +158,6 @@ namespace WebApplication1.Business.Concrete
             await _context.SaveChangesAsync();
             return true;
         }
-
         public async Task<bool> UpdateAsync(int id,TasinmazDto dto,int userId, byte[]? imageData, string? imageType)
         {
             var tasinmaz =await _context.Tasinmazlar.FirstOrDefaultAsync(t=>t.Id==id && t.UserId==userId);
@@ -191,14 +182,12 @@ namespace WebApplication1.Business.Concrete
                     tasinmaz.ImageType = imageType;
                 }
 
-
-
                 _context.Tasinmazlar.Update(tasinmaz);
                 await _context.SaveChangesAsync();
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -220,7 +209,7 @@ namespace WebApplication1.Business.Concrete
                 return true;
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }

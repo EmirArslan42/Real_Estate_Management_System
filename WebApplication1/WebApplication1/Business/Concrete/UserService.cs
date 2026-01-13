@@ -17,28 +17,31 @@ namespace WebApplication1.Business.Concrete
         {
             _context = context;
         }
-        private string HashPassword(string password)
+        private static string HashPassword(string password)
         {
-            using var sha = SHA256.Create();
-            var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(password));
+            var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(password));
             return Convert.ToBase64String(bytes);
         }
         public async Task<bool> AddUserAsync(UserWriteDto dto)
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(dto.Password))
+                {
+                    throw new InvalidOperationException("Şifre alanı zorunludur");
+                }
                 var user = new User
                 {
                     Name = dto.Name,
                     Email = dto.Email,
                     Role = dto.Role,
-                    PasswordHash=string.IsNullOrEmpty(dto.Password) ? null : HashPassword(dto.Password),
+                    PasswordHash=HashPassword(dto.Password),
                 };
                 await _context.Users.AddAsync(user);
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -57,7 +60,7 @@ namespace WebApplication1.Business.Concrete
                 _context.Users.Remove(user);
                 await _context.SaveChangesAsync();
                 return true;
-            }catch (Exception ex)
+            }catch (Exception)
             {
                 return false;
             }
@@ -85,7 +88,7 @@ namespace WebApplication1.Business.Concrete
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -101,7 +104,7 @@ namespace WebApplication1.Business.Concrete
             }).ToListAsync();
         }
 
-        public async Task<UserDto> GetUserByIdAsync(int id)
+        public async Task<UserDto?> GetUserByIdAsync(int id)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u=>u.Id==id);
             if (user == null)
@@ -129,9 +132,6 @@ namespace WebApplication1.Business.Concrete
 
             return true;
         }
-
-
-
 
     }
 }

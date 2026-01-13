@@ -12,7 +12,7 @@ using WebApplication1.Entities;
 
 namespace WebApplication1.Business.Concrete
 {
-    public class AuthService:IAuthService 
+    public partial class AuthService: IAuthService 
     {
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration; // appsettings.json dosyasına erişmemizi sağlar
@@ -27,12 +27,12 @@ namespace WebApplication1.Business.Concrete
             // email var mı yok mu kontrol ?
             if(await UserExistsAsync(dto.Email))
             {
-                throw new Exception("Bu email zaten kayıtlı.");
+                throw new InvalidOperationException("Bu email zaten kayıtlı.");
             }
 
             if(!IsPasswordValid(dto.Password))
             {
-                throw new Exception("Şifre en az 8 karakter olmalı, 1 büyük ve 1 küçük harf içermelidir.");
+                throw new InvalidOperationException("Şifre en az 8 karakter olmalı, 1 büyük ve 1 küçük harf içermelidir.");
             }
 
             // şifreyi hashleyip kaydettik
@@ -53,22 +53,22 @@ namespace WebApplication1.Business.Concrete
             return user;
         }
 
-        private bool IsPasswordValid(string password)
+        [GeneratedRegex(@"^(?=.*[a-z])(?=.*[A-Z]).{8,}$")]
+        private static partial Regex PasswordRegex();
+        private static bool IsPasswordValid(string password)
         {
             // En az 1 büyük, 1 küçük harf
-            var regex = new Regex(@"^(?=.*[a-z])(?=.*[A-Z]).{8,}$");
-            return regex.IsMatch(password);
+            return PasswordRegex().IsMatch(password);
         }
 
-        private string CreatePasswordHash(string password)
+        private static string CreatePasswordHash(string password)
         {
-            using var sha = SHA256.Create();
-            var hashBytes = sha.ComputeHash(Encoding.UTF8.GetBytes(password));
+            var hashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(password));
             return Convert.ToBase64String(hashBytes);
         }
 
         // şifre doğrulama işlemi yap
-        private bool VerifyPasswordHash(string password, string passwordHash)
+        private static bool VerifyPasswordHash(string password, string passwordHash)
         {
             var newHash = CreatePasswordHash(password);
             return newHash == passwordHash;
@@ -84,8 +84,13 @@ namespace WebApplication1.Business.Concrete
                 new Claim("email",user.Email),
                 new Claim(ClaimTypes.Role,user.Role), 
             };
+            var jwtKey = _configuration["Jwt:Key"];
+            if (string.IsNullOrWhiteSpace(jwtKey))
+            {
+                throw new InvalidOperationException("JWT key configuration is missing.");
+            }
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])); // appsetting.jsondaki secret key i aldık
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)); // appsetting.jsondaki secret key i aldık
             var credentials = new SigningCredentials(key,SecurityAlgorithms.HmacSha256); // token ı imzaladık
 
             var token = new JwtSecurityToken( // token ı oluşturduk
@@ -99,14 +104,11 @@ namespace WebApplication1.Business.Concrete
 
         public async Task<User> LoginAsync(UserLoginDto dto)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u=>u.Email==dto.Email);
-            if (user == null){
-                return null;
-            }
-
+            var user = await _context.Users.FirstOrDefaultAsync(u=>u.Email==dto.Email) ?? throw new UnauthorizedAccessException("Email veya şifre hatalı");
+            
             if (!VerifyPasswordHash(dto.Password,user.PasswordHash)) // şifre doğru mu kontrol et
             {
-                return null;
+                throw new UnauthorizedAccessException("Email veya şifre hatalı");
             }
             return user;
         }
