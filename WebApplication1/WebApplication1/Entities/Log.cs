@@ -12,13 +12,13 @@ namespace WebApplication1.Entities
 
         [ForeignKey("UserId")]
         public User? User { get; set; }
-        public string IpAddress { get; set; }
+        public string? IpAddress { get; set; }
 
-        [Required] 
-        public string OperationType { get; set; } // login,updateUser,addProperty gibi ...
+        [Required]
+        public string OperationType { get; set; } = null!; // login,updateUser,addProperty gibi ...
 
         [MaxLength(350)]
-        public string Description {  get; set; }
+        public string? Description {  get; set; }
         public DateTime Timestamp { get; set; }=DateTime.UtcNow; // log zamanını baz alır
     }
 }

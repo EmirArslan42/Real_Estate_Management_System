@@ -13,34 +13,34 @@ namespace WebApplication1.Entities
         public int MahalleId { get; set; } // mahalle id tutmak yeterli sadece 
 
         [ForeignKey("MahalleId")]
-        public Mahalle Mahalle { get; set; }
+        public Mahalle Mahalle { get; set; } = null!;
 
-        [Required] [MaxLength(50)]
-        public string ParcelNumber { get; set; } // parsel no
+        [Required]
+        [MaxLength(50)]
+        public string ParcelNumber { get; set; } = null!; // parsel no
 
-        [Required] [MaxLength(50)]
-        public string LotNumber { get; set; } // ada no
+        [Required]
+        [MaxLength(50)]
+        public string LotNumber { get; set; } = null!; // ada no
 
-        [Required] [MaxLength(150)] 
-        public string Address {  get; set; }
+        [Required]
+        [MaxLength(150)]
+        public string Address { get; set; } = null!;
 
         [Required]
         public int UserId { get; set; }
 
         [ForeignKey("UserId")]
-        public User User { get; set; }
+        public User User { get; set; } = null!;
 
 
         [Required]
         [Column(TypeName = "geometry (Polygon, 4326)")]
-        public Polygon Coordinate { get; set; }
-        
-        //public string? ImagePath { get; set; }
+        public Polygon Coordinate { get; set; } = null!;
 
-        [Required]
-        public byte[] ImageData { get; set; }
+        public byte[]? ImageData { get; set; }
 
-        [Required, MaxLength(50)]
-        public string ImageType { get; set; } // image/jpeg, image/png
+        [MaxLength(50)]
+        public string? ImageType { get; set; }
     }
 }

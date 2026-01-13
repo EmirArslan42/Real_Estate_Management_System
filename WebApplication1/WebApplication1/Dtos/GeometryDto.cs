@@ -3,6 +3,6 @@
     public class GeometryDto
     {
         public int Id { get; set; }
-        public string Geometry { get; set; }
+        public string? Geometry { get; set; }
     }
 }
