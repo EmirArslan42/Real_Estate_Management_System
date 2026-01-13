@@ -28,17 +28,22 @@ export class ListComponent implements OnInit {
   filteredTasinmazlar: any[] = [];
   imageTimestamp = Date.now();
 
+  // pagination
+  currentPage: number = 1;
+  pageSize: number = 5;
+  totalPages: number = 0;
+  pagedTasinmazlar: any[] = [];
+
   constructor(
     private tasinmazService: TasinmazService,
     private locationService: LocationService,
     private authService: AuthService,
     private router: Router,
     private fb: FormBuilder
-  ) {
-    this.loadTasinmaz();
-  }
+  ) {}
 
   ngOnInit() {
+    this.isAdmin = this.authService.isAdmin();
     this.loadTasinmaz();
 
     if (history.state?.reload) {
@@ -51,11 +56,23 @@ export class ListComponent implements OnInit {
       address: [''],
       user: [''],
     });
-    this.isAdmin = this.authService.isAdmin();
-
     this.filterForm.valueChanges.subscribe(() => {
       this.applyFilter();
     });
+  }
+
+    updatePagination() {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+
+    this.totalPages = Math.ceil(this.filteredTasinmazlar.length / this.pageSize);
+    this.pagedTasinmazlar = this.filteredTasinmazlar.slice(startIndex, endIndex);
+  }
+
+    changePage(page: number) {
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+    this.updatePagination();
   }
 
   applyFilter() {
@@ -75,10 +92,16 @@ export class ListComponent implements OnInit {
         !user || tasinmaz.userEmail?.toLowerCase().includes(user.toLowerCase());
       return ilMatch && ilceMatch && mahalleMatch && addressMatch && userMatch;
     });
+
+    this.currentPage = 1;
+    this.updatePagination();
   }
 
   clearFilterForm() {
     this.filterForm.reset();
+    this.filteredTasinmazlar = this.tasinmazlar;
+    this.currentPage = 1;
+    this.updatePagination();
   }
 
   showPopup(tasinmaz: any) {
@@ -116,7 +139,6 @@ export class ListComponent implements OnInit {
   }
 
   loadTasinmaz() {
-
     const request = this.isAdmin
       ? this.tasinmazService.getAllTasinmazForAdmin()
       : this.tasinmazService.getAllTasinmaz();
@@ -125,6 +147,7 @@ export class ListComponent implements OnInit {
       next: (tasinmaz) => {
         this.tasinmazlar = tasinmaz;
         this.filteredTasinmazlar = tasinmaz;
+        this.updatePagination()
         this.isLoading = false;
 
         this.vectorSource.clear();
@@ -155,7 +178,7 @@ export class ListComponent implements OnInit {
         });
       },
       error: (err) => {
-        console.error('Tasinmazlar yüklenemedi !', err);
+        this.showErrorAlert(`Taşınmazlar yüklenemedi !`)
         this.isLoading = false;
       },
     });
@@ -196,7 +219,11 @@ export class ListComponent implements OnInit {
     if (!data) {
       return;
     }
-    html2canvas(data).then((canvas) => {
+    html2canvas(data, {
+      useCORS: true, // Dış kaynaklı resimlere izin ver
+      allowTaint: true,
+      logging: true, // Sorunu konsoldan takip etmek için
+    }).then((canvas) => {
       const imgWidth = 208;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
       const contentDataURL = canvas.toDataURL('image/png');
@@ -231,7 +258,7 @@ export class ListComponent implements OnInit {
   }
 
   addTasinmazFromExcel(rows: any[]) {
-    rows.forEach((row) => {      
+    rows.forEach((row) => {
       this.tasinmazService
         .addTasinmazFromExcel({
           mahalleId: Number(row['MahalleId']),
@@ -240,8 +267,8 @@ export class ListComponent implements OnInit {
           address: row['Adres']?.toString(),
         })
         .subscribe({
-          next: () => console.log('Excel satırı eklendi'),
-          error: () => console.error('Excel satırı eklenemedi'),
+          next: () => this.showSuccessAlert("Excel satırı eklendi"),
+          error: () => this.showErrorAlert("Excel satırı eklenemedi"),
         });
     });
     alert('Excelden taşınmaz ekleme işlemi başarılı');
@@ -252,16 +279,16 @@ export class ListComponent implements OnInit {
     this.router.navigate(['/dashboard/tasinmaz/edit', id]);
   }
 
-  showErrorAlert(errorMessage:string){
+  showErrorAlert(errorMessage: string) {
     this.errorMessage = errorMessage;
     setTimeout(() => {
-      this.errorMessage = "";
+      this.errorMessage = '';
     }, 2000);
   }
-  showSuccessAlert(successMessage:string){
-  this.successMessage = successMessage;
+  showSuccessAlert(successMessage: string) {
+    this.successMessage = successMessage;
     setTimeout(() => {
-      this.successMessage = "";
+      this.successMessage = '';
     }, 2000);
   }
 
@@ -269,11 +296,11 @@ export class ListComponent implements OnInit {
     if (confirm('Bu taşınmazı silmek istediğinize emin misiniz?')) {
       this.tasinmazService.deleteTasinmaz(id).subscribe({
         next: () => {
-          this.showSuccessAlert("Taşınmaz başarıyla silindi.")
+          this.showSuccessAlert('Taşınmaz başarıyla silindi.');
           this.loadTasinmaz();
         },
         error: (e) => {
-          this.showErrorAlert("Taşınmaz silinirken bir hata oluştu.")
+          this.showErrorAlert('Taşınmaz silinirken bir hata oluştu.');
         },
       });
     }

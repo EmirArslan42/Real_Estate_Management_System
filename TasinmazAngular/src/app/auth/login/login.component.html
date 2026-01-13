@@ -1,33 +1,61 @@
-<div class="d-flex justify-content-center align-items-center vh-100 w-50 mx-auto">    
-    <div class="container mt-5 ">
-    <h2 class="text-center">Giriş Yap</h2>
-    <div *ngIf="errorMessage" class="alert alert-danger mt-2">
-        {{errorMessage}}
+<div class="container-fluid vh-100">
+    <div class="row h-100">
+        <div class="col-md-7 d-flex justify-content-center align-items-center">
+            <div style="width: 692px;">
+
+                <h3 class="fw-bold mb-2 text-center fs-6">Hoş Geldiniz</h3>
+                <p class="text-muted mb-4 text-center fs-6">
+                    Hesabınıza giriş yapın
+                </p>
+
+                <div *ngIf="errorMessage" class="alert alert-danger text-center">{{ errorMessage }}</div>
+
+                <div *ngIf="isLoading" class="position-fixed top-0 start-0 w-100 h-100
+                    d-flex justify-content-center align-items-center bg-white" style="opacity:0.8; z-index:999;">
+                    <div class="spinner-border text-primary" role="status"></div>
+                </div>
+
+                <form [formGroup]="loginForm" (ngSubmit)="login()">
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input class="form-control form-control-lg mb-1" type="email" formControlName="email"
+                            placeholder="email@example.com">
+                            <small class="text-danger p-1 fs-6"
+                            *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">Geçerli bir email
+                            giriniz.</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Şifre</label>
+                        <input class="form-control form-control-lg mb-1" type="password" formControlName="password"
+                            placeholder="••••••••">
+                            <small class="text-danger p-1 fs-6"
+                            *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">Şifre
+                            zorunludur.</small>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg w-100 mt-2" type="submit" [disabled]="loginForm.invalid">Giriş
+                        Yap</button>
+                    <div class="text-center mt-4">
+                        <div class="text-muted">
+                            Hesabın yok mu?
+                            <a routerLink="/register" class="fw-semibold text-decoration-none">Kayıt Ol</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-md-5 d-none d-md-flex bg-primary text-white justify-content-center align-items-center">
+            <div class="text-center px-5">
+                <h1 class="fw-bold mb-3">Taşınmaz Yönetim Sistemi</h1>
+                <p class="fs-5 opacity-75">Taşınmazlarınızı kolayca yönetin,harita üzerinde analiz edin ve raporlayın.
+                </p>
+                <div class="mt-4">
+                    <div class="d-inline-block px-4 py-2 rounded-pill bg-white text-primary fw-semibold">
+                        Güvenli • Hızlı • Kolay
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <form [formGroup]="loginForm" (ngSubmit)="login()">
-
-        <div class="mb-3">
-            <label>Email</label>
-            <input class="form-control" type="email" formControlName="email">
-            <small class="text-danger"
-                *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">Geçerli bir email
-                giriniz.</small>
-        </div>
-
-        <div class="mb-3">
-            <label>Şifre</label>
-            <input class="form-control" type="password" formControlName="password">
-            <small class="text-danger"
-                *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">Şifre
-                zorunludur.</small>
-        </div>
-
-        <button class="btn btn-primary w-100" type="submit" [disabled]="loginForm.invalid">Giriş Yap</button>
-        <div class="text-center mt-3">
-            <a routerLink="/register">Hesabın yok mu? Kayıt ol</a>
-        </div>
-
-    </form>
-</div>
 </div>

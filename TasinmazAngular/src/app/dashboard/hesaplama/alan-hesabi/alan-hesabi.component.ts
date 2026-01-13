@@ -1,23 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component} from '@angular/core';
 import * as turf from '@turf/turf';
-import { getArea } from 'ol/sphere';
-import GeoJSON from 'ol/format/GeoJSON';
-import Feature from 'ol/Feature';
-import { Geometry } from 'ol/geom';
 import { AlanAnalizService } from '../alan-analiz.service';
+
+type AreaKey = 'A' | 'B' | 'C';
 
 @Component({
   selector: 'app-alan-hesabi',
   templateUrl: './alan-hesabi.component.html',
   styleUrls: ['./alan-hesabi.component.css'],
 })
-export class AlanHesabiComponent implements OnInit {
-  mode: 'manual' | 'auto' = 'manual';
-  constructor(private alanAnalizService:AlanAnalizService) {}
 
-  ngOnInit() {
-    console.log("Default gelen mod:",this.mode);
-  }
+export class AlanHesabiComponent{
+  errorMessage: string = '';
+  successMessage: string = '';
+  mode: 'manual' | 'auto' = 'manual';
+  constructor(private alanAnalizService: AlanAnalizService) {}
 
   manualAreas: any = {
     A: { geometry: null, area: 0 },
@@ -31,122 +28,127 @@ export class AlanHesabiComponent implements OnInit {
 
   onGeometryDrawn(event: any) {
     // Eğer daha önce A dolmadıysa A'ya, A doluysa B'ye, B doluysa C'ye yaz
-    let name: 'A' | 'B' | 'C'
+    let name: AreaKey;
 
     if (!this.manualAreas.A.geometry) {
-      name='A'
-      console.log('Alan A kaydedildi.');
+      name = 'A';
     } else if (!this.manualAreas.B.geometry) {
-      name='B'
-      console.log('Alan B kaydedildi.');
+      name = 'B';
     } else if (!this.manualAreas.C.geometry) {
-      name='C'
-      console.log('Alan C kaydedildi.');
+      name = 'C';
       this.maxDrawReached = true;
     } else {
       alert('Zaten 3 alan çizildi. Yeni çizim için temizleyiniz.');
       return;
     }
 
-      const geometryString =
-    typeof event.geojson === 'string'
-      ? event.geojson
-      : JSON.stringify(event.geojson);
+    const geometryString =
+      typeof event.geojson === 'string'
+        ? event.geojson
+        : JSON.stringify(event.geojson);
 
-  this.manualAreas[name] = {
-    geometry: geometryString,
-    area: event.area,
-  };
+    this.manualAreas[name] = {
+      geometry: geometryString,
+      area: event.area,
+    };
 
-  const dto = {
-    name: name,
-    operation: name,
-    geometry: geometryString,
-    area: event.area,
-  };
+    const dto = {
+      name: name,
+      operation: name,
+      geometry: geometryString,
+      area: event.area,
+    };
 
-  this.alanAnalizService.save(dto).subscribe({
-    next: () => console.log(`${name} kaydedildi / güncellendi`),
-    error: () => alert(`${name} kaydedilirken hata oluştu`),
-  });
-
-
-    // if (!this.manualAreas.A.geometry) {
-    //   this.manualAreas.A = { geometry: event.geojson, area: event.area };
-    //   console.log('Alan A kaydedildi.');
-    // } else if (!this.manualAreas.B.geometry) {
-    //   this.manualAreas.B = { geometry: event.geojson, area: event.area };
-    //   console.log('Alan B kaydedildi.');
-    // } else if (!this.manualAreas.C.geometry) {
-    //   this.manualAreas.C = { geometry: event.geojson, area: event.area };
-    //   console.log('Alan C kaydedildi.');
-    //   this.maxDrawReached = true;
-    // } else {
-    //   alert('Zaten 3 alan çizildi. Yeni çizim için temizleyiniz.');
-    // }
+    this.alanAnalizService.save(dto).subscribe({ 
+      next: () => this.showSuccessAlert(`${name} kaydedildi / güncellendi`),
+      error: () => this.showErrorAlert(`${name} kaydedilirken hata oluştu`),
+    });
   }
 
   alan: number = 0;
   intersection: number = 0;
   resetCounter: number = 0;
-  savedResults:any[]=[];
+  savedResults: any[] = [];
 
+  showErrorAlert(errorMessage:string){
+    this.errorMessage = errorMessage;
+    setTimeout(() => {
+      this.errorMessage = "";
+    }, 2000);
+  }
+  showSuccessAlert(successMessage:string){
+  this.successMessage = successMessage;
+    setTimeout(() => {
+      this.successMessage = "";
+    }, 2000);
+  }
 
-  loadSavedResults(){
+  loadSavedResults() {
     this.alanAnalizService.getUnionResults().subscribe({
-      next:(res:any)=>{
-        //this.savedResults=res;
-
+      next: (res: any) => {
         this.alanAnalizService.getAutoSelect().subscribe({
-          next:(abc:any)=>{
-            const abcList=[
-              {id:abc.a.id,name:'A',operation:'A',geometry:abc.a.geometry,area:abc.a.area},
-              {id:abc.b.id,name:'B',operation:'B',geometry:abc.b.geometry,area:abc.b.area},
-              {id:abc.c.id,name:'C',operation:'C',geometry:abc.c.geometry,area:abc.c.area},
+          next: (abc: any) => {
+            const abcList = [
+              {
+                id: abc.a.id,
+                name: 'A',
+                operation: 'A',
+                geometry: abc.a.geometry,
+                area: abc.a.area,
+              },
+              {
+                id: abc.b.id,
+                name: 'B',
+                operation: 'B',
+                geometry: abc.b.geometry,
+                area: abc.b.area,
+              },
+              {
+                id: abc.c.id,
+                name: 'C',
+                operation: 'C',
+                geometry: abc.c.geometry,
+                area: abc.c.area,
+              },
             ];
-            this.savedResults=[...abcList,...res];
+            this.savedResults = [...abcList, ...res];
           },
-          error:(err)=>{
+          error: (err) => {
             this.savedResults = res;
-          }
-        })
+          },
+        });
       },
-      error:(err)=>{
-        alert("Sonuçlar yüklenemedi");
-      }
-    })
+      error: (err) => {
+        alert('Sonuçlar yüklenemedi');
+      },
+    });
+  }
 
-    console.log(this.savedResults);
-    
-  };
+  showResultOnMap(result: any) {
+    this.geometryResult = {
+      geojson: JSON.parse(result.geometry),
+      operation: 'union',
+    };
 
-  showResultOnMap(result:any){
-  this.geometryResult = {
-    geojson: JSON.parse(result.geometry),
-    operation: 'union'
-  };
-
-  this.alan = result.area;
-  this.currentOperation = result.operation;
-}
-
+    this.alan = result.area;
+    this.currentOperation = result.operation;
+  }
 
   getTotalArea() {
-    this.currentOperation="A+B+C"
+    this.currentOperation = 'A+B+C';
     this.alan =
       this.manualAreas.A.area +
       this.manualAreas.B.area +
       this.manualAreas.C.area;
-    //console.log("TOPLAM ALAN: "+this.alan)
     return this.alan;
   }
 
-  resetAnaliz(){
+  resetAnaliz() {
     this.alanAnalizService.deleteAllAnaliz().subscribe({
-      next:()=>{
-        console.log("A, B, C, D, E db'den silindi");
-      }
-    })
+      next: () => {
+        this.showSuccessAlert("A, B, C, D, E db'den silindi");
+      },
+    });
   }
   resetAreas() {
     this.manualAreas = {
@@ -161,7 +163,6 @@ export class AlanHesabiComponent implements OnInit {
     this.geometryResult = null;
   }
 
-  // alan-hesabi.component.ts
   formatArea(areaSqMeters: number): string {
     if (areaSqMeters >= 1_000_000) {
       return (
@@ -182,222 +183,221 @@ export class AlanHesabiComponent implements OnInit {
     );
   }
 
-
-
-  calculateIntersection(a: 'A' | 'B' | 'C', b: 'A' | 'B' | 'C') {
-  // 1. İlgili harf parametrelerine göre geometrileri al
-  const geomA = this.manualAreas[a].geometry;
-  const geomB = this.manualAreas[b].geometry;
-
-  // 2. Geometri varlık kontrolü
-  if (!geomA || !geomB) {
-    alert(`Lütfen ${a} ve ${b} alanlarını tamamlayın.`);
-    return;
+  private toFeature(input: any) {
+  if (input.type === 'FeatureCollection') {
+    return input.features[0];
   }
 
-  try {
-    // 3. Güvenli Parse (String ise objeye çevir, nesne ise direkt al)
-    const fa = typeof geomA === 'string' ? JSON.parse(geomA) : geomA;
-    const fb = typeof geomB === 'string' ? JSON.parse(geomB) : geomB;
+  if (input.type === 'Feature') {
+    return input;
+  }
 
-    // 4. Feature Çıkarma (Kritik fa.type ve fb.type kontrolleri)
-    const featureA = fa.type === 'FeatureCollection' ? fa.features[0] : (fa.type === 'Feature' ? fa : turf.feature(fa));
-    const featureB = fb.type === 'FeatureCollection' ? fb.features[0] : (fb.type === 'Feature' ? fb : turf.feature(fb));
+  return turf.feature(input);
+}
 
-    // 5. Kesişim (Intersection) İşlemi
-    const intersection = turf.intersect(turf.featureCollection([featureA, featureB]));
+private parseGeometry(geom: any) {
+  return typeof geom === 'string' ? JSON.parse(geom) : geom;
+}
 
-    // 6. REQ-10: Kesişim bulunamadıysa uyarı ver
-    if (!intersection) {
-      this.alan = 0;
-      this.currentOperation = null;
-      this.geometryResult = null; // Haritadaki eski sonucu temizle
-      alert('Kesişim bulunamadı (No intersection found).');
+  calculateIntersection(a: AreaKey, b: AreaKey) {
+    // 1. İlgili harf parametrelerine göre geometrileri al
+    const geomA = this.manualAreas[a].geometry;
+    const geomB = this.manualAreas[b].geometry;
+
+    // 2. Geometri varlık kontrolü
+    if (!geomA || !geomB) {
+      alert(`Lütfen ${a} ve ${b} alanlarını tamamlayın.`);
       return;
     }
 
-    // 7. REQ-11: Kesişim varsa m² hesapla ve haritada göster
-    this.currentOperation = `${a} ∩ ${b}`;
-    this.alan = turf.area(intersection); // Alan m² olarak hesaplanır
+    try {
+      // 3. Güvenli Parse (String ise objeye çevir, nesne ise direkt al)
+      const fa = typeof geomA === 'string' ? JSON.parse(geomA) : geomA;
+      const fb = typeof geomB === 'string' ? JSON.parse(geomB) : geomB;
 
-    console.log(`KESİŞİM ${a} ∩ ${b} (m²):`, this.alan);
+      // 4. Feature Çıkarma (Kritik fa.type ve fb.type kontrolleri)
+      const featureA=this.toFeature(fa);
+      const featureB=this.toFeature(fb);
+      // 5. Kesişim  İşlemi
+      const intersection = turf.intersect(
+        turf.featureCollection([featureA, featureB])
+      );
 
-    // Sonucu harita bileşenine gönder
-    this.drawResult({
-      geojson: intersection,
-      operation: 'intersection',
-    });
+      // 6. Kesişim bulunamadıysa uyarı ver
+      if (!intersection) {
+        this.alan = 0;
+        this.currentOperation = null;
+        this.geometryResult = null; // Haritadaki eski sonucu temizle
+        alert('Kesişim bulunamadı (No intersection found).');
+        return;
+      }
+      // 7. Kesişim varsa m² hesapla ve haritada göster
+      this.currentOperation = `${a} ∩ ${b}`;
+      this.alan = turf.area(intersection); // Alan m² olarak hesaplanır
 
-    this.maxDrawReached = true;
+      // Sonucu harita bileşenine gönder
+      this.drawResult({
+        geojson: intersection,
+        operation: 'intersection',
+      });
 
-  } catch (error) {
-    console.error("Kesişim hesaplama hatası:", error);
-    alert("Geometri verisi işlenirken bir hata oluştu.");
+      this.maxDrawReached = true;
+    } catch (error) {
+      this.showErrorAlert(`Kesişim hesaplama hatası, geometri verisi işlenemedi`);
+    }
   }
-}
 
   drawResult(result: { geojson: any; operation: string }) {
     this.geometryResult = result;
   }
 
-
   calculateUnionAB() {
-  const geomA = this.manualAreas.A.geometry;
-  const geomB = this.manualAreas.B.geometry;
+    const geomA = this.manualAreas.A.geometry;
+    const geomB = this.manualAreas.B.geometry;
 
-  // 1. Geometri varlık kontrolü
-  if (!geomA || !geomB) {
-    alert("Lütfen A ve B alanlarını tamamlayın.");
-    return;
-  }
-
-  try {
-    // 2. Güvenli Parse (String gelirse objeye çevir, nesne ise direkt al)
-    const fa = typeof geomA === 'string' ? JSON.parse(geomA) : geomA;
-    const fb = typeof geomB === 'string' ? JSON.parse(geomB) : geomB;
-
-    // 3. Feature Çıkarma (FeatureCollection veya Feature fark etmeksizin)
-    const featureA = fa.type === 'FeatureCollection' ? fa.features[0] : (fa.type === 'Feature' ? fa : turf.feature(fa));
-    const featureB = fb.type === 'FeatureCollection' ? fb.features[0] : (fb.type === 'Feature' ? fb : turf.feature(fb));
-
-    // 4. Union İşlemi
-    const union = turf.union(turf.featureCollection([featureA, featureB]));
-
-    if (!union) {
-      alert('Birleşim oluşturulamadı.');
+    // 1. Geometri varlık kontrolü
+    if (!geomA || !geomB) {
+      alert('Lütfen A ve B alanlarını tamamlayın.');
       return;
     }
 
-    // 5. Alan Hesaplama ve UI Güncelleme
-    this.currentOperation = 'A ∪ B';
-    this.alan = turf.area(union); // m² cinsinden döner
+    try {
+      // 2. Güvenli Parse (String gelirse objeye çevir, nesne ise direkt al)
+      const fa = typeof geomA === 'string' ? JSON.parse(geomA) : geomA;
+      const fb = typeof geomB === 'string' ? JSON.parse(geomB) : geomB;
 
-    // 6. REQ-13: Sonucu 'D' ismiyle Veritabanına Kaydet
-    this.alanAnalizService.save({
-      name: 'D', // SRS Gereksinimi
-      operation: 'A ∪ B',
-      geometry: JSON.stringify(union),
-      area: this.alan
-    }).subscribe({
-      next: () => {
-        console.log("Birleşim D başarıyla kaydedildi.");
-        this.loadSavedResults(); // Tabloyu yenile
-      },
-      error: (err) => console.error("D kaydı başarısız:", err)
-    });
+      // 3. Feature Çıkarma (FeatureCollection veya Feature fark etmeksizin)
+      const featureA=this.toFeature(fa);
+      const featureB=this.toFeature(fb);
 
-    // 7. Haritada Göster
-    this.drawResult({
-      geojson: union,
-      operation: 'union'
-    });
+      // 4. Union İşlemi
+      const union = turf.union(turf.featureCollection([featureA, featureB]));
 
-  } catch (error) {
-    console.error("Union AB Hatası:", error);
-    alert("Geometri verisi işlenirken hata oluştu.");
+      if (!union) {
+        alert('Birleşim oluşturulamadı.');
+        return;
+      }
+
+      // 5 Alan Hesaplama ve UI Güncelleme
+      this.currentOperation = 'A ∪ B';
+      this.alan = turf.area(union); // m² cinsinden döner
+
+      // 6 Sonucu D olarak dbye Kaydet
+      this.alanAnalizService
+        .save({
+          name: 'D', // SRS Gereksinimi
+          operation: 'A ∪ B',
+          geometry: JSON.stringify(union),
+          area: this.alan,
+        })
+        .subscribe({
+          next: () => {
+            this.showSuccessAlert("Birleşim D başarıyla kaydedildi.");
+            this.loadSavedResults(); // Tabloyu yenile
+          },
+          error: () => this.showErrorAlert(`D kaydı başarısız:`),
+        }); 
+
+      // 7. Haritada Göster
+      this.drawResult({
+        geojson: union,
+        operation: 'union',
+      });
+    } catch (error) {
+      this.showErrorAlert("Union AB Hatası");
+      alert('Geometri verisi işlenirken hata oluştu.');
+    }
   }
-}
-
   calculateUnionABC() {
-  const geomA = this.manualAreas.A.geometry;
-  const geomB = this.manualAreas.B.geometry;
-  const geomC = this.manualAreas.C.geometry;
-
-  // 1. 3 Geometri de var mı kontrolü (REQ-4)
-  if (!geomA || !geomB || !geomC) {
-    alert("Lütfen A, B ve C alanlarının tamamını hazırlayın.");
-    return;
-  }
-
-  try {
-    // 2. Güvenli Parse
-    const fa = typeof geomA === 'string' ? JSON.parse(geomA) : geomA;
-    const fb = typeof geomB === 'string' ? JSON.parse(geomB) : geomB;
-    const fc = typeof geomC === 'string' ? JSON.parse(geomC) : geomC;
-
-    // 3. Feature formatına zorlama (Kritik fa.type kontrolü)
-    const fA = fa.type === 'FeatureCollection' ? fa.features[0] : (fa.type === 'Feature' ? fa : turf.feature(fa));
-    const fB = fb.type === 'FeatureCollection' ? fb.features[0] : (fb.type === 'Feature' ? fb : turf.feature(fb));
-    const fC = fc.type === 'FeatureCollection' ? fc.features[0] : (fc.type === 'Feature' ? fc : turf.feature(fc));
-
-    // 4. Üçlü Union (A ∪ B ∪ C)
-    // Önce A ve B'yi birleştir, sonra sonucu C ile birleştir
-    const unionAB = turf.union(turf.featureCollection([fA, fB]));
-    if (!unionAB) return;
-    
-    const unionABC = turf.union(turf.featureCollection([unionAB, fC]));
-
-    if (!unionABC) {
-      alert('Üçlü birleşim oluşturulamadı.');
+    const {A,B,C} = this.manualAreas;
+    // 1. 3 Geometri de var mı kontrolü (REQ-4)
+    if (!A.geometry || !B.geometry || !C.geometry) {
+      alert('Lütfen A, B ve C alanlarının tamamını hazırlayın.');
       return;
     }
 
-    // 5. Alan Hesaplama (REQ-14)
-    this.currentOperation = 'A ∪ B ∪ C';
-    this.alan = turf.area(unionABC);
+    try {
+      //  Parse işlemi
+      const fA = this.toFeature(this.parseGeometry(A.geometry));
+      const fB = this.toFeature(this.parseGeometry(B.geometry));
+      const fC = this.toFeature(this.parseGeometry(C.geometry))
 
-    // 6. REQ-13: Sonucu 'E' ismiyle Veritabanına Kaydet
-    this.alanAnalizService.save({
-      name: 'E', // SRS Gereksinimi
-      operation: 'A ∪ B ∪ C',
-      geometry: JSON.stringify(unionABC),
-      area: this.alan
-    }).subscribe({
-      next: () => {
-        console.log("Birleşim E başarıyla kaydedildi.");
-        this.loadSavedResults();
-      },
-      error: (err) => console.error("E kaydı başarısız:", err)
-    });
+      // (A ∪ B ∪ C) Önce A ve B'yi birleştir, sonra sonucu C ile birleştir
+      const unionAB = turf.union(turf.featureCollection([fA, fB]));
+      if (!unionAB){
+        alert("A ∪ B oluşturulamadı.");
+      }
 
-    // 7. Haritada Göster
-    this.drawResult({
-      geojson: unionABC,
-      operation: 'union'
-    });
+      const unionABC = turf.union(turf.featureCollection([unionAB, fC]));
 
-  } catch (error) {
-    console.error("Union ABC Hatası:", error);
+      if (!unionABC) {
+        alert('Üçlü birleşim oluşturulamadı.');
+        return;
+      }
+      // Alan Hesaplama 
+      this.currentOperation = 'A ∪ B ∪ C';
+      this.alan = turf.area(unionABC);
+
+      // Sonucu E olarak dbye Kaydet
+      this.alanAnalizService
+        .save({
+          name: 'E', 
+          operation: 'A ∪ B ∪ C',
+          geometry: JSON.stringify(unionABC),
+          area: this.alan,
+        })
+        .subscribe({
+          next: () => {
+            this.showSuccessAlert("Birleşim E başarıyla kaydedildi.");
+            this.loadSavedResults();
+          },
+          error: (err) => this.showErrorAlert("E kaydı başarısız"),
+        });
+
+      // Haritada Göster
+      this.drawResult({
+        geojson: unionABC,
+        operation: 'union',
+      });
+    } catch (error) {
+      this.showErrorAlert("Union ABC Hatası");
+    }
   }
-}
 
-loadManualSelect(){
-  this.mode='manual';
-  this.resetAreas();
-  console.log("Manual mode'a geçtik")
-}
+  loadManualSelect() {
+    this.mode = 'manual';
+    this.resetAreas();
+  }
 
   loadAutoSelect() {
-  this.mode = 'auto';
-  console.log("Auto moda geçti: ",this.mode);
-  this.resetAreas();
-  this.maxDrawReached = true;
+    this.mode = 'auto';
+    this.resetAreas();
+    this.maxDrawReached = true;
 
-  this.alanAnalizService.getAutoSelect().subscribe({
-    next: (res: any) => {
-      const a = JSON.parse(res.a.geometry);
-      const b = JSON.parse(res.b.geometry);
-      const c = JSON.parse(res.c.geometry);
+    this.alanAnalizService.getAutoSelect().subscribe({
+      next: (res: any) => {
+        const a = JSON.parse(res.a.geometry);
+        const b = JSON.parse(res.b.geometry);
+        const c = JSON.parse(res.c.geometry);
 
-      this.manualAreas.A = { geometry: res.a.geometry, area: res.a.area };
-      this.manualAreas.B = { geometry: res.b.geometry, area: res.b.area };
-      this.manualAreas.C = { geometry: res.c.geometry, area: res.c.area };
+        this.manualAreas.A = { geometry: res.a.geometry, area: res.a.area };
+        this.manualAreas.B = { geometry: res.b.geometry, area: res.b.area };
+        this.manualAreas.C = { geometry: res.c.geometry, area: res.c.area };
 
-      this.geometryResult = {
-        geojson: {
-          type: 'FeatureCollection',
-          features: [a, b, c],
-        },
-        operation: 'auto-select',
-      };
+        this.geometryResult = {
+          geojson: {
+            type: 'FeatureCollection',
+            features: [a, b, c],
+          },
+          operation: 'auto-select',
+        };
 
-      this.maxDrawReached = true;
-    },
-    error: () => {
-      alert('Kayıtlı A, B, C bulunamadı. Lütfen manuel çizim yapın.');
-      this.loadManualSelect();
-    },
-  });
-}
-
+        this.maxDrawReached = true;
+      },
+      error: () => {
+        alert('Kayıtlı A, B, C bulunamadı. Lütfen manuel çizim yapın.');
+        this.loadManualSelect();
+      },
+    });
+  }
 }

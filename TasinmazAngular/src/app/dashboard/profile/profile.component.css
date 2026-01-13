@@ -1,1 +1,12 @@
 /* Profile component styles */
+
+.bg-gradient {
+  background: linear-gradient(135deg, #4e73df, #1cc88a);
+}
+
+.info-box {
+  background: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}

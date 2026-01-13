@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -7,12 +7,12 @@ import { AuthService } from 'src/app/auth/auth.service';
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
-  // imports: [AppRoutingModule],
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent{
   errorMessage: string = '';
   successMessage: string = '';
   registerForm!: FormGroup;
+  isLoading:boolean=false;
 
   constructor(
     private fb: FormBuilder,
@@ -26,24 +26,36 @@ export class RegisterComponent implements OnInit {
     })
   }
 
+  showErrorAlert(errorMessage:string){
+    this.errorMessage = errorMessage;
+    setTimeout(() => {
+      this.errorMessage = "";
+    }, 2000);
+  }
+  showSuccessAlert(successMessage:string){
+  this.successMessage = successMessage;
+    setTimeout(() => {
+      this.successMessage = "";
+    }, 2000);
+  }
+
   register() {
     if(this.registerForm.invalid){
-      this.errorMessage='Lütfen tüm alanları doğru doldurun.';
+      this.showErrorAlert("Lütfen tüm alanları doğru doldurun.");
       return;
     }
+    this.isLoading=true;
     this.authService.register(this.registerForm.value).subscribe({
       next: (response) => {
-        this.successMessage = 'Kayıt başarılı! Giriş sayfasına yönlendiriliyorsunuz...';
+        this.showSuccessAlert("Kayıt başarılı! Giriş sayfasına yönlendiriliyorsunuz...");
         setTimeout(() => {
           this.router.navigate(['/auth/login']);
         }, 2000);
       },
-      error: (error) => {
-        this.errorMessage ='Kayıt sırasında bir hata oluştu.';
+      error: () => {
+        this.showErrorAlert("Kayıt sırasında bir hata oluştu.");
+        this.isLoading=false;
       },
     });
   }
-
-  ngOnInit(): void {}
-
 }

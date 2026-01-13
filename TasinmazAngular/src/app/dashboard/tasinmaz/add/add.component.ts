@@ -138,7 +138,7 @@ export class AddComponent implements OnInit {
         );
       },
       error: (err) => {
-        console.error("Backend'den gelen hata detayı:", err);
+        this.showErrorAlert("Backend'den gelen hata detayı");
         this.errorMessage =
           'Form kaydedilirken bir hata oluştu. Detay: ' +
           (err.error || 'Bilinmiyor');

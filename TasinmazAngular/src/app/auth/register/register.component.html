@@ -1,55 +1,82 @@
-<div class="d-flex justify-content-center align-items-center vh-100 w-50 mx-auto">    
-  <div class="container mt-4">
-  <h2 class="text-center">Kayıt Ol</h2>
+<div class="container-fluid vh-100">
+  <div class="row h-100">
+    <div class="col-md-7 d-flex justify-content-center align-items-center">
+      <div style="width: 692px;">
+        <h3 class="fw-bold mb-2 text-center">Hesap Oluştur</h3>
+        <p class="text-muted mb-4 text-center fs-6">Kayıt olarak sisteme giriş yapabilirsiniz</p>
 
-  <div *ngIf="successMessage" class="alert alert-success mt-2">
-    {{ successMessage }}
+        <div *ngIf="successMessage" class="alert alert-success text-center">
+          {{ successMessage }}
+        </div>
+
+        <div *ngIf="errorMessage" class="alert alert-danger text-center">
+          {{ errorMessage }}
+        </div>
+
+        <div *ngIf="isLoading" class="position-fixed top-0 start-0 w-100 h-100
+                    d-flex justify-content-center align-items-center bg-white" style="opacity:0.85; z-index:999;">
+          <div class="spinner-border text-success" role="status"></div>
+        </div>
+
+        <form [formGroup]="registerForm" (ngSubmit)="register()">
+
+          <div class="mb-3">
+            <label class="form-label">Ad Soyad</label>
+            <input type="text" class="form-control form-control-lg mb-1" formControlName="name"
+              placeholder="Adınızı ve soyadınızı girin">
+
+            <small *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched"
+              class="text-danger fs-6 p-1">Ad
+              Soyad zorunludur</small>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control form-control-lg mb-1" formControlName="email"
+              placeholder="ornek@email.com">
+            <small *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
+              class="text-danger fs-6 p-1">Geçerli bir email giriniz</small>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Şifre</label>
+            <input type="password" class="form-control form-control-lg mb-1" formControlName="password"
+              placeholder="••••••••">
+
+            <small class="text-danger fs-6 p-1" *ngIf="registerForm.get('password')?.errors?.['required']
+                     && registerForm.get('password')?.touched">Şifre zorunludur</small>
+            <small class="text-danger fs-6 p-1" *ngIf="registerForm.get('password')?.errors?.['minlength']">Şifre en az
+              8
+              karakter olmalıdır</small>
+            <small class="text-danger fs-6 p-1" *ngIf="registerForm.get('password')?.errors?.['pattern']">Şifre en az 1
+              büyük ve
+              1 küçük harf içermelidir</small>
+          </div>
+
+          <button class="btn btn-success btn-lg w-100 mt-2" type="submit"
+            [disabled]="registerForm.invalid">KayıtOl</button>
+
+          <div class="text-center mt-4">
+            <small class="text-muted">
+              Zaten hesabın var mı?
+              <a routerLink="/login" class="fw-semibold text-decoration-none">
+                Giriş Yap
+              </a>
+            </small>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="col-md-5 d-none d-md-flex bg-success text-white justify-content-center align-items-center">
+      <div class="text-center px-5">
+        <h1 class="fw-bold mb-3">Taşınmaz Yönetim Sistemi</h1>
+        <p class="fs-5 opacity-75">Hemen hesabını oluştur, taşınmazlarını güvenle yönetmeye başla.</p>
+        <div class="mt-4">
+          <div class="d-inline-block px-4 py-2 rounded-pill bg-white text-success fw-semibold">Ücretsiz • Güvenli •
+            Hızlı</div>
+        </div>
+      </div>
+    </div>
   </div>
-
-  <div *ngIf="errorMessage" class="alert alert-danger mt-2">
-    {{ errorMessage }}
-  </div>
-
-  <form action="" [formGroup]="registerForm" (ngSubmit)="register()">
-
-    <div class="mb-3">
-      <label for="name">Ad Soyad</label>
-      <input type="text" id="name" formControlName="name" class="form-control"
-        placeholder="Adınızı ve soyadınızı girin">
-      <small *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched" class="text-danger">Ad Soyad
-        zorunludur</small>
-    </div>
-
-    <div class="mb-3">
-      <label for="email">Email</label>
-      <input type="email" id="email" formControlName="email" class="form-control"
-        placeholder="E-posta adresinizi girin">
-      <small *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
-        class="text-danger">Geçerli bir email giriniz</small>
-    </div>
-    <div class="mb-3">
-      <label for="password" class="form-label">Şifre</label>
-      <input type="password" id="password" formControlName="password" class="form-control"
-        placeholder="Şifrenizi girin">
-      <small class="text-danger" *ngIf="registerForm.get('password')?.errors?.['required']">
-        Şifre zorunludur
-      </small>
-
-      <small class="text-danger" *ngIf="registerForm.get('password')?.errors?.['minlength']">
-        Şifre en az 8 karakter olmalıdır
-      </small>
-
-      <small class="text-danger" *ngIf="registerForm.get('password')?.errors?.['pattern']">
-        Şifre en az 1 büyük ve 1 küçük harf içermelidir
-      </small>
-
-    </div>
-
-    <button class="btn btn-success w-100" type="submit" [disabled]="registerForm.invalid">Kayıt Ol</button>
-
-    <div class="text-center mt-3">
-      <a routerLink="/login">Zaten hesabın var mı? Giriş yap</a>
-    </div>
-  </form>
-</div>
 </div>

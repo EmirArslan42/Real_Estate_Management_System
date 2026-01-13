@@ -12,12 +12,17 @@
     </div>
     <div class="row  mb-3">
 
-        <!--SOL: FİLTRE -->
         <div class="col-md-12 align-items-end">
             <div class="card mb-3" [formGroup]="filterForm">
-                <div class="card-header"><b>Filtrele</b></div>
-
-                <div class="card-body row g-2">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <b>Filtrele</b>
+                    <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse"
+                        data-bs-target="#filterBody">
+                        Göster / Gizle
+                    </button>
+                </div>
+                <div id="filterBody" class="collapse show">
+                    <div class="card-body row g-2">
                     <div class="col-md-1">
                         <input class="form-control" placeholder="İl" formControlName="il">
                     </div>
@@ -57,6 +62,7 @@
                     </div>
 
                 </div>
+                </div>
             </div>
         </div>
 
@@ -64,10 +70,11 @@
 
     <div id="contentToConvert">
         <div class="d-flex justify-content-between align-items-center gap-3">
-            <button *ngIf="!isAdmin" class="btn btn-primary mb-3" routerLink="/dashboard/tasinmaz/add">Yeni Taşınmaz
+            <button *ngIf="!isAdmin" class="btn btn-primary mb-3" routerLink="/dashboard/tasinmaz/add">Taşınmaz
                 Ekle</button>
             <h2 class="text-center">Taşınmaz Listesi</h2>
-            <input type="file" class="form-control w-auto" accept=".xlsx,.xls" (change)="onExcelUpload($event)">
+            <input *ngIf="!isAdmin" type="file" class="form-control w-auto" accept=".xlsx,.xls"
+                (change)="onExcelUpload($event)">
         </div>
         <br>
         <table class="table table-bordered" *ngIf="!isLoading && filteredTasinmazlar.length >0">
@@ -90,7 +97,7 @@
             </thead>
 
             <tbody>
-                <tr *ngFor="let tasinmaz of filteredTasinmazlar">
+                <tr *ngFor="let tasinmaz of pagedTasinmazlar">
                     <td>{{tasinmaz.id}}</td>
                     <td>{{tasinmaz.lotNumber}}</td>
                     <td>{{tasinmaz.parcelNumber}}</td>
@@ -100,7 +107,7 @@
                     <td class="text-center">
                         <img *ngIf="tasinmaz.id"
                             [src]="'https://localhost:7040/api/Tasinmaz/'+tasinmaz.id+'/image?ts=' + imageTimestamp"
-                            [alt]="'Taşınmaz ' + tasinmaz.ilAdi + ' ' + tasinmaz.ilceAdi + ' ' + tasinmaz.mahalleAdi + ' görseli'"
+                            [alt]="'Taşınmaz ' + tasinmaz.ilAdi + ' ' + tasinmaz.ilceAdi + ' ' + ' görseli'"
                             width="80" />
                     </td>
                     <td>{{tasinmaz.address}}</td>
@@ -115,6 +122,26 @@
                 </tr>
             </tbody>
         </table>
+
+        <nav *ngIf="totalPages > 1" class="d-flex justify-content-center mt-4 mb-3">
+            <ul class="pagination">
+                <li class="page-item" [class.disabled]="currentPage === 1">
+                    <button class="page-link" (click)="changePage(currentPage - 1)">Önceki</button>
+                </li>
+                <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index"
+                    [class.active]="currentPage === i + 1">
+                    <button class="page-link" (click)="changePage(i + 1)">
+                        {{ i + 1 }}
+                    </button>
+                </li>
+                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                    <button class="page-link" (click)="changePage(currentPage + 1)">
+                        Sonraki
+                    </button>
+                </li>
+            </ul>
+        </nav>
+
     </div>
     <div *ngIf="!isLoading && filteredTasinmazlar.length==0 && tasinmazlar.length!=0" class="alert alert-info">
         Filtrelerinize uygun taşınmaz bulunamadı !

@@ -1,35 +1,47 @@
 <div class="container-fluid">
   <div class="row min-vh-100">
-    <!-- SOL MENÜ (SIDEBAR) -->
-    <nav class="col-md-3 col-lg-2 d-md-block bg-dark sidebar text-white p-4">
-      <h5 class="text-center mb-4">Taşınmaz Sistemi</h5>
+    <nav aria-label="Yan Menü" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar text-white p-4">
+      <h5 class="text-center mb-4 fs-6">Taşınmaz Sistemi</h5>
+      <div class="text-center mb-3">
+        <div
+          class="rounded-circle bg-secondary d-inline-flex align-items-center justify-content-center mb-2"
+          style="width:60px;height:60px;font-size:22px;">
+          {{ userName.charAt(0) | uppercase }}
+        </div>
+
+        <div class="fw-semibold mt-3">
+          {{ userName | titlecase }}
+        </div>
+
+        <small class="text-muted">
+          {{ isAdmin ? 'Admin' : 'Kullanıcı' }}
+        </small>
+      </div>
+
+      <hr class="border-secondary">
 
       <ul class="nav flex-column">
-        <li class="nav-item mb-2">
-          <strong>{{ userName | titlecase }}</strong>
-          <hr class="bg-secondary">
-        </li>
 
         <li class="nav-item">
-          <a class="nav-link text-white" routerLink="/dashboard/tasinmaz/list" routerLinkActive="active">
+          <a class="nav-link text-white fs-6" routerLink="/dashboard/tasinmaz/list" routerLinkActive="active">
             🏠 Taşınmazlar
           </a>
         </li>
 
-        <li  class="nav-item">
-          <a class="nav-link text-white" routerLink="/dashboard/profile" routerLinkActive="active">
+        <li  class="nav-item mb-1">
+          <a class="nav-link text-white fs-6" routerLink="/dashboard/profile" routerLinkActive="active">
             👤 Profil
           </a>
         </li>
 
-        <li class="nav-item" *ngIf="isAdmin">
-          <a class="nav-link text-white" routerLink="/dashboard/admin" routerLinkActive="active">
+        <li class="nav-item mb-1" *ngIf="isAdmin">
+          <a class="nav-link text-white fs-6" routerLink="/dashboard/admin" routerLinkActive="active">
             ⚙️ Admin Panel
           </a>
         </li>
 
         <li class="nav-item" *ngIf="!isAdmin">
-          <a class="nav-link text-white" routerLink="/dashboard/hesaplama/alan-hesabi" routerLinkActive="active">
+          <a class="nav-link text-white fs-6" routerLink="/dashboard/hesaplama/alan-hesabi" routerLinkActive="active">
             🔍 Alan Analizi
           </a>
         </li>
@@ -42,21 +54,16 @@
       </ul>
     </nav>
 
-    <!-- SAĞ TARAF -->
     <div class="col-md-9 col-lg-10 p-0">
-
-      <!-- NAVBAR -->
-      <nav class="navbar navbar-light bg-light px-4 border-bottom">
+      <nav aria-label="Üst gezinme çubuğu" class="navbar navbar-light bg-light px-4 border-bottom">
         <span class="navbar-text">
-          Hoşgeldin, {{ userName | titlecase }}
+          <span class="fs-6 text-black">Hoşgeldin,</span> {{ userName | titlecase }}
         </span>
       </nav>
 
-      <!-- SAYFA İÇERİĞİ -->
       <main class="p-4">
         <router-outlet></router-outlet>
       </main>
-
     </div>
   </div>
 </div>

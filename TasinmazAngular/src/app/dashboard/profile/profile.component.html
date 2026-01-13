@@ -1,8 +1,54 @@
-<div><a routerLink="/dashboard/tasinmaz/list" class="btn btn-secondary btn-sm">← GERİ</a></div>
-<h3 class="mt-3">Profil Bilgileri</h3>
 
-<ul class="list-group mt-3" *ngIf="user">
-  <li class="list-group-item">Ad Soyad: {{ user.name }}</li>
-  <li class="list-group-item">Email: {{ user.email }}</li>
-  <li class="list-group-item">Rol: {{ user.role }}</li>
-</ul>
+<a routerLink="/dashboard/tasinmaz/list" class="btn btn-link text-decoration-none mb-3 p-1">← GERİ</a>
+
+<div class="container mt-4">
+
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body text-center">
+
+          <div
+            class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center text-capitalize"
+            style="width: 90px; height: 90px; font-size: 36px;">
+            {{ user?.name?.charAt(0) }}
+          </div>
+
+          <h5 class="mb-1 mt-2 text-capitalize fs-6">{{ user?.name }}</h5>
+          <span class="badge bg-primary mb-2 mt-1 p-2 ">{{ user?.role }}</span>
+
+          <p class="text-muted large">
+            Kullanıcı Profil Bilgileri
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-8 ">
+      <div class="row g-3 h-100">
+
+        <div class="col-md-6">
+          <div class="info-box border-start border-primary h-100">
+            <span class="text-muted small">Email</span>
+            <div class="fw-semibold mt-2">{{ user?.email }}</div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="info-box border-start border-success h-100">
+            <span class="text-muted small">Rol</span>
+            <div class="fw-semibold mt-2 fs-6">{{ user?.role }}</div>
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <div class="info-box border-start border-warning h-100 ">
+            <span class="text-muted small">Hesap Durumu</span>
+            <div class="fw-semibold text-success mt-2">Aktif</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

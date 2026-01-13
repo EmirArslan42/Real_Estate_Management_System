@@ -9,6 +9,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AuthModule } from './auth/auth.module';
 import { AuthInterceptor } from './auth/auth.interceptor';
 
+
 @NgModule({
   declarations: [
     AppComponent

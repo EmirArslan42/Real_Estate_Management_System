@@ -213,7 +213,7 @@ export class TasinmazMapComponent implements OnInit {
         features.forEach((feature) => this.applyResultStyle(feature));
         this.fitMapToResult();
       } catch (err) {
-        console.error('Harita çizim hatası:', err);
+        alert("Harita çizim hatası");
       }
     }
   }
@@ -245,7 +245,7 @@ export class TasinmazMapComponent implements OnInit {
 
           this.vectorSource.addFeatures(features);
         } catch (e) {
-          console.error('Geometri okunamadı:', tasinmaz.id);
+          alert("Geometri okunamadı");
         }
       }
     });

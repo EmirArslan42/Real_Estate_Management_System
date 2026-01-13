@@ -1,13 +1,24 @@
-<div class="container mt-4 mb-4">
+<!-- <div class="container mt-4 mb-4">
     <h2 class="text-center">Alan Hesaplama</h2>
     <div class="btn-group mb-3">
         <button class="btn btn-primary" (click)="loadManualSelect()">Manuel</button>
-        <button class="btn btn-secondary" (click)="loadAutoSelect()" >Auto</button>
+        <button class="btn btn-secondary" (click)="loadAutoSelect()">Auto</button>
+    </div>
+
+    <div *ngIf="successMessage" class="fixed-top d-flex justify-content-end" style="margin-top: 20px;right:12px">
+      <p class="alert alert-success alert-dismissible fade show text-center w-25 fs-6" role="alert">
+        {{ successMessage }}
+    </div>
+
+    <div *ngIf="errorMessage" class="fixed-top d-flex justify-content-end" style="margin-top: 20px;right:12px">
+      <p class="alert alert-danger alert-dismissible fade show text-center w-25 fs-6" role="alert">
+        {{ errorMessage }}
+      </p>
     </div>
 
     <p class="text-danger fw-bold">
-  Aktif Mod: {{ mode }}
-</p>
+        Aktif Mod: {{ mode }}
+    </p>
 
     <div *ngIf="mode=='manual'">
         <h5>Manuel Alan Hesaplama</h5>
@@ -17,16 +28,21 @@
     <div *ngIf="mode=='manual'">
         <h6>Manuel Alan İşlemleri</h6>
         <div class="btn-group mb-2 gap-2">
-            <button class="btn btn-outline-warning" [disabled]="!manualAreas.A.geometry || !manualAreas.B.geometry" (click)="calculateIntersection('A','B')">
+            <button class="btn btn-outline-warning" [disabled]="!manualAreas.A.geometry || !manualAreas.B.geometry"
+                (click)="calculateIntersection('A','B')">
                 A ∩ B
             </button>
-            <button class="btn btn-outline-info" [disabled]="!manualAreas.A.geometry || !manualAreas.B.geometry" (click)="calculateIntersection('B','A')">
+            <button class="btn btn-outline-info" [disabled]="!manualAreas.A.geometry || !manualAreas.B.geometry"
+                (click)="calculateIntersection('B','A')">
                 B ∩ A
             </button>
-            <button class="btn btn-outline-primary" [disabled]="!manualAreas.A.geometry || !manualAreas.B.geometry" (click)="calculateUnionAB()">
+            <button class="btn btn-outline-primary" [disabled]="!manualAreas.A.geometry || !manualAreas.B.geometry"
+                (click)="calculateUnionAB()">
                 A ∪ B
             </button>
-            <button class="btn btn-outline-success"  [disabled]="!manualAreas.A.geometry || !manualAreas.B.geometry || !manualAreas.C.geometry" (click)="calculateUnionABC()">
+            <button class="btn btn-outline-success"
+                [disabled]="!manualAreas.A.geometry || !manualAreas.B.geometry || !manualAreas.C.geometry"
+                (click)="calculateUnionABC()">
                 A ∪ B ∪ C
             </button>
         </div>
@@ -37,16 +53,21 @@
         <p>Sistemdeki taşınmazlar üzerinden hesaplama yapılır.</p>
         <h6>Otomatik Alan İşlemleri</h6>
         <div class="btn-group mb-2 gap-2">
-            <button class="btn btn-outline-warning" [disabled]="!manualAreas.A.geometry || !manualAreas.B.geometry" (click)="calculateIntersection('A','B')">
+            <button class="btn btn-outline-warning" [disabled]="!manualAreas.A.geometry || !manualAreas.B.geometry"
+                (click)="calculateIntersection('A','B')">
                 A ∩ B
             </button>
-            <button class="btn btn-outline-info" [disabled]="!manualAreas.A.geometry || !manualAreas.B.geometry" (click)="calculateIntersection('B','A')">
+            <button class="btn btn-outline-info" [disabled]="!manualAreas.A.geometry || !manualAreas.B.geometry"
+                (click)="calculateIntersection('B','A')">
                 B ∩ A
             </button>
-            <button class="btn btn-outline-primary" [disabled]="!manualAreas.A.geometry || !manualAreas.B.geometry" (click)="calculateUnionAB()">
+            <button class="btn btn-outline-primary" [disabled]="!manualAreas.A.geometry || !manualAreas.B.geometry"
+                (click)="calculateUnionAB()">
                 A ∪ B
             </button>
-            <button class="btn btn-outline-success"  [disabled]="!manualAreas.A.geometry || !manualAreas.B.geometry || !manualAreas.C.geometry" (click)="calculateUnionABC()">
+            <button class="btn btn-outline-success"
+                [disabled]="!manualAreas.A.geometry || !manualAreas.B.geometry || !manualAreas.C.geometry"
+                (click)="calculateUnionABC()">
                 A ∪ B ∪ C
             </button>
         </div>
@@ -57,8 +78,6 @@
         <button class="btn btn-primary m-2" (click)="resetAreas()">Hesaplamaları Temizle</button>
         <button class="btn btn-primary m-2" (click)="resetAnaliz()">Analizleri Sıfırla</button>
     </div>
-
-    <!-- <p><b>Toplam Hesaplanan Alan:</b> {{ formatArea(alan)}}</p> -->
 
     <div *ngIf="currentOperation" class="alert alert-info mt-3">
         <b>İşlem:</b> {{ currentOperation }} <br />
@@ -74,45 +93,167 @@
         <div><span class="box union"></span> Birleşim (A ∪ B ∪ C)</div>
     </div>
 
-
     <app-tasinmaz-map [mode]="mode" [disableDraw]="maxDrawReached" [resetCounter]="resetCounter"
         (geometryDrawn)="onGeometryDrawn($event)" [resultGeometry]="geometryResult"></app-tasinmaz-map>
 
-        <hr />
+    <hr />
 
-        <h5>Kaydedilmiş Alan Analizi Sonuçları</h5>
+    <h5>Kaydedilmiş Alan Analizi Sonuçları</h5>
 
-        <button class="btn btn-outline-dark mb-2" (click)="loadSavedResults()">
+    <button class="btn btn-outline-dark mb-2" (click)="loadSavedResults()">
         Kaydedilmiş Sonuçları Getir
-        </button>
+    </button>
 
-        <table class="table table-bordered table-hover table-striped" *ngIf="savedResults.length > 0">
+    <table class="table table-bordered table-hover table-striped" *ngIf="savedResults.length > 0">
+        <caption class="visually-hidden">
+            Daha önce kaydedilmiş alan hesaplama sonuçlarının listelendiği tablo
+        </caption>
         <thead class="table-light">
             <tr>
-            <th>ID</th>
-            <th>Ad</th>
-            <th>İşlem</th>
-            <th>Alan</th>
-            <th>Haritada Göster</th>
+                <th>ID</th>
+                <th>Ad</th>
+                <th>İşlem</th>
+                <th>Alan</th>
+                <th>Haritada Göster</th>
             </tr>
         </thead>
         <tbody>
             <tr *ngFor="let result of savedResults">
-            <td>{{ result.id }}</td>
-            <td>{{ result.name }}</td>
-            <td>{{ result.operation }}</td>
-            <td>{{ formatArea(result.area) }}</td>
-            <td>
-                <button class="btn btn-sm btn-primary" (click)="showResultOnMap(result)">
-                Göster
-                </button>
-            </td>
+                <td>{{ result.id }}</td>
+                <td>{{ result.name }}</td>
+                <td>{{ result.operation }}</td>
+                <td>{{ formatArea(result.area) }}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary" (click)="showResultOnMap(result)">
+                        Göster
+                    </button>
+                </td>
             </tr>
         </tbody>
+    </table>
+
+    <p *ngIf="savedResults.length === 0" class="text-muted">
+        Henüz kaydedilmiş bir sonuç yok.
+    </p>
+
+</div> -->
+
+
+
+
+<div><a routerLink="/dashboard/tasinmaz/list" class="btn btn-link text-decoration-none p-1 mb-2">← GERİ</a></div>
+<div class="card shadow-sm mb-3">
+    <div class="card-body d-flex justify-content-between align-items-center">
+        <div>
+            <h5 class="mb-1 fs-6">Alan Hesaplama</h5>
+            <span class="badge bg-danger p-2">Aktif Mod: {{ mode }}</span>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-outline-primary" [class.active]="mode==='manual'" (click)="loadManualSelect()">
+                Manuel
+            </button>
+            <button class="btn btn-outline-secondary" [class.active]="mode==='auto'" (click)="loadAutoSelect()">
+                Otomatik
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-header fw-bold">Alan İşlemleri</div>
+            <div class="card-body">
+                <p class="text-muted small fs-6" *ngIf="mode==='manual'">A, B, C alanlarını haritadan çiziniz</p>
+                <div class="d-grid gap-3">
+                    <button class="btn btn-outline-warning mt-3"
+                        [disabled]="!manualAreas.A.geometry || !manualAreas.B.geometry"
+                        (click)="calculateIntersection('A','B')">
+                        A ∩ B
+                    </button>
+
+                    <button class="btn btn-outline-primary"
+                        [disabled]="!manualAreas.A.geometry || !manualAreas.B.geometry" (click)="calculateUnionAB()">
+                        A ∪ B
+                    </button>
+
+                    <button class="btn btn-outline-success"
+                        [disabled]="!manualAreas.A.geometry || !manualAreas.B.geometry || !manualAreas.C.geometry"
+                        (click)="calculateUnionABC()">
+                        A ∪ B ∪ C
+                    </button>
+                </div>
+
+                <div class=" p-3"><hr></div>
+
+                <div class="d-grid gap-3">
+                    <button class="btn btn-primary" (click)="getTotalArea()">Toplam Alan</button>
+                    <button class="btn btn-outline-secondary" (click)="resetAreas()">Temizle</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SAĞ: HARİTA -->
+    <div class="col-md-8">
+        <div class="card h-100 shadow-sm">
+            <div class="card-header fw-bold">
+                Harita
+            </div>
+            <div class="card-body p-0">
+                <app-tasinmaz-map [mode]="mode" [disableDraw]="maxDrawReached" [resetCounter]="resetCounter"
+                    (geometryDrawn)="onGeometryDrawn($event)" [resultGeometry]="geometryResult">
+                </app-tasinmaz-map>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<div class="card shadow-sm mt-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span class="fw-bold">Analiz Sonuçları</span>
+        <button class="btn btn-sm btn-outline-dark" (click)="loadSavedResults()">
+            Kayıtlı Sonuçları Getir
+        </button>
+    </div>
+
+    <div class="card-body">
+
+        <div *ngIf="currentOperation" class="alert alert-info">
+            <b>İşlem:</b> {{ currentOperation }} <br>
+            <b>Alan:</b> {{ formatArea(alan) }}
+        </div>
+
+        <table class="table table-hover" *ngIf="savedResults.length">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>İşlem</th>
+                    <th>Alan</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let result of savedResults">
+                    <td>{{ result.id }}</td>
+                    <td>{{ result.operation }}</td>
+                    <td>{{ formatArea(result.area) }}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" (click)="showResultOnMap(result)">
+                            Haritada Göster
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
         </table>
 
-        <p *ngIf="savedResults.length === 0" class="text-muted">
-        Henüz kaydedilmiş bir sonuç yok.
+        <p *ngIf="!savedResults.length" class="text-muted text-center">
+            Henüz kaydedilmiş bir analiz yok.
         </p>
 
+    </div>
 </div>

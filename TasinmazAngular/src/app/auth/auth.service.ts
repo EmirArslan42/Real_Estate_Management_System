@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -13,11 +13,11 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/login`, credentials);
   }
 
-  register(data:any){
+  register(data: any) {
     return this.http.post<any>(`${this.apiUrl}/register`, data);
   }
 
-  logout():void {
+  logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('isAdmin');
   }
@@ -31,14 +31,14 @@ export class AuthService {
   }
 
   getCurrentUser() {
-  return this.http.get<any>('https://localhost:7040/api/Auth/me');
-}
+    return this.http.get<any>('https://localhost:7040/api/Auth/me');
+  }
 
-  isLoggedIn(){
+  isLoggedIn() {
     return this.getToken() != null;
   }
 
-  isAdmin(){
-    return localStorage.getItem('isAdmin')=='true';
+  isAdmin() {
+    return localStorage.getItem('isAdmin') == 'true';
   }
 }

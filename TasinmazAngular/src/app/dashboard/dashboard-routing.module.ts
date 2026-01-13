@@ -1,17 +1,3 @@
-// import { NgModule } from '@angular/core';
-// import { RouterModule, Routes } from '@angular/router';
-// import { DashboardLayoutComponent } from './dashboard-layout/dashboard-layout.component';
-
-// const routes: Routes = [
-
-// ];
-
-// @NgModule({
-//   imports: [RouterModule.forChild(routes)],
-//   exports: [RouterModule]
-// })
-// export class DashboardRoutingModule { }
-
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardLayoutComponent } from './dashboard-layout/dashboard-layout.component';
@@ -20,8 +6,6 @@ import { AdminComponent } from './admin/admin.component';
 import { LogListComponent } from './admin/logs/log-list/log-list.component';
 import { UserListComponent } from './admin/users/user-list/user-list.component';
 import { ShortSummaryComponent } from './admin/summary/short-summary/short-summary.component';
-import { AuthGuard } from '../auth/auth.guard';
-import { AlanHesabiComponent } from './hesaplama/alan-hesabi/alan-hesabi.component';
 
 const routes: Routes = [
   {
@@ -41,14 +25,15 @@ const routes: Routes = [
         path: 'admin',
         component: AdminComponent,
         children: [
-           { path: 'summary', component:ShortSummaryComponent },
+          { path: 'summary', component: ShortSummaryComponent },
           { path: 'logs', component: LogListComponent },
           { path: 'users', component: UserListComponent },
         ],
       },
       {
-        path:'hesaplama',
-        loadChildren:()=>import('./hesaplama/hesaplama.module').then((m)=>m.HesaplamaModule)
+        path: 'hesaplama',
+        loadChildren: () =>
+          import('./hesaplama/hesaplama.module').then((m) => m.HesaplamaModule),
       },
     ],
   },

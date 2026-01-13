@@ -20,3 +20,16 @@
 .box.c { background: rgba(108,117,125,0.7); }
 .box.intersection { background: rgba(255,0,0,0.7); }
 .box.union { background: rgba(0,123,255,0.7); }
+
+.card {
+  border-radius: 10px;
+}
+
+.card-header {
+  background-color: #f8f9fa;
+}
+
+.btn.active {
+  background-color: #0d6efd;
+  color: white;
+}
