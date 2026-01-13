@@ -32,7 +32,7 @@ namespace WebApplication1.Controllers
                     UserId = newUser.Id,
                     OperationType = "Register",
                     Description = $"Yeni kullanıcı kayıt oldu : {newUser.Email}",
-                    IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
+                    IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
                 });
 
                 return Ok(new
@@ -57,6 +57,10 @@ namespace WebApplication1.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginDto dto)
         {
+            if (string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.Password))
+            {
+                return BadRequest("Email ve şifre zorunludur.");
+            }
             var user =await _authService.LoginAsync(dto);
 
             if(user== null)
@@ -76,7 +80,7 @@ namespace WebApplication1.Controllers
                 UserId=user.Id,
                 OperationType="Login",
                 Description=$"Kullanici giris yapti : {user.Email}",
-                IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString(),
+                IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
             });
 
             return Ok(new

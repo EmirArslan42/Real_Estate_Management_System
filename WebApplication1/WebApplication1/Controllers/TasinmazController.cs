@@ -17,18 +17,22 @@ namespace WebApplication1.Controllers
     {
         private readonly ITasinmazService _service;
         private readonly ILogService _logService;
-        private readonly ApplicationDbContext _context;
-        public TasinmazController(ITasinmazService service,ILogService logService,ApplicationDbContext context) {
+        public TasinmazController(ITasinmazService service,ILogService logService) {
             
             _service = service;
             _logService = logService;  
-            _context=context;
         }
 
         // tokendan userId çekme
         private int GetUserId()
         {
-            return int.Parse(User.FindFirst("id").Value);
+            var userIdClaim = User.FindFirst("id");
+
+            if(userIdClaim == null || !int.TryParse(userIdClaim.Value,out var userId))
+            {
+                throw new UnauthorizedAccessException("Kullanıcı kimliği bulunamadı.");
+            }
+            return userId;
         }
 
         [HttpGet]
@@ -42,7 +46,7 @@ namespace WebApplication1.Controllers
                 UserId = userId,
                 OperationType = "GetAllTasinmaz",
                 Description = $"Kullanici tüm tasinmazlarini listeledi.Tasinmaz count {tasinmazListe.Count}",
-                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
+                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
             });
 
             return Ok(tasinmazListe);
@@ -59,7 +63,7 @@ namespace WebApplication1.Controllers
                 UserId = GetUserId(),
                 OperationType = "AdminGetAllTasinmaz",
                 Description = "Admin tum kullanicilarin tasinmazlarini goruntuledi",
-                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
+                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
             });
 
             return Ok(tasinmazlar);
@@ -92,7 +96,7 @@ namespace WebApplication1.Controllers
                 UserId = userId,
                 OperationType="GetTasinmazById",
                 Description=$"Kullanici ID: {id} olan tasinmazini goruntuledi",
-                IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString(),
+                IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
             });
 
             return Ok(dto);
@@ -115,11 +119,10 @@ namespace WebApplication1.Controllers
                 UserId = userId,
                 OperationType="DeleteTasinmaz",
                 Description=$"Kullanici ID:{id} olan tasinmazi sildi.",
-                IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString(),
+                IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
             });
 
-            //return Ok("Tasinmaz basariyla silindi");
-            return NoContent(); // veya return Ok();
+            return NoContent();
         }
 
         [Authorize(Roles = "User")]
@@ -131,12 +134,11 @@ namespace WebApplication1.Controllers
             {
                 if (Image != null)
                 {
-                    using var ms=new MemoryStream();
+                    using var ms=new MemoryStream(); 
                     await Image.CopyToAsync(ms);
 
                     dto.ImageData=ms.ToArray();
                     dto.ImageType = Image.ContentType;
-
                 }
 
                 var userId = GetUserId();
@@ -160,7 +162,6 @@ namespace WebApplication1.Controllers
             }
         }
 
-
         [Authorize(Roles = "User")]
         [HttpPost("from-excel")]
         [Consumes("application/json")]
@@ -180,22 +181,10 @@ namespace WebApplication1.Controllers
                 UserId = userId,
                 OperationType = "AddTasinmazFromExcel",
                 Description = $"Kullanici yeni tasinmaz ekledi. ParcelNumber: {dto.ParcelNumber}",
-                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
+                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
             });
             return NoContent();
         }
-
-        //[AllowAnonymous]
-        //[HttpGet("{id}/image")]
-        //public async Task<IActionResult> GetImage(int id)
-        //{
-        //    var tasinmaz = await _context.Tasinmazlar.FirstOrDefaultAsync(t=>t.Id == id);
-
-        //    if (tasinmaz == null || tasinmaz.ImageData == null)
-        //        return NotFound();
-
-        //    return File(tasinmaz.ImageData, tasinmaz.ImageType);
-        //}
 
         [AllowAnonymous]
         [HttpGet("{id}/image")]
@@ -239,9 +228,8 @@ namespace WebApplication1.Controllers
                 UserId=userId,
                 OperationType="UpdateTasinmaz",
                 Description=$"Kullanici ID: {id} tasinmazi guncelledi",
-                IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString(),
+                IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
             });
-            //return Ok("Tasinmaz guncellendi");
             return NoContent();
         }
     }

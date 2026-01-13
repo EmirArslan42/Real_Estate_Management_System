@@ -23,7 +23,13 @@ namespace WebApplication1.Controllers
 
         private int GetUserId()
         {
-            return int.Parse(User.FindFirst("id").Value);
+            var userIdClaim = User.FindFirst("id");
+
+            if(userIdClaim == null || !int.TryParse(userIdClaim.Value,out var userId))
+            {
+                throw new UnauthorizedAccessException("Geçersiz kullanıcı kimliği.");
+            }
+            return userId;
         }
 
         [HttpGet] //GET  api/user
@@ -57,7 +63,7 @@ namespace WebApplication1.Controllers
                     UserId = GetUserId(),
                     OperationType="DeleteUser",
                     Description=$"{id} ID'li kullanici silindi",
-                    IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString(),
+                    IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
                 });
                 return Ok(new
                 {
@@ -85,7 +91,7 @@ namespace WebApplication1.Controllers
                 UserId=GetUserId(),
                 OperationType="AddUser",
                 Description=$"Yeni kullanici eklendi: {dto.Email}",
-                IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString(),
+                IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
             });
             return Ok(new
             {
@@ -108,7 +114,7 @@ namespace WebApplication1.Controllers
                     UserId=GetUserId(),
                     OperationType="UpdateUser",
                     Description=$"{id} ID'li kullanici guncellendi",
-                    IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString(),
+                    IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
                 });
 
                 return Ok(new
@@ -116,7 +122,6 @@ namespace WebApplication1.Controllers
                     success = true,
                     message = "Kullanıcı güncellendi"
                 });
-
             }
             return NotFound("Kullanıcı bulunamadı");
         }
@@ -135,7 +140,7 @@ namespace WebApplication1.Controllers
                 UserId = GetUserId(),
                 OperationType = "ChangeUserStatus",
                 Description = $"{id} ID'li kullanıcının aktiflik durumu değiştirildi",
-                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
+                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
             });
 
             return Ok(new
@@ -144,8 +149,6 @@ namespace WebApplication1.Controllers
                 message = "Kullanıcı durumu güncellendi"
             });
         }
-
-
 
     }
 }

@@ -14,7 +14,6 @@ namespace WebApplication1.Controllers
     [ApiController]
     public class AlanAnalizSonucuController : ControllerBase
     {
-
         private readonly IAlanAnalizSonucuService _service;
 
         public AlanAnalizSonucuController(IAlanAnalizSonucuService service)
@@ -22,18 +21,36 @@ namespace WebApplication1.Controllers
             _service = service;
         }
 
+        [HttpGet("debug-claims")]
+        public IActionResult DebugClaims()
+        {
+            return Ok(User.Claims.Select(c => new {
+                c.Type,
+                c.Value
+            }));
+        }
+
+
+        private int GetUserId()
+        {
+            var userIdClaim = User.FindFirst("id") ?? throw new UnauthorizedAccessException("UserId claim bulunamadı");
+            return int.Parse(userIdClaim.Value);
+        }
+
         // union sonuçlarını verir
         [HttpGet("results")]
         public async Task<IActionResult> GetUnionResults()
         {
-            var results=await _service.GetUnionResultsAsync();
+            var userId= GetUserId();
+            var results=await _service.GetUnionResultsAsync(userId);
             return Ok(results);
         }
 
         [HttpGet("auto-select")]
         public async Task<IActionResult> AutoSelect()
         {
-            var result = await _service.GetABCAsync();
+            var userId = GetUserId();
+            var result = await _service.GetABCAsync(userId);
             if (result == null)
             {
                 return BadRequest("Kaydedilen geometri bulunamadı. Lütfen manual çizim deneyin");
@@ -47,9 +64,7 @@ namespace WebApplication1.Controllers
             });
         }
 
-        // A / B / C / D / E → SAVE OR UPDATE
-        // Manuel çizimde A,B,C
-        // Union sonucunda D,E
+        // A / B / C / D / E → SAVE OR UPDATE -  Manuel çizimde A,B,C - Union sonucunda D,E
         [HttpPost("save")]
         public async Task<IActionResult> SaveOrUpdate([FromBody] AlanAnalizSonucuDto dto)
         {
@@ -60,18 +75,17 @@ namespace WebApplication1.Controllers
             if (string.IsNullOrWhiteSpace(dto.Name))
                 return BadRequest("Name alanı zorunludur (A,B,C,D,E).");
 
-            await _service.SaveOrUpdateAsync(dto);
+            var userId = GetUserId();
+            await _service.SaveOrUpdateAsync(dto,userId);
             return Ok();
-
         }
 
         [HttpDelete]
         public async Task<IActionResult> ResetAnaliz()
         {
-            await _service.ClearToAllAnaliz();
+            var userId = GetUserId();
+            await _service.ClearToAllAnaliz(userId);
             return Ok();
         }
-
-
     }
 }

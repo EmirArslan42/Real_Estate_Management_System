@@ -19,7 +19,12 @@ namespace WebApplication1.Controllers
         // token içindeki userId yi çekelim
         private int GetUserId()
         {
-            return int.Parse(User.FindFirst("id").Value);
+            var userIdClaim = User.FindFirst("id");
+            if(userIdClaim == null)
+            {
+                throw new UnauthorizedAccessException("Kullanıcı kimliği bulunamadı.");
+            }
+            return int.Parse(userIdClaim.Value);
         }
 
         // tüm kayıtları sadece admin görebilsin
