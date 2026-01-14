@@ -5,16 +5,8 @@ import { AlanHesabiComponent } from './alan-hesabi/alan-hesabi.component';
 import { TasinmazModule } from '../tasinmaz/tasinmaz.module';
 
 @NgModule({
-  declarations: [
-    AlanHesabiComponent,
-  ],
-  imports: [
-    CommonModule,
-    HesaplamaRoutingModule,
-    TasinmazModule
-  ],
-  exports:[
-    
-  ]
+  declarations: [AlanHesabiComponent],
+  imports: [CommonModule, HesaplamaRoutingModule, TasinmazModule],
+  exports: [],
 })
-export class HesaplamaModule { }
+export class HesaplamaModule {}

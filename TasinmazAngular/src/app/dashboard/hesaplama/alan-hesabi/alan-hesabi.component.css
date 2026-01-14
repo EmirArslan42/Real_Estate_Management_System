@@ -1,5 +1,4 @@
 .map-legend {
-  /* position: absolute; */
   bottom: 20px;
   left: 20px;
   background: white;
@@ -7,14 +6,12 @@
   border-radius: 6px;
   font-size: 13px;
 }
-
 .map-legend .box {
   width: 14px;
   height: 14px;
   display: inline-block;
   margin-right: 6px;
 }
-
 .box.a { background: rgba(40,167,69,0.7); }
 .box.b { background: rgba(255,193,7,0.7); }
 .box.c { background: rgba(108,117,125,0.7); }
@@ -24,11 +21,9 @@
 .card {
   border-radius: 10px;
 }
-
 .card-header {
   background-color: #f8f9fa;
 }
-
 .btn.active {
   background-color: #0d6efd;
   color: white;
