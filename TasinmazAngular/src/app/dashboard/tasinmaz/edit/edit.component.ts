@@ -12,13 +12,13 @@ import { TasinmazService } from 'src/app/dashboard/tasinmaz/tasinmaz.service';
 export class EditComponent implements OnInit {
   tasinmazForm: FormGroup;
   id!: number;
+  selectedImage!: File;
   successMessage: string = '';
   errorMessage: string = '';
   drawnGeometry: string = '';
   iller: any[] = [];
   ilceler: any[] = [];
   mahalleler: any[] = [];
-  selectedImage!: File;
 
   constructor(
     private fb: FormBuilder,
@@ -68,19 +68,13 @@ export class EditComponent implements OnInit {
   }
 
   onGeometryDrawn(event: any) {
-    // GeoJSON string mi object mi ayır
+
     const geoString = typeof event === 'string' ? event : event.geojson; // Alan hesabından gelirse
+    const parsed = typeof geoString === 'string' ? JSON.parse(geoString) : geoString;
 
-    // String'e emin olduktan sonra parse et
-    const parsed =
-      typeof geoString === 'string' ? JSON.parse(geoString) : geoString;
-
-    // Backend sadece geometry bekliyorsa
     this.drawnGeometry = JSON.stringify(
       parsed.type === 'Feature' ? parsed.geometry : parsed
     );
-
-    // Formu valid tut
     this.tasinmazForm.patchValue({
       coordinate: geoString,
     });

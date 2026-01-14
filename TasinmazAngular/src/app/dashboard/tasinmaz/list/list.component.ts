@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service';
-import { LocationService } from 'src/app/shared/location.service';
 import { TasinmazService } from 'src/app/dashboard/tasinmaz/tasinmaz.service';
 import VectorSource from 'ol/source/Vector';
 import GeoJSON from 'ol/format/GeoJSON';
@@ -17,7 +16,9 @@ import html2canvas from 'html2canvas';
   styleUrls: ['./list.component.css'],
 })
 export class ListComponent implements OnInit {
+
   tasinmazlar: any[] = [];
+  filteredTasinmazlar: any[] = [];
   isLoading: boolean = true;
   errorMessage: string = '';
   successMessage: string = '';
@@ -25,9 +26,7 @@ export class ListComponent implements OnInit {
   vectorSource = new VectorSource();
   selectedTasinmaz: any = null;
   filterForm!: FormGroup;
-  filteredTasinmazlar: any[] = [];
   imageTimestamp = Date.now();
-
   // pagination
   currentPage: number = 1;
   pageSize: number = 5;
@@ -36,7 +35,6 @@ export class ListComponent implements OnInit {
 
   constructor(
     private tasinmazService: TasinmazService,
-    private locationService: LocationService,
     private authService: AuthService,
     private router: Router,
     private fb: FormBuilder
@@ -129,9 +127,9 @@ export class ListComponent implements OnInit {
 
       return (
         coords
-          .slice(0, 3) // Tablo çok uzamasın diye ilk 3 noktayı göster
+          .slice(0, 3) // Tablo uzamasın diye ilk 3 noktayı göster
           .map((c: any) => `[${c[0].toFixed(2)}, ${c[1].toFixed(2)}]`)
-          .join(' |') + (coords.length > 3 ? '...' : '')
+          .join(' |') 
       );
     } catch (e) {
       return 'Veri okunamadı';
@@ -162,7 +160,7 @@ export class ListComponent implements OnInit {
               typeof geoData === 'string' ? JSON.parse(geoData) : geoData;
 
             const features = geojsonFormat.readFeatures(parsedGeo, {
-              dataProjection: 'EPSG:4326',
+              dataProjection: 'EPSG:4326', // 4326 -> 3857
               featureProjection: 'EPSG:3857',
             });
 
@@ -173,7 +171,7 @@ export class ListComponent implements OnInit {
                 address: tasinmaz.address,
               });
             });
-            this.vectorSource.addFeatures(features);
+            this.vectorSource.addFeatures(features); // harita kaynağına ekledik - show
           }
         });
       },
@@ -220,9 +218,9 @@ export class ListComponent implements OnInit {
       return;
     }
     html2canvas(data, {
-      useCORS: true, // Dış kaynaklı resimlere izin ver
+      useCORS: true, // resimlere izin vermek için
       allowTaint: true,
-      logging: true, // Sorunu konsoldan takip etmek için
+      logging: true, // Sorunu konsoldan takip edebilirim
     }).then((canvas) => {
       const imgWidth = 208;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;

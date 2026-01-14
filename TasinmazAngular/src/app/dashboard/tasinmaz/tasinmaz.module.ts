@@ -26,7 +26,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
   ],
   exports:[
     TasinmazMapComponent,
-    
   ]
 })
 export class TasinmazModule { }

@@ -24,8 +24,7 @@ export class AddComponent implements OnInit {
     private fb: FormBuilder,
     private tasinmazService: TasinmazService,
     private locationService: LocationService,
-    private router: Router,
-    private snackBar: MatSnackBar
+    private router: Router
   ) {
     this.tasinmazForm = this.fb.group({
       ilId: ['', Validators.required],
@@ -40,6 +39,20 @@ export class AddComponent implements OnInit {
 
   ngOnInit() {
     this.loadIller();
+  }
+
+  showErrorAlert(errorMessage: string) {
+    this.errorMessage = errorMessage;
+    setTimeout(() => {
+      this.errorMessage = '';
+    }, 2000);
+  }
+
+  showSuccessAlert(successMessage: string) {
+    this.successMessage = successMessage;
+    setTimeout(() => {
+      this.successMessage = '';
+    }, 2000);
   }
 
   loadIller() {
@@ -59,6 +72,16 @@ export class AddComponent implements OnInit {
     });
   }
 
+  onIlceChange() {
+    const ilceId = this.tasinmazForm.get('ilceId')?.value;
+    this.mahalleler = [];
+    this.tasinmazForm.patchValue({ mahalleId: '' });
+
+    this.locationService.getMahalleler(ilceId).subscribe((mahalleler) => {
+      this.mahalleler = mahalleler;
+    });
+  }
+
   onGeometryDrawn(event: any) {
     const geojson = typeof event === 'string' ? event : event.geojson;
 
@@ -70,37 +93,14 @@ export class AddComponent implements OnInit {
     this.selectedImage = event.target.files[0];
   }
 
-  onIlceChange() {
-    const ilceId = this.tasinmazForm.get('ilceId')?.value;
-    this.mahalleler = [];
-    this.tasinmazForm.patchValue({ mahalleId: '' });
-
-    this.locationService.getMahalleler(ilceId).subscribe((mahalleler) => {
-      this.mahalleler = mahalleler;
-    });
-  }
-
-  showErrorAlert(errorMessage:string){
-    this.errorMessage = errorMessage;
-    setTimeout(() => {
-      this.errorMessage = "";
-    }, 2000);
-  }
-  showSuccessAlert(successMessage:string){
-  this.successMessage = successMessage;
-    setTimeout(() => {
-      this.successMessage = "";
-    }, 2000);
-  }
   saveForm() {
     if (!this.drawnGeometry) {
-      this.showErrorAlert("Lütfen harita üzerinde taşınmaz alanını çizin.");
+      this.showErrorAlert('Lütfen harita üzerinde taşınmaz alanını çizin.');
       return;
     }
 
     const formData = new FormData();
 
-    // Değerleri append ederken null/undefined kontrolü yapıyoruz
     formData.append(
       'MahalleId',
       this.tasinmazForm.get('mahalleId')?.value?.toString() || ''
@@ -128,7 +128,7 @@ export class AddComponent implements OnInit {
 
     this.tasinmazService.addTasinmaz(formData).subscribe({
       next: () => {
-        this.showSuccessAlert("Taşınmaz başarıyla eklendi.")
+        this.showSuccessAlert('Taşınmaz başarıyla eklendi.');
         setTimeout(
           () =>
             this.router.navigate(['/dashboard/tasinmaz/list'], {

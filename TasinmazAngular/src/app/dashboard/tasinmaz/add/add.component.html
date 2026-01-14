@@ -1,5 +1,4 @@
 <div class="container mt-4">
-    
     <div *ngIf="successMessage" class="fixed-top d-flex justify-content-end" style="margin-top: 20px;right:12px">
     <p class="alert alert-success alert-dismissible fade show text-center w-25 fs-6" role="alert">
         {{ successMessage }}
@@ -13,8 +12,8 @@
     <div><a routerLink="/dashboard/tasinmaz/list" class="btn btn-link text-decoration-none p-1">← GERİ</a></div>
     <h2 class="text-center">Yeni Taşınmaz Ekle</h2>
     <form (ngSubmit)="saveForm()" [formGroup]="tasinmazForm">
-        <!-- İl -->
-         <div class="mb-3">
+
+        <div class="mb-3">
             <label for="ilId">İl</label>
             <select autocomplete="off" name="ilId" id="ilId" formControlName="ilId" class="form-control" (change)="onIlChange()">
                 <option value="">Seçiniz</option>
@@ -22,7 +21,6 @@
             </select>
          </div>
  
-         <!-- İlçe -->
          <div class="mb-3">
             <label for="ilceId">İlçe</label>
             <select autocomplete="off" name="ilceId" id="ilceId" formControlName="ilceId" class="form-control" (change)="onIlceChange()">
@@ -33,7 +31,6 @@
             </select>
          </div>
 
-         <!-- Mahalle -->
           <div class="mb-3">
             <label for="mahalleId">Mahalle</label>
             <select autocomplete="off" name="mahalleId" id="mahalleId" formControlName="mahalleId" class="form-control">
@@ -80,6 +77,5 @@
         </small>
          <br>
          <button class="btn btn-primary btn-md px-5 " type="submit">Kaydet</button>
-
     </form>
 </div>

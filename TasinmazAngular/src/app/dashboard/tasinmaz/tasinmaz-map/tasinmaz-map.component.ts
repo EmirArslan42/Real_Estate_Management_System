@@ -30,26 +30,25 @@ import Fill from 'ol/style/Fill';
   styleUrls: ['./tasinmaz-map.component.css'],
 })
 export class TasinmazMapComponent implements OnInit {
-  @Input() allTasinmazlar: any[] = [];
-  @Input() existingGeometry: string | null = null; // Edit ekranında eski polygonu göstermek için
-  @Output() geometryDrawn = new EventEmitter<any>();
-  @Output() tasinmazSelected = new EventEmitter<any>();
+
   @Input() mode: 'add' | 'edit' | 'manual' | 'auto' = 'add';
   @Input() resetCounter = 0;
   @Input() disableDraw = false;
   @Input() resultGeometry: any;
+  @Input() allTasinmazlar: any[] = [];
+  @Input() existingGeometry: string | null = null; // Edit ekranında eski polygonu göstermek için
+  @Output() geometryDrawn = new EventEmitter<any>();
+  @Output() tasinmazSelected = new EventEmitter<any>();
 
   map!: Map;
+  draw!: Draw;
   manualDrawIndex = 0;
   manualLabels = ['A', 'B', 'C'];
   drawnFeatures: Feature[] = [];
-
   vectorSource = new VectorSource();
   vectorLayer = new VectorLayer({
     source: this.vectorSource,
   });
-
-  draw!: Draw;
 
   constructor(private router: Router) {}
 

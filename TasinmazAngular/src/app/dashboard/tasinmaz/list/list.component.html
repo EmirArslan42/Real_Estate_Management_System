@@ -11,7 +11,6 @@
         </p>
     </div>
     <div class="row  mb-3">
-
         <div class="col-md-12 align-items-end">
             <div class="card mb-3" [formGroup]="filterForm">
                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -70,8 +69,7 @@
 
     <div id="contentToConvert">
         <div class="d-flex justify-content-between align-items-center gap-3">
-            <button *ngIf="!isAdmin" class="btn btn-primary mb-3" routerLink="/dashboard/tasinmaz/add">Taşınmaz
-                Ekle</button>
+            <button *ngIf="!isAdmin" class="btn btn-primary mb-3" routerLink="/dashboard/tasinmaz/add">Taşınmaz Ekle</button>
             <h2 class="text-center">Taşınmaz Listesi</h2>
             <input *ngIf="!isAdmin" type="file" class="form-control w-auto" accept=".xlsx,.xls"
                 (change)="onExcelUpload($event)">
