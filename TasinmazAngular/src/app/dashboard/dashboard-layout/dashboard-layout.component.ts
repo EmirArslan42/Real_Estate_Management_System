@@ -19,7 +19,7 @@ export class DashboardLayoutComponent implements OnInit {
         this.userName = res.name;
         this.isAdmin = res.role === 'Admin';
       },
-      error: (err) => {
+      error: () => {
         this.logout();
       },
     });

@@ -1,13 +1,32 @@
-<div class="container mt-3">
-    <h3>👥 Admin Yönetim Paneli</h3>
-    <hr>
-    <div class="list-group">
-        <button routerLink="/dashboard/admin/summary" type="button"
-            class="list-group-item list-group-item-action list-group-item-light">Özet</button>
-        <button routerLink="/dashboard/admin/logs" type="button"
-            class="list-group-item list-group-item-action">Loglar</button>
-        <button routerLink="/dashboard/admin/users" type="button"
-            class="list-group-item list-group-item-action list-group-item-light">Kullanıcılar</button>
+<div class="container mt-4">
+    <div class="col-12 col-md-8 mb-3">
+        <div class="card shadow-sm">
+            <div class="card-header fw-bold bg-light">
+                <a routerLink="/dashboard/admin" style="text-decoration: none;">
+                    <i class="bi bi-shield-lock me-2"></i>Admin Yönetim Paneli
+                </a>
+            </div>
+
+            <div class="list-group list-group-flush">
+                <a routerLink="/dashboard/admin/summary" routerLinkActive="active"
+                    class="list-group-item list-group-item-action">
+                    <i class="bi bi-speedometer2 me-2"></i>Özet</a>
+
+                <a routerLink="/dashboard/admin/logs" routerLinkActive="active"
+                    class="list-group-item list-group-item-action">
+                    <i class="bi bi-journal-text me-2"></i>
+                    Loglar
+                </a>
+
+                <a routerLink="/dashboard/admin/users" routerLinkActive="active"
+                    class="list-group-item list-group-item-action">
+                    <i class="bi bi-people-fill me-2"></i>
+                    Kullanıcılar
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <router-outlet></router-outlet>
     </div>
 </div>
-<router-outlet></router-outlet>

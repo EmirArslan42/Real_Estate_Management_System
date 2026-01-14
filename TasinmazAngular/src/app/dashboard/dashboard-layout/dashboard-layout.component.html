@@ -24,25 +24,25 @@
 
         <li class="nav-item">
           <a class="nav-link text-white fs-6" routerLink="/dashboard/tasinmaz/list" routerLinkActive="active">
-            🏠 Taşınmazlar
+             <span><i class="bi bi-house-door-fill text-secondary p-1 fs-6"></i></span> Taşınmazlar 
           </a>
         </li>
 
         <li  class="nav-item mb-1">
           <a class="nav-link text-white fs-6" routerLink="/dashboard/profile" routerLinkActive="active">
-            👤 Profil
+            <span><i class="bi bi-person-fill text-secondary p-1 fs-6"></i></span> Profil
           </a>
         </li>
 
         <li class="nav-item mb-1" *ngIf="isAdmin">
           <a class="nav-link text-white fs-6" routerLink="/dashboard/admin" routerLinkActive="active">
-            ⚙️ Admin Panel
+            <span><i class="bi bi-gear-fill text-secondary p-1 fs-6"></i></span> Admin Panel
           </a>
         </li>
 
         <li class="nav-item" *ngIf="!isAdmin">
           <a class="nav-link text-white fs-6" routerLink="/dashboard/hesaplama/alan-hesabi" routerLinkActive="active">
-            🔍 Alan Analizi
+            <span><i class="bi bi-search text-secondary p-1 fs-6"></i></span> Alan Analizi
           </a>
         </li>
 

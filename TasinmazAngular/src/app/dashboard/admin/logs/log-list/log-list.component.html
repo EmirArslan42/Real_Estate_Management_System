@@ -28,17 +28,14 @@
                 <th>Kullanıcı</th>
                 <th>İşlem</th>
                 <th>Açıklama</th>
-                <th>IP</th>
                 <th>Tarih</th>
             </tr>
         </thead>
-
         <tbody>
             <tr *ngFor="let log of filteredLogs">
                 <td>{{log.userId}}</td>
                 <td>{{log.operationType}}</td>
                 <td>{{log.description}}</td>
-                <td>{{log.ipAddress}}</td>
                 <td>{{ log.timestamp | date:'dd.MM.yyyy HH:mm' }}</td>
             </tr>
         </tbody>
@@ -47,5 +44,4 @@
     <div *ngIf="!isLoading && filteredLogs.length==0" class="alert alert-warning">
         Gösterilecek log bulunamadı
     </div>
-
 </div>

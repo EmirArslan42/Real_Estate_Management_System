@@ -7,15 +7,15 @@ import { UserService } from '../user.service';
   templateUrl: './user-list.component.html',
 })
 export class UserListComponent implements OnInit {
+
   users: any[] = [];
   filteredUsers: any[] = [];
   isLoading = false;
-
+  showAddForm = false;
+  selectedUser: any = null;
   editForm!: FormGroup;
   filteredForm!: FormGroup;
   addForm!: FormGroup;
-  showAddForm = false;
-  selectedUser: any = null;
 
   constructor(private userService: UserService, private fb: FormBuilder) {}
 

@@ -1,7 +1,7 @@
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <h3>👥 Kullanıcı Yönetimi</h3> <button class="btn btn-primary mb-3" (click)="openAddForm()">
-      ➕ Yeni Kullanıcı Ekle
+    <h3><i class="bi bi-people-fill me-2"></i> Kullanıcı Yönetimi</h3> <button class="btn btn-primary mb-3" (click)="openAddForm()">
+      <i class="bi bi-plus-square-fill"></i>  Yeni Kullanıcı Ekle
     </button>
   </div>
 
@@ -81,7 +81,6 @@
     </tbody>
   </table>
 
-  <!-- EDIT FORM -->
   <div *ngIf="selectedUser" class="card mt-4 mb-4">
     <div class="card-header">
       <h3>Kullanıcı Güncelle</h3>
@@ -140,7 +139,6 @@
     <div class="card-body">
       <form [formGroup]="addForm" (ngSubmit)="submitAdd()">
 
-        <!-- AD -->
         <div class="mb-3">
           <label>Ad</label>
           <input class="form-control" formControlName="name">
@@ -149,7 +147,6 @@
           </small>
         </div>
 
-        <!-- EMAIL -->
         <div class="mb-3">
           <label>Email</label>
           <input class="form-control" formControlName="email">
@@ -163,7 +160,6 @@
           </small>
         </div>
 
-        <!-- ROL -->
         <div class="mb-3">
           <label>Rol</label>
           <select class="form-select" formControlName="role">
@@ -174,7 +170,7 @@
             Rol seçimi zorunludur
           </small>
         </div>
-        <!-- ŞİFRE -->
+
         <div class="mb-3">
           <label>Şifre</label>
           <input type="password" class="form-control" formControlName="password">
