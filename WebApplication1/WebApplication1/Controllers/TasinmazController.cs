@@ -16,11 +16,9 @@ namespace WebApplication1.Controllers
     public class TasinmazController : ControllerBase
     {
         private readonly ITasinmazService _service;
-        private readonly ILogService _logService;
-        public TasinmazController(ITasinmazService service,ILogService logService) {
+        public TasinmazController(ITasinmazService service) {
             
             _service = service;
-            _logService = logService;  
         }
 
         // tokendan userId çekme
@@ -35,71 +33,33 @@ namespace WebApplication1.Controllers
             return userId;
         }
 
+        
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var userId = GetUserId();
             var tasinmazListe =await _service.GetAllAsync(userId);
-
-            _logService.AddLog(new Log
-            {
-                UserId = userId,
-                OperationType = "GetAllTasinmaz",
-                Description = $"Kullanici tüm tasinmazlarini listeledi.Tasinmaz count {tasinmazListe.Count}",
-                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
-            });
-
             return Ok(tasinmazListe);
         }
 
+        
         [Authorize(Roles ="Admin")]
         [HttpGet("allForAdmin")]
         public async Task<IActionResult> GetAllForAdmin()
         {
-            var tasinmazlar =await _service.GetAllForAdminAsync();
-
-            _logService.AddLog(new Log
-            {
-                UserId = GetUserId(),
-                OperationType = "AdminGetAllTasinmaz",
-                Description = "Admin tum kullanicilarin tasinmazlarini goruntuledi",
-                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
-            });
-
+            var userId = GetUserId();
+            var tasinmazlar =await _service.GetAllForAdminAsync(userId);
             return Ok(tasinmazlar);
         }
-
+ 
+        
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             var userId=GetUserId();
             var tasinmaz=await _service.GetByIdAsync(id, userId);
-
-            if(tasinmaz == null)
-            {
-                return NotFound("Tasinmaz bulunamadı");
-            }
-
-            var writer=new GeoJsonWriter();
-
-            var dto = new TasinmazDto
-            {
-                MahalleId = tasinmaz.MahalleId,
-                LotNumber = tasinmaz.LotNumber,
-                Address = tasinmaz.Address,
-                ParcelNumber = tasinmaz.ParcelNumber,
-                Geometry = writer.Write(tasinmaz.Coordinate)
-            };
-
-            _logService.AddLog(new Log
-            {
-                UserId = userId,
-                OperationType="GetTasinmazById",
-                Description=$"Kullanici ID: {id} olan tasinmazini goruntuledi",
-                IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
-            });
-
-            return Ok(dto);
+               
+            return tasinmaz==null ? NotFound("Taşınmaz Bulunamadı") : Ok(tasinmaz);
         }
 
         [Authorize(Roles ="User")]
@@ -113,22 +73,13 @@ namespace WebApplication1.Controllers
             {
                 return NotFound("Tasinmaz bulunamadi");
             }
-
-            _logService.AddLog(new Log
-            {
-                UserId = userId,
-                OperationType="DeleteTasinmaz",
-                Description=$"Kullanici ID:{id} olan tasinmazi sildi.",
-                IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
-            });
-
             return NoContent();
         }
 
         [Authorize(Roles = "User")]
         [HttpPost]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> Add([FromForm] TasinmazDto dto,IFormFile? Image) // [FromForm] olduğundan emin olun
+        public async Task<IActionResult> Add([FromForm] TasinmazDto dto,IFormFile? Image) // [FromForm] olduğundan emin ol
         {
             try
             {
@@ -137,21 +88,13 @@ namespace WebApplication1.Controllers
                     using var ms=new MemoryStream(); 
                     await Image.CopyToAsync(ms);
 
-                    dto.ImageData=ms.ToArray();
+                    dto.ImageData=ms.ToArray(); // byte çevirdiğim kısım
                     dto.ImageType = Image.ContentType;
                 }
 
                 var userId = GetUserId();
-
-                // ÖNEMLİ: Formdan Coordinate (Geometry) verisi gelmiyorsa 
-                // yukarıda Excel için yaptığımız "default" atamayı burada da yapmalısınız!
-                if (string.IsNullOrEmpty(dto.Geometry))
-                {
-                    // Excel'deki gibi default polygon ataması yapın veya hata döndürün
-                    return BadRequest("Koordinat bilgisi eksik!");
-                }
-
                 var result = await _service.AddAsync(dto, userId);
+
                 return result ? NoContent() : BadRequest("Ekleme başarısız.");
             }
             catch (Exception ex)
@@ -167,23 +110,9 @@ namespace WebApplication1.Controllers
         [Consumes("application/json")]
         public async Task<IActionResult> AddFromExcel ([FromBody] TasinmazExcelDto dto)
         {
-
             var userId = GetUserId();
             var result=await _service.AddFromExcelAsync(dto,userId);
-
-            if (!result)
-            {
-                return BadRequest("Excel satırı eklenemedi");
-            }
-
-            _logService.AddLog(new Log
-            {
-                UserId = userId,
-                OperationType = "AddTasinmazFromExcel",
-                Description = $"Kullanici yeni tasinmaz ekledi. ParcelNumber: {dto.ParcelNumber}",
-                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
-            });
-            return NoContent();
+            return result ? NoContent() : BadRequest("Excel satırı eklenemedi");
         }
 
         [AllowAnonymous]
@@ -207,7 +136,6 @@ namespace WebApplication1.Controllers
             byte[]? imageData = null;
             string? imageType = null;
 
-            // Yeni resim geldiyse
             if (Image != null && Image.Length > 0)
             {
                 using var ms = new MemoryStream();
@@ -224,12 +152,6 @@ namespace WebApplication1.Controllers
                 return NotFound("Tasinmaz yok");
             }
 
-            _logService.AddLog(new Log {
-                UserId=userId,
-                OperationType="UpdateTasinmaz",
-                Description=$"Kullanici ID: {id} tasinmazi guncelledi",
-                IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
-            });
             return NoContent();
         }
     }

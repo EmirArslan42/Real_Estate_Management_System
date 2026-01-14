@@ -21,24 +21,14 @@ namespace WebApplication1.Controllers
             _service = service;
         }
 
-        [HttpGet("debug-claims")]
-        public IActionResult DebugClaims()
-        {
-            return Ok(User.Claims.Select(c => new {
-                c.Type,
-                c.Value
-            }));
-        }
-
-
         private int GetUserId()
         {
             var userIdClaim = User.FindFirst("id") ?? throw new UnauthorizedAccessException("UserId claim bulunamadı");
             return int.Parse(userIdClaim.Value);
         }
 
-        // union sonuçlarını verir
-        [HttpGet("results")]
+        
+        [HttpGet("results")] // union sonuçlarını verir
         public async Task<IActionResult> GetUnionResults()
         {
             var userId= GetUserId();
@@ -46,15 +36,15 @@ namespace WebApplication1.Controllers
             return Ok(results);
         }
 
+        
         [HttpGet("auto-select")]
         public async Task<IActionResult> AutoSelect()
         {
             var userId = GetUserId();
             var result = await _service.GetABCAsync(userId);
+
             if (result == null)
-            {
                 return BadRequest("Kaydedilen geometri bulunamadı. Lütfen manual çizim deneyin");
-            }
 
             return Ok(new
             {
@@ -63,15 +53,14 @@ namespace WebApplication1.Controllers
                 c=result.Value.C,
             });
         }
-
+        
         // A / B / C / D / E → SAVE OR UPDATE -  Manuel çizimde A,B,C - Union sonucunda D,E
         [HttpPost("save")]
         public async Task<IActionResult> SaveOrUpdate([FromBody] AlanAnalizSonucuDto dto)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
+            
             if (string.IsNullOrWhiteSpace(dto.Name))
                 return BadRequest("Name alanı zorunludur (A,B,C,D,E).");
 
@@ -80,6 +69,7 @@ namespace WebApplication1.Controllers
             return Ok();
         }
 
+        
         [HttpDelete]
         public async Task<IActionResult> ResetAnaliz()
         {

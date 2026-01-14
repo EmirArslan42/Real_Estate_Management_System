@@ -15,55 +15,26 @@ namespace WebApplication1.Controllers
         public LogController(ILogService logService) { 
             _logService = logService;
         }
-
-        // token içindeki userId yi çekelim
         private int GetUserId()
         {
-            var userIdClaim = User.FindFirst("id");
-            if(userIdClaim == null)
-            {
-                throw new UnauthorizedAccessException("Kullanıcı kimliği bulunamadı.");
-            }
+            var userIdClaim = User.FindFirst("id") ?? throw new UnauthorizedAccessException("Kullanıcı kimliği bulunamadı.");    
             return int.Parse(userIdClaim.Value);
         }
 
-        // tüm kayıtları sadece admin görebilsin
         [Authorize(Roles ="Admin")]
         [HttpGet]
-        public IActionResult GetAllLogs()
+        public async Task<IActionResult> GetAllLogs()
         {
-            var logs=_logService.GetAllLogs();
-
-            var dtoList = logs.Select(l => new LogDto
-            {
-                Id = l.Id,
-                UserId = l.UserId,
-                OperationType = l.OperationType,
-                Description = l.Description,
-                IpAddress = l.IpAddress,
-                Timestamp = l.Timestamp,
-
-            }).ToList();
-            return Ok(dtoList);
+            var logs= await _logService.GetAllLogsAsync();
+            return Ok(logs);
         }
 
-        // user sadece kendi loglarını görsün
         [HttpGet("me")]
-        public IActionResult GetMyLogs()
+        public async Task<IActionResult> GetMyLogs()
         {
             var userId=GetUserId();
-            var logs=_logService.GetAllLogs().Where(l=>l.UserId==userId).ToList();
-
-            var dtoList = logs.Select(l=>new LogDto
-            {
-                Id = l.Id,
-                UserId = l.UserId,
-                OperationType = l.OperationType,
-                Description = l.Description,
-                IpAddress = l.IpAddress,
-                Timestamp = l.Timestamp
-            });
-            return Ok(dtoList);
+            var logs = await _logService.GetLogsByUserIdAsync(userId);
+            return Ok(logs);
         }
     }
 }

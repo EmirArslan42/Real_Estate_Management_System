@@ -10,15 +10,13 @@ namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class AuthController : ControllerBase 
     { 
         public readonly IAuthService _authService;
-        private readonly ILogService _logService;
-        public AuthController(IAuthService authService,ILogService logService) {
+        public AuthController(IAuthService authService) {
 
         _authService=authService;
-        _logService=logService;
-        }
+        } 
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterDto dto)
@@ -26,15 +24,6 @@ namespace WebApplication1.Controllers
             try
             {
                 var newUser = await _authService.RegisterAsync(dto);
-
-                _logService.AddLog(new Log
-                {
-                    UserId = newUser.Id,
-                    OperationType = "Register",
-                    Description = $"Yeni kullanıcı kayıt oldu : {newUser.Email}",
-                    IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
-                });
-
                 return Ok(new
                 {
                     Message = "Kullanıcı Kayıt İşlemi Başarılı",
@@ -58,30 +47,10 @@ namespace WebApplication1.Controllers
         public async Task<IActionResult> Login([FromBody] UserLoginDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.Password))
-            {
                 return BadRequest("Email ve şifre zorunludur.");
-            }
+
             var user =await _authService.LoginAsync(dto);
-
-            if(user== null)
-            {
-                return Unauthorized("Email veya şifre yanlış");
-            }
-
-            if (!user.IsActive)
-            {
-                return Unauthorized("Kullanıcı pasif durumdadır.");
-            }
-
             var token = _authService.GenerateToken(user);
-
-            _logService.AddLog(new Log
-            {
-                UserId=user.Id,
-                OperationType="Login",
-                Description=$"Kullanici giris yapti : {user.Email}",
-                IpAddress=HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
-            });
 
             return Ok(new
             {
