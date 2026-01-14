@@ -1,5 +1,7 @@
-﻿using WebApplication1.Business.Abstract;
+﻿using Microsoft.EntityFrameworkCore;
+using WebApplication1.Business.Abstract;
 using WebApplication1.DataAccess;
+using WebApplication1.Dtos;
 using WebApplication1.Entities;
 
 namespace WebApplication1.Business.Concrete
@@ -11,15 +13,42 @@ namespace WebApplication1.Business.Concrete
             _context = context;
         }
          
-        public void AddLog(Log log)
+        public async Task AddLogAsync(Log log) 
         {
             _context.Logs.Add(log);
-            _context.SaveChanges();
+           await _context.SaveChangesAsync();
         }
 
-        public List<Log> GetAllLogs()
+        public async Task<List<LogDto>> GetAllLogsAsync()
         {
-            return _context.Logs.OrderByDescending(l=>l.Timestamp).ToList();
+            return await _context.Logs.OrderByDescending(l=>l.Timestamp)
+                .Select(l=>new LogDto
+                {
+                    Id = l.Id,
+                    UserId = l.UserId,
+                    OperationType = l.OperationType,
+                    Description = l.Description,
+                    IpAddress = l.IpAddress,
+                    Timestamp = l.Timestamp
+                })
+                .ToListAsync();
+        }
+
+        public async Task<List<LogDto>> GetLogsByUserIdAsync(int userId)
+        {
+            return await _context.Logs
+                .Where(l => l.UserId == userId)
+                .OrderByDescending(l => l.Timestamp)
+                .Select(l => new LogDto
+                {
+                    Id = l.Id,
+                    UserId = l.UserId,
+                    OperationType = l.OperationType,
+                    Description = l.Description,
+                    IpAddress = l.IpAddress,
+                    Timestamp = l.Timestamp
+                })
+                .ToListAsync();
         }
     }
 }

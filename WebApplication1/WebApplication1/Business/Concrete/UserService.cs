@@ -11,25 +11,25 @@ namespace WebApplication1.Business.Concrete
     public class UserService:IUserService
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogService _logService;
 
-        // Constructor - DbContext enjekte ediliyor - her yerde kullanabilirsin
-        public UserService(ApplicationDbContext context)
+        public UserService(ApplicationDbContext context, ILogService logService)
         {
             _context = context;
+            _logService = logService;
         }
         private static string HashPassword(string password)
         {
             var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(password));
             return Convert.ToBase64String(bytes);
         }
-        public async Task<bool> AddUserAsync(UserWriteDto dto)
+        public async Task<bool> AddUserAsync(UserWriteDto dto, int adminUserId)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(dto.Password))
-                {
                     throw new InvalidOperationException("Şifre alanı zorunludur");
-                }
+                
                 var user = new User
                 {
                     Name = dto.Name,
@@ -39,6 +39,14 @@ namespace WebApplication1.Business.Concrete
                 };
                 await _context.Users.AddAsync(user);
                 await _context.SaveChangesAsync();
+
+               await _logService.AddLogAsync(new Log
+                {
+                    UserId = adminUserId,
+                    OperationType = "AddUser",
+                    Description = $"Yeni kullanici eklendi: {dto.Email}",
+                });
+
                 return true;
             }
             catch (Exception)
@@ -46,7 +54,7 @@ namespace WebApplication1.Business.Concrete
                 return false;
             }
         }
-        public async Task<bool> DeleteUserAsync(int id)
+        public async Task<bool> DeleteUserAsync(int id, int adminUserId)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
             if(user==null)
@@ -59,33 +67,47 @@ namespace WebApplication1.Business.Concrete
             {
                 _context.Users.Remove(user);
                 await _context.SaveChangesAsync();
+
+               await _logService.AddLogAsync(new Log
+                {
+                    UserId = adminUserId,
+                    OperationType = "DeleteUser",
+                    Description = $"{id} ID'li kullanici silindi",
+                });
+
                 return true;
             }catch (Exception)
             {
                 return false;
             }
         }
-        public async Task<bool> UpdateUserAsync(int id,UserWriteDto dto)
+       
+        public async Task<bool> UpdateUserAsync(int id,UserWriteDto dto, int adminUserId)
         {
 
             var user = await _context.Users.FirstOrDefaultAsync(u=>u.Id==id);
             if (user == null)
-            {
                 return false;
-            }
+            
             user.Name=dto.Name;
             user.Email=dto.Email;
             user.Role=dto.Role;
 
             if (!string.IsNullOrEmpty(dto.Password))
-            {
                 user.PasswordHash=HashPassword(dto.Password);
-            }
-
+            
             try
             {
                 _context.Users.Update(user);
                 await _context.SaveChangesAsync();
+
+               await _logService.AddLogAsync(new Log
+                {
+                    UserId = adminUserId,
+                    OperationType = "UpdateUser",
+                    Description = $"{id} ID'li kullanici guncellendi",
+                });
+
                 return true;
             }
             catch (Exception)
@@ -93,6 +115,7 @@ namespace WebApplication1.Business.Concrete
                 return false;
             }
         }
+      
         public async Task<List<UserDto>> GetAllUsersAsync()
         {
             return await _context.Users.Select(u => new UserDto {

@@ -8,14 +8,15 @@ using NetTopologySuite.Geometries;
 using NetTopologySuite.Features;
 using NetTopologySuite;
 
-
 namespace WebApplication1.Business.Concrete
 {
     public class TasinmazService:ITasinmazService
     {
         private readonly ApplicationDbContext _context;
-        public TasinmazService(ApplicationDbContext context) {
+        private readonly ILogService _logService;
+        public TasinmazService(ApplicationDbContext context,ILogService logService) {
             _context = context;
+            _logService = logService;
         }
 
         public async Task<(byte[] ImageData, string? ImageType)?> GetImageAsync(int tasinmazId)
@@ -35,12 +36,11 @@ namespace WebApplication1.Business.Concrete
             return (tasinmaz.ImageData, tasinmaz.ImageType);
         }
 
-
         public async Task<List<TasinmazListDto>> GetAllAsync(int userId)
         {
             var writer = new GeoJsonWriter();
 
-            return await _context.Tasinmazlar
+            var list= await _context.Tasinmazlar
                 .Include(t=>t.Mahalle)
                  .ThenInclude(m=>m.Ilce)
                   .ThenInclude(i=>i.Il)
@@ -58,13 +58,22 @@ namespace WebApplication1.Business.Concrete
                   
                 })
                 .ToListAsync();
+
+            await _logService.AddLogAsync(new Log
+            {
+                UserId = userId,
+                OperationType = "GetAllTasinmaz",
+                Description = $"Kullanici tüm tasinmazlarini listeledi.Tasinmaz count {list.Count}",
+            });
+
+            return list;
         }
 
-        public async Task<List<TasinmazListDto>> GetAllForAdminAsync()
+        public async Task<List<TasinmazListDto>> GetAllForAdminAsync(int userId)
         {
             var writer = new GeoJsonWriter();
-
-            return await _context.Tasinmazlar
+           
+            var list= await _context.Tasinmazlar
                 .Include(t => t.Mahalle)
                  .ThenInclude(m => m.Ilce)
                   .ThenInclude(i => i.Il)
@@ -79,17 +88,44 @@ namespace WebApplication1.Business.Concrete
                     MahalleAdi = t.Mahalle.Ad,
                     IlceAdi = t.Mahalle.Ilce.Ad,
                     IlAdi = t.Mahalle.Ilce.Il.Ad, 
-
                     UserId=t.UserId,
                     UserEmail=t.User.Email,
 
                 })
                 .ToListAsync();
+
+            await _logService.AddLogAsync(new Log
+            {
+                UserId = userId,
+                OperationType = "AdminGetAllTasinmaz",
+                Description = "Admin tum kullanicilarin tasinmazlarini goruntuledi",
+            });
+
+            return list;
         }
 
-        public async Task<Tasinmaz?> GetByIdAsync(int id,int userId) 
+        public async Task<TasinmazDto?> GetByIdAsync(int id,int userId) 
         {
-            return await _context.Tasinmazlar.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
+            var tasinmaz= await _context.Tasinmazlar.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
+            var writer = new GeoJsonWriter();
+
+            if (tasinmaz == null) return null;
+
+            await _logService.AddLogAsync(new Log
+            {
+                UserId = userId,
+                OperationType = "GetTasinmazById",
+                Description = $"Kullanici ID: {id} olan tasinmazini goruntuledi",
+            });
+
+            return new TasinmazDto
+            {
+                MahalleId = tasinmaz.MahalleId,
+                LotNumber = tasinmaz.LotNumber,
+                Address = tasinmaz.Address,
+                ParcelNumber = tasinmaz.ParcelNumber,
+                Geometry = writer.Write(tasinmaz.Coordinate)
+            };
         }
 
         public async Task<bool> AddAsync(TasinmazDto dto,int userId)
@@ -104,7 +140,7 @@ namespace WebApplication1.Business.Concrete
                     var reader = new GeoJsonReader();
                     var feature = reader.Read<Feature>(dto.Geometry);
 
-                    var polygon = feature.Geometry as Polygon ?? throw new InvalidOperationException("Taşınmaz için koordinat bilgisi zorunludur.");
+                    var polygon = feature.Geometry as Polygon ?? throw new InvalidOperationException("Geçersiz koordinat formatı.");
                                 
 
                 var tasinmaz = new Tasinmaz
@@ -122,6 +158,14 @@ namespace WebApplication1.Business.Concrete
 
                 await _context.Tasinmazlar.AddAsync(tasinmaz);
                 await _context.SaveChangesAsync();
+
+                await _logService.AddLogAsync(new Log
+                {
+                    UserId = userId,
+                    OperationType = "AddTasinmaz",
+                    Description = $"Yeni taşınmaz eklendi. ParcelNumber: {dto.ParcelNumber}"
+                });
+
                 return true;
 
             }catch (Exception)
@@ -134,7 +178,7 @@ namespace WebApplication1.Business.Concrete
         {
             var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
 
-            // Boş veya varsayılan bir Polygon oluşturuyoruz (Kare şeklinde) - Koordinatlar: [0,0], [0,1], [1,1], [1,0], [0,0]
+            // Boş veya varsayılan bir Polygon oluşturuyoruz - Kare şeklinde - Koordinatlar: [0,0], [0,1], [1,1], [1,0], [0,0]
             var coords = new[] {
             new NetTopologySuite.Geometries.Coordinate(0, 0),
             new NetTopologySuite.Geometries.Coordinate(0, 0.0001),
@@ -151,13 +195,22 @@ namespace WebApplication1.Business.Concrete
                 ParcelNumber = dto.ParcelNumber,
                 Address = dto.Address,
                 UserId = userId,
-                Coordinate = defaultPolygon // Entity tipiniz Polygon ise bu çalışacaktır
+                Coordinate = defaultPolygon // Entity tipimiz Polygon ise bu çalışmalı
             };
 
             await _context.Tasinmazlar.AddAsync(tasinmaz);
             await _context.SaveChangesAsync();
+
+            await _logService.AddLogAsync(new Log
+            {
+                UserId = userId,
+                OperationType = "AddTasinmazFromExcel",
+                Description = $"Kullanici yeni tasinmaz ekledi. ParcelNumber: {dto.ParcelNumber}",
+            });
+
             return true;
         }
+       
         public async Task<bool> UpdateAsync(int id,TasinmazDto dto,int userId, byte[]? imageData, string? imageType)
         {
             var tasinmaz =await _context.Tasinmazlar.FirstOrDefaultAsync(t=>t.Id==id && t.UserId==userId);
@@ -185,6 +238,13 @@ namespace WebApplication1.Business.Concrete
                 _context.Tasinmazlar.Update(tasinmaz);
                 await _context.SaveChangesAsync();
 
+               await _logService.AddLogAsync(new Log
+                {
+                    UserId = userId,
+                    OperationType = "UpdateTasinmaz",
+                    Description = $"Kullanici ID: {id} tasinmazi guncelledi",                    
+                });
+
                 return true;
             }
             catch (Exception)
@@ -198,16 +258,20 @@ namespace WebApplication1.Business.Concrete
             var tasinmaz=await _context.Tasinmazlar.FirstOrDefaultAsync(t=>t.Id==id && t.UserId==userId);
 
             if (tasinmaz==null)
-            {
                 return false;
-            }
 
             try
             {
                 _context.Tasinmazlar.Remove(tasinmaz);
                 await _context.SaveChangesAsync();
-                return true;
 
+               await _logService.AddLogAsync(new Log
+                {
+                    UserId = userId,
+                    OperationType = "DeleteTasinmaz",
+                    Description = $"Kullanici ID:{id} olan tasinmazi sildi.",
+                });
+                return true;
             }
             catch (Exception)
             {

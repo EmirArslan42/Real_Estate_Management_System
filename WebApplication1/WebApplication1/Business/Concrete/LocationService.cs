@@ -19,6 +19,7 @@ namespace WebApplication1.Business.Concrete
                 Ad=i.Ad,
             }).ToListAsync();
         }
+        
         public async Task<List<IlceDto>> GetIlcelerAsync(int ilId)
         {
             return await _context.Ilceler.Where(i=>i.IlId==ilId).Select(i=>new IlceDto

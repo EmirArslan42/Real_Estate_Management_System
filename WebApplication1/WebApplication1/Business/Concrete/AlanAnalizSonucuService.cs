@@ -27,7 +27,6 @@ namespace WebApplication1.Business.Concrete
 
             static AlanAnalizSonucuDto Map(AlanAnalizSonucu x) => new AlanAnalizSonucuDto
             {
-                Id = x.Id,
                 Name = x.Name,
                 Operation = x.Operation,
                 Geometry = x.Geometry,
@@ -41,6 +40,7 @@ namespace WebApplication1.Business.Concrete
             );
         }
 
+
         public async Task<List<AlanAnalizSonucuDto>> GetUnionResultsAsync(int userId)
         {
             return await _context.AlanAnalizSonuclari
@@ -50,7 +50,6 @@ namespace WebApplication1.Business.Concrete
                 .OrderBy(x=>x.Name)
                 .Select(x=>new AlanAnalizSonucuDto
                 {
-                    Id=x.Id,
                     Name=x.Name,
                     Operation = x.Operation,
                     Geometry = x.Geometry,
@@ -59,27 +58,25 @@ namespace WebApplication1.Business.Concrete
                 .ToListAsync();
         }
 
-        public async Task<bool> ClearToAllAnaliz(int userId)
+
+        public async Task ClearToAllAnaliz(int userId)
         {
             var all = await _context.AlanAnalizSonuclari
-        .Where(x =>
-        x.UserId==userId &&
-        (x.Name == "A" ||
-            x.Name == "B" ||
-            x.Name == "C" ||
-            x.Name == "D" ||
-            x.Name == "E"))
-        .ToListAsync();
+                .Where(x =>
+                x.UserId==userId &&
+                (x.Name == "A" ||
+                    x.Name == "B" ||
+                    x.Name == "C" ||
+                    x.Name == "D" ||
+                    x.Name == "E"))
+                .ToListAsync();
 
-            if (all.Count>0)
-            {
-                _context.AlanAnalizSonuclari.RemoveRange(all);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            return false;
+            if (all.Count == 0)
+                return;
+            _context.AlanAnalizSonuclari.RemoveRange(all);
+            await _context.SaveChangesAsync();
         }
-
+       
         // A / B / C / D / E → save or update (name bazlı)
         public async Task SaveOrUpdateAsync(AlanAnalizSonucuDto dto,int userId) 
         {
@@ -99,7 +96,6 @@ namespace WebApplication1.Business.Concrete
                 // insert işlemi
                 var entity = new AlanAnalizSonucu
                 {
-                    Id=dto.Id,
                     Name = dto.Name,
                     Operation = dto.Operation,
                     Geometry = dto.Geometry,
