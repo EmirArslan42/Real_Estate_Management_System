@@ -11,4 +11,3 @@ namespace WebApplication1.Dtos
         public string Password { get; set; } = string.Empty;
     }
 }
- 

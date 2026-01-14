@@ -6,14 +6,14 @@ namespace WebApplication1.Entities
     {
         public int Id { get; set; }
 
-        [Required]
-        [MaxLength(100)]
+
+        [Required] [MaxLength(100)]
         public string Name { get; set; } = null!;
 
-        [Required]
-        [EmailAddress]
-        [MaxLength(100)]
+
+        [Required] [EmailAddress] [MaxLength(100)]
         public string Email { get; set; } = null!;
+
 
         [Required]
         public string Role { get; set; } = null!; // Admin veya User 

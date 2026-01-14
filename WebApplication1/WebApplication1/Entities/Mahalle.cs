@@ -6,9 +6,10 @@ namespace WebApplication1.Entities
     public class Mahalle
     {
         public int Id { get; set; }
-        [Required]
-        [MaxLength(100)]
+
+        [Required] [MaxLength(100)]
         public string Ad { get; set; } = null!;
+
         [Required]
         public int IlceId { get; set; }
 

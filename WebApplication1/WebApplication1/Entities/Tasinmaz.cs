@@ -15,16 +15,13 @@ namespace WebApplication1.Entities
         [ForeignKey("MahalleId")]
         public Mahalle Mahalle { get; set; } = null!;
 
-        [Required]
-        [MaxLength(50)]
+        [Required] [MaxLength(50)]
         public string ParcelNumber { get; set; } = null!; // parsel no
 
-        [Required]
-        [MaxLength(50)]
+        [Required] [MaxLength(50)]
         public string LotNumber { get; set; } = null!; // ada no
 
-        [Required]
-        [MaxLength(150)]
+        [Required] [MaxLength(150)]
         public string Address { get; set; } = null!;
 
         [Required]
@@ -34,8 +31,7 @@ namespace WebApplication1.Entities
         public User User { get; set; } = null!;
 
 
-        [Required]
-        [Column(TypeName = "geometry (Polygon, 4326)")]
+        [Required] [Column(TypeName = "geometry (Polygon, 4326)")]
         public Polygon Coordinate { get; set; } = null!;
 
         public byte[]? ImageData { get; set; }
