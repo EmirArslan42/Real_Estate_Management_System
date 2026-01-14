@@ -12,3 +12,4 @@ namespace WebApplication1.Business.Abstract
         string GenerateToken(User user); // kullanıcı için jwt token oluştur
     }
 }
+ 
