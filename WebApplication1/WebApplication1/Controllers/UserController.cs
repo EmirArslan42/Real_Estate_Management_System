@@ -84,24 +84,17 @@ namespace WebApplication1.Controllers
         [HttpPatch("{id}/status")]
         public async Task<IActionResult> ChangeUserStatus(int id)
         {
-            var result = await _userService.ChangeUserStatusAsync(id);
+            var adminUserId = GetUserId();
+            var result = await _userService.ChangeUserStatusAsync(id,adminUserId);
+
             if (!result)
                 return NotFound("Kullanıcı bulunamadı");
-
-           await _logService.AddLogAsync(new Log
-            {
-                UserId = GetUserId(),
-                OperationType = "ChangeUserStatus",
-                Description = $"{id} ID'li kullanıcının aktiflik durumu değiştirildi",
-                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
-            });
-
+           
             return Ok(new
             {
                 success = true,
                 message = "Kullanıcı durumu güncellendi"
             });
         }
-
     }
 }

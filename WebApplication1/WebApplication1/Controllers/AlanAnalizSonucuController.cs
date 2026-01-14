@@ -68,7 +68,6 @@ namespace WebApplication1.Controllers
             await _service.SaveOrUpdateAsync(dto,userId);
             return Ok();
         }
-
         
         [HttpDelete]
         public async Task<IActionResult> ResetAnaliz()

@@ -144,7 +144,7 @@ namespace WebApplication1.Business.Concrete
             };
         }
 
-        public async Task<bool> ChangeUserStatusAsync(int id)
+        public async Task<bool> ChangeUserStatusAsync(int id,int adminUserId)
         {
             var user = await _context.Users.FindAsync(id);
             if (user == null)
@@ -152,6 +152,13 @@ namespace WebApplication1.Business.Concrete
 
             user.IsActive = !user.IsActive;
             await _context.SaveChangesAsync();
+
+            await _logService.AddLogAsync(new Log
+            {
+                UserId =adminUserId,
+                OperationType = "ChangeUserStatus",
+                Description = $"{id} ID'li kullanıcının aktiflik durumu değiştirildi",
+            });
 
             return true;
         }

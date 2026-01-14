@@ -11,6 +11,6 @@ namespace WebApplication1.Business.Abstract
         Task<bool> UpdateUserAsync(int id,UserWriteDto dto,int adminUserId); 
         Task<bool> DeleteUserAsync(int id,int adminUserId); 
 
-        Task<bool> ChangeUserStatusAsync(int id); 
+        Task<bool> ChangeUserStatusAsync(int id,int adminUserId); 
     }
 }

@@ -32,8 +32,7 @@ namespace WebApplication1.Controllers
             }
             return userId;
         }
-
-        
+      
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -51,7 +50,6 @@ namespace WebApplication1.Controllers
             var tasinmazlar =await _service.GetAllForAdminAsync(userId);
             return Ok(tasinmazlar);
         }
- 
         
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
@@ -69,11 +67,8 @@ namespace WebApplication1.Controllers
             var userId= GetUserId();
             var result=await _service.DeleteAsync(id, userId);
 
-            if (!result)
-            {
-                return NotFound("Tasinmaz bulunamadi");
-            }
-            return NoContent();
+            return result ? NoContent() : NotFound();
+
         }
 
         [Authorize(Roles = "User")]
@@ -81,28 +76,20 @@ namespace WebApplication1.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Add([FromForm] TasinmazDto dto,IFormFile? Image) // [FromForm] olduğundan emin ol
         {
-            try
+            if (Image != null)
             {
-                if (Image != null)
-                {
-                    using var ms=new MemoryStream(); 
-                    await Image.CopyToAsync(ms);
+                using var ms = new MemoryStream();
+                await Image.CopyToAsync(ms);
 
-                    dto.ImageData=ms.ToArray(); // byte çevirdiğim kısım
-                    dto.ImageType = Image.ContentType;
-                }
-
-                var userId = GetUserId();
-                var result = await _service.AddAsync(dto, userId);
-
-                return result ? NoContent() : BadRequest("Ekleme başarısız.");
+                dto.ImageData = ms.ToArray(); // byte çevirdiğim kısım
+                dto.ImageType = Image.ContentType;
             }
-            catch (Exception ex)
-            {
-                // Hatayı console'a yazdır ki Visual Studio 'Output' penceresinde görebilesin
-                Console.WriteLine("HATA: " + ex.Message);
-                return StatusCode(500, $"Sunucu hatası: {ex.Message}");
-            }
+
+            var userId = GetUserId();
+            var result = await _service.AddAsync(dto, userId);
+
+            return result ? NoContent() : BadRequest("Ekleme başarısız.");
+
         }
 
         [Authorize(Roles = "User")]
@@ -148,11 +135,7 @@ namespace WebApplication1.Controllers
             var userId =GetUserId() ;
             var result =await _service.UpdateAsync(id,dto,userId, imageData,imageType); // tasinmaz var mı yok mu onu kontrol etmek için
 
-            if(!result) {
-                return NotFound("Tasinmaz yok");
-            }
-
-            return NoContent();
+            return result ? NoContent() : NotFound("Tasinmaz yok");
         }
     }
 }

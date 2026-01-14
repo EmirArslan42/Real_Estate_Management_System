@@ -21,8 +21,6 @@ namespace WebApplication1.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterDto dto)
         {
-            try
-            {
                 var newUser = await _authService.RegisterAsync(dto);
                 return Ok(new
                 {
@@ -34,14 +32,8 @@ namespace WebApplication1.Controllers
                         newUser.Email,
                         newUser.Role,
                     }
-                });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+                });        
         }
-
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginDto dto)
