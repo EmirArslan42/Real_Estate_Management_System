@@ -19,7 +19,7 @@ import { AuthInterceptor } from './auth/auth.interceptor';
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-    AuthModule, // burayı her loginden sonra kontrol et
+    AuthModule, 
     DashboardModule,
   ],
   providers: [
