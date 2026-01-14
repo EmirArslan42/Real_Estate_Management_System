@@ -46,7 +46,7 @@ export class RegisterComponent{
     }
     this.isLoading=true;
     this.authService.register(this.registerForm.value).subscribe({
-      next: (response) => {
+      next: () => {
         this.showSuccessAlert("Kayıt başarılı! Giriş sayfasına yönlendiriliyorsunuz...");
         setTimeout(() => {
           this.router.navigate(['/auth/login']);

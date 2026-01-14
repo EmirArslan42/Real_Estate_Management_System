@@ -10,8 +10,8 @@ import { AuthService } from 'src/app/auth/auth.service';
 })
 export class LoginComponent{
   errorMessage: string = '';
-  loginForm: FormGroup;
   isLoading:boolean=false;
+  loginForm: FormGroup;
 
   constructor(
     fb: FormBuilder,
